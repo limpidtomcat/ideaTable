@@ -9,5 +9,5 @@
 #import <Foundation/Foundation.h>
 
 @interface ServerObject : NSObject
-
+//////진짜 마지막
 @end
