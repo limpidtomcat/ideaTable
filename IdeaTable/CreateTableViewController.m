@@ -8,6 +8,7 @@
 
 #import "CreateTableViewController.h"
 #import "WaitingRoomViewController.h"
+#import "ServerObject.h"
 
 @implementation CreateTableViewController
 
@@ -215,7 +216,15 @@
 }
 
 -(void)onDoneBtn{
-	WaitingRoomViewController *viewController=[[WaitingRoomViewController alloc] init];
+	ServerObject *serverObject=[[ServerObject alloc] init];
+	NSLog(@"주소 : %@",[ServerObject localIPAddress]);
+	NSLog(@"포트 : %d",[serverObject port]);
+	
+	ClientObject *clientObject=[[ClientObject alloc] initWithAddress:@"127.0.0.1" port:[serverObject port]];
+	
+	
+	WaitingRoomViewController *viewController=[[WaitingRoomViewController alloc] initWithClientObject:clientObject];
+	[clientObject release];
 	[self.navigationController pushViewController:viewController animated:YES];
 	[viewController release];
 }

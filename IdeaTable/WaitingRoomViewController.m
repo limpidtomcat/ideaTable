@@ -8,21 +8,24 @@
 
 #import "WaitingRoomViewController.h"
 #import "UserInfo.h"
+#import "PDFViewController.h"
+
 
 @implementation WaitingRoomViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
+-(id)initWithClientObject:(ClientObject *)_clientObject{
+	self = [super init];
+	if(self){
+		clientObject=[_clientObject retain];
+		
+		//		clientObject=[[ClientObject alloc] initWithAddress:<#(NSString *)#> port:<#(NSUInteger)#>];
         // Custom initialization
 		userList=[[NSMutableArray alloc] initWithObjects:
 				  [[[UserInfo alloc] init] autorelease],
 				  [[[UserInfo alloc] init] autorelease],
 				  [[[UserInfo alloc] init] autorelease],
-				  nil];
-    }
-    return self;
+				  nil];	}
+	return self;
 }
 
 - (void)didReceiveMemoryWarning
@@ -52,7 +55,7 @@
 
 	UIBarButtonItem *startBtn=[[UIBarButtonItem alloc] initWithTitle:@"Start" style:UIBarButtonItemStyleDone target:self action:@selector(startTable:)];
 	[self.navigationItem setRightBarButtonItem:startBtn];
-	[startBtn setEnabled:NO];
+//	[startBtn setEnabled:NO];
 	[startBtn release];
 	
 //	CGRect frame=self.view.bounds;
@@ -79,6 +82,8 @@
 -(void)dealloc{
 	[userList release];
 	[userTable release];
+//	[serverObject release];
+	[clientObject release];
 	[super dealloc];
 }
 
@@ -172,5 +177,38 @@
      [self.navigationController pushViewController:detailViewController animated:YES];
      [detailViewController release];
      */
+}
+
+-(void)startTable:(id)sender{
+	/** Set document name */
+    NSString *documentName = @"Manual";
+	
+    /** Get temporary directory to save thumbnails */
+	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    
+    /** Set thumbnails path */
+    NSString *thumbnailsPath = [[paths objectAtIndex:0] stringByAppendingPathComponent:[NSString stringWithFormat:@"%@",documentName]];
+    
+    /** Get document from the App Bundle */
+    NSURL *documentUrl = [NSURL fileURLWithPath:[[NSBundle mainBundle]pathForResource:documentName ofType:@"pdf"]];
+    
+    /** Instancing the documentManager */
+	MFDocumentManager *documentManager = [[MFDocumentManager alloc]initWithFileUrl:documentUrl];
+	
+	/** Instancing the readerViewController */
+	PDFViewController *pdfViewController = [[PDFViewController alloc]initWithDocumentManager:documentManager];
+    
+    /** Set resources folder on the manager */
+    documentManager.resourceFolder = thumbnailsPath;
+	
+    /** Set document id for thumbnail generation */
+    pdfViewController.documentId = documentName;
+    
+	/** Present the pdf on screen in a modal view */
+    [self presentModalViewController:pdfViewController animated:YES]; 
+    
+    /** Release the pdf controller*/
+    [pdfViewController release];
+
 }
 @end

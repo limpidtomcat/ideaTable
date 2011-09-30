@@ -7,7 +7,32 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <sys/types.h>
+#import <sys/socket.h>
+#import <netinet/in.h>
+#import <netdb.h>
+
+
+
+#include <ifaddrs.h>
+#include <arpa/inet.h>
+
+#include <net/if.h>
+#include <net/if_dl.h>
+
 
 @interface ServerObject : NSObject
-//////oooooooo
+{
+	NSUInteger port;
+//	CFSocketRef 
+	NSMutableArray *connectedClients;
+	
+}
+
+@property (nonatomic, assign) NSUInteger port;
+
++ (NSString *)localIPAddress;
+-(NSUInteger)initServerSocket;
+
+
 @end

@@ -9,6 +9,7 @@
 #import "IdeaTableViewController.h"
 
 #import "CreateTableViewController.h"
+#import "JoinViewController.h"
 
 @implementation IdeaTableViewController
 
@@ -45,6 +46,15 @@
 
 -(IBAction)createTable:(id)sender{
 	CreateTableViewController *viewController=[[CreateTableViewController alloc] initWithStyle:UITableViewStyleGrouped];
+	UINavigationController *navigationController=[[UINavigationController alloc] initWithRootViewController:viewController];
+	[viewController release];
+	
+	[self presentModalViewController:navigationController animated:YES];
+	[navigationController release];
+}
+
+-(IBAction)joinTable:(id)sender{
+	JoinViewController *viewController=[[JoinViewController alloc] initWithNibName:@"JoinViewController" bundle:nil];
 	UINavigationController *navigationController=[[UINavigationController alloc] initWithRootViewController:viewController];
 	[viewController release];
 	

@@ -8,10 +8,15 @@
 
 #import <UIKit/UIKit.h>
 
+#import "ClientObject.h"
 @interface WaitingRoomViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
 {
 	UITableView *userTable;
 	
 	NSMutableArray *userList;
+//	ServerObject *serverObject;
+	ClientObject *clientObject;
 }
+
+-(id)initWithClientObject:(ClientObject *)_clientObject;
 @end
