@@ -223,8 +223,10 @@
 	ClientObject *clientObject=[[ClientObject alloc] initWithAddress:@"127.0.0.1" port:[serverObject port]];
 	
 	
-	WaitingRoomViewController *viewController=[[WaitingRoomViewController alloc] initWithClientObject:clientObject];
+	WaitingRoomViewController *viewController=[[WaitingRoomViewController alloc] initWithClientObject:clientObject port:[serverObject port] isMaster:YES];
+
 	[clientObject release];
+	
 	[self.navigationController pushViewController:viewController animated:YES];
 	[viewController release];
 }

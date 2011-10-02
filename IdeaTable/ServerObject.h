@@ -20,12 +20,21 @@
 #include <net/if.h>
 #include <net/if_dl.h>
 
+typedef struct {
+	CFSocketRef socketRef;
+	CFRunLoopSourceRef runLoopSourceRef;
+	Byte clientId;
+	char name[100];
+	Byte r,g,b;
+} ConnectedClient;
 
 @interface ServerObject : NSObject
 {
 	NSUInteger port;
 //	CFSocketRef 
 	NSMutableArray *connectedClients;
+	NSMutableSet *availableColors;
+	Byte maxUserId;
 	
 }
 

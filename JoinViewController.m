@@ -82,7 +82,7 @@
 -(void)onJoinBtn{
 	NSLog(@"join");
 	ClientObject *clientObject=[[ClientObject alloc] initWithAddress:[ipField text] port:[[portField text] intValue]];
-	WaitingRoomViewController *viewController=[[WaitingRoomViewController alloc] initWithClientObject:clientObject];
+	WaitingRoomViewController *viewController=[[WaitingRoomViewController alloc] initWithClientObject:clientObject port:0 isMaster:NO];
 	[self.navigationController pushViewController:viewController animated:YES];
 	[viewController release];
 	[clientObject release];

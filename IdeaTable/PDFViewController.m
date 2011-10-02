@@ -9,15 +9,20 @@
 #import "PDFViewController.h"
 
 @implementation PDFViewController
-
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
+@synthesize isMaster;
+@synthesize  clientObject;
+-(id)initWithClientObject:(ClientObject *)_clientObject{
+	self=[super init];
+	if(self	){
+		clientObject=[_clientObject retain];
+	}
+	return self;
 }
+-(void)dealloc{
+	[clientObject release];
+	[super dealloc];
+}
+			   
 
 - (void)didReceiveMemoryWarning
 {
@@ -55,6 +60,20 @@
 {
     // Return YES for supported orientations
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+- (void)documentViewController:(MFDocumentViewController *)dvc didGoToPage:(NSUInteger)page{
+	NSLog(@"did go to page %d",page);
+
+	if(isMaster)[clientObject sendMessagePageMovedTo:page];
+}
+
+
+-(void)signalPageMove:(NSUInteger )page{
+	if(self.page==page-1)[self moveToNextPage];
+	else if(self.page==page-1)[self moveToNextPage];
+	else [self setPage:page];
+	
 }
 
 @end

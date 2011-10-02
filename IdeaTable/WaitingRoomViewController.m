@@ -7,25 +7,60 @@
 //
 
 #import "WaitingRoomViewController.h"
-#import "UserInfo.h"
+
 #import "PDFViewController.h"
 
 
 @implementation WaitingRoomViewController
 
--(id)initWithClientObject:(ClientObject *)_clientObject{
+-(id)initWithClientObject:(ClientObject *)_clientObject port:(NSUInteger)_port isMaster:(BOOL)_master{
 	self = [super init];
 	if(self){
+		isMaster=_master;
+		port=_port;
 		clientObject=[_clientObject retain];
+		[clientObject setWaitingRoomDelegate:self];
 		
 		//		clientObject=[[ClientObject alloc] initWithAddress:<#(NSString *)#> port:<#(NSUInteger)#>];
         // Custom initialization
-		userList=[[NSMutableArray alloc] initWithObjects:
-				  [[[UserInfo alloc] init] autorelease],
-				  [[[UserInfo alloc] init] autorelease],
-				  [[[UserInfo alloc] init] autorelease],
-				  nil];	}
+		userList=[[NSMutableArray alloc] init];
+		
+	}
 	return self;
+}
+-(void)back:(id)sender{
+	if(isMaster){
+		UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"Idea Table" message:@"Table will be distroyed." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Yes", nil];
+		[alert show];
+		[alert release];
+	}
+	else{
+		[self.navigationController popViewControllerAnimated:YES];
+	}
+}
+
+- (void)alertView:(UIAlertView *)alertView willDismissWithButtonIndex:(NSInteger)buttonIndex{
+	if(buttonIndex==alertView.firstOtherButtonIndex){
+		[self.navigationController popViewControllerAnimated:YES];
+	}
+}
+
+-(UserInfo *)getUserById:(NSUInteger)clientId{
+	for (UserInfo *user in userList) {
+		if(user.clientId==clientId)return user;
+	}
+	return nil;
+}
+
+-(void)newUserCome:(UserInfo *)userInfo{
+	[userList addObject:userInfo];
+	[userTable reloadData];
+}
+
+-(void)userOut:(NSUInteger)clientId{
+	UserInfo *outUser=[self getUserById:clientId];
+	[userList removeObject:outUser];
+	[userTable reloadData];
 }
 
 - (void)didReceiveMemoryWarning
@@ -51,12 +86,27 @@
     [super viewDidLoad];
 	
 	[self setTitle:@"Waiting Room"];
-	
 
-	UIBarButtonItem *startBtn=[[UIBarButtonItem alloc] initWithTitle:@"Start" style:UIBarButtonItemStyleDone target:self action:@selector(startTable:)];
-	[self.navigationItem setRightBarButtonItem:startBtn];
-//	[startBtn setEnabled:NO];
-	[startBtn release];
+	
+//	NSLog(@"뷰 목록 - %@",self.navigationController);
+//	NSLog(@"이전 뷰 : %@",[self.navigationController.viewControllers objectAtIndex:[self.navigationController.viewControllers count]-2]);
+	//		[
+	UIButton *backBtn=[UIButton buttonWithType:101];
+	[backBtn setTitle:[[self.navigationController.viewControllers objectAtIndex:[self.navigationController.viewControllers count]-2] title] forState:UIControlStateNormal];
+	[backBtn addTarget:self action:@selector(back:) forControlEvents:UIControlEventTouchUpInside];
+	UIBarButtonItem *backBtnItem=[[UIBarButtonItem alloc] initWithCustomView:backBtn];
+	[self.navigationItem setLeftBarButtonItem:backBtnItem];
+	[backBtnItem release];
+	
+	//		self.
+	
+	
+	if(isMaster){
+		UIBarButtonItem *startBtn=[[UIBarButtonItem alloc] initWithTitle:@"Start" style:UIBarButtonItemStyleDone target:self action:@selector(startTable:)];
+		[self.navigationItem setRightBarButtonItem:startBtn];
+		//	[startBtn setEnabled:NO];
+		[startBtn release];
+	}
 	
 //	CGRect frame=self.view.bounds;
 //	NSLog(@"%d",self.wantsFullScreenLayout);
@@ -67,6 +117,13 @@
 	userTable.delegate=self;
 	userTable.dataSource=self;
 	[self.view addSubview:userTable];
+	NSLog(@"ppp - %d",port);
+	if(port>0){
+		UILabel *labe=[[UILabel alloc] initWithFrame:CGRectMake(0, 0, 300, 30)];
+		[labe setText:[NSString stringWithFormat:@"%d",port]];
+		[self.view addSubview:labe];
+		[labe release];
+	}
 
 	
 }
@@ -115,12 +172,17 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier] autorelease];
-    }
+	}
 	
 	UserInfo *userInfo=[userList objectAtIndex:[indexPath row]];
 	
 	cell.textLabel.text=userInfo.name;
-//	[userList objectAtIndex:[indexPath row]];
+
+	cell.detailTextLabel.text=@"color";
+//	cell.detailTextLabel.backgroundColor=[UIColor redColor];
+	cell.detailTextLabel.textColor=userInfo.penColor;
+	
+	//	[userList objectAtIndex:[indexPath row]];
     
     return cell;
 }
@@ -209,6 +271,15 @@
     
     /** Release the pdf controller*/
     [pdfViewController release];
+	NSLog(@"pdf start");
+	[clientObject setPdfViewDelegate:pdfViewController];
+	[pdfViewController setClientObject:clientObject];
+	if(sender!=clientObject){
+		NSLog(@"it's master");
+		[pdfViewController setIsMaster:YES];
+		[clientObject sendPresentationStartMessage];
+		
+	}
 
 }
 @end

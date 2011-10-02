@@ -12,7 +12,27 @@
 #import <netinet/in.h>
 #import <netdb.h>
 
-@interface ClientObject : NSObject
+@protocol WaitingRoomDelegate;
+@protocol PDFViewDelegate;
 
+@interface ClientObject : NSObject
+{
+	CFSocketRef serverSocket;
+	id<WaitingRoomDelegate> waitingRoomDelegate;
+	id<PDFViewDelegate> pdfViewDelegate;
+}
+
+@property (nonatomic, assign) id<WaitingRoomDelegate> waitingRoomDelegate;
+@property (nonatomic, assign) id<PDFViewDelegate> pdfViewDelegate;
 - (id)initWithAddress:(NSString *)address port:(NSUInteger)port;
+
+-(void)sendPresentationStartMessage;
+//-(void)sendPageMoveMessageFrom:(NSUInteger)fromPage to:(NSUInteger)toPage;
+-(void)sendMessagePageMovedTo:(NSUInteger)toPage;
+
+@end
+
+
+@protocol WaitingRoomDelegate <NSObject>
+
 @end

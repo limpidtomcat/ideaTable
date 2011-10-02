@@ -9,18 +9,20 @@
 #import "UserInfo.h"
 
 @implementation UserInfo
+@synthesize clientId;
 @synthesize name;
 @synthesize penColor;
 
-- (id)init
+-(id) initWithName:(NSString *)_name color:(UIColor *)_col clientId:(NSUInteger)_id
 {
-    self = [super init];
-    if (self) {
-		name=[[NSString alloc] initWithFormat:@"User Test"];
-		penColor=[[UIColor alloc] initWithRed:1 green:0 blue:0 alpha:1];
-    }
-    
-    return self;
+	self = [super init];
+	if(self){
+		clientId=_id;
+		NSLog(@"userinfo creating name - %@",_name);
+		name=[_name retain];
+		penColor=[_col retain];
+	}
+	return self;
 }
 
 -(void)dealloc{

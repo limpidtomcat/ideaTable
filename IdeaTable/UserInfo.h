@@ -10,10 +10,15 @@
 
 @interface UserInfo : NSObject
 {
+	Byte clientId;
 	NSString *name;
 	UIColor *penColor;
 }
 
-@property (nonatomic, retain) NSString *name;
-@property (nonatomic, retain) UIColor *penColor;
+@property (nonatomic, readonly) Byte clientId;
+@property (nonatomic, readonly) NSString *name;
+@property (nonatomic, readonly) UIColor *penColor;
+
+-(id) initWithName:(NSString *)_name color:(UIColor *)_col clientId:(NSUInteger)_id;
+
 @end

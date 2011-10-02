@@ -7,6 +7,7 @@
 //
 
 #import "ServerObject.h"
+#define SendBufferSize 100
 
 @implementation ServerObject
 @synthesize port;
@@ -15,49 +16,171 @@
 {
     self = [super init];
     if (self) {
+		maxUserId=0;
 		port=[self initServerSocket];
-		NSLog(@"ppp - %d",port);
-		
+
 		connectedClients=[[NSMutableArray alloc] init];
+		availableColors=[[NSMutableSet alloc] initWithObjects:
+						 [UIColor blackColor],
+						 [UIColor redColor],
+						 [UIColor blueColor],
+						 [UIColor purpleColor],
+						 [UIColor brownColor],
+						 [UIColor cyanColor],
+						 [UIColor greenColor],
+						 [UIColor magentaColor],
+						 [UIColor orangeColor],
+						 nil];
+
     }
     
     return self;
 }
 
 -(void)dealloc{
+	[availableColors release];
 	[connectedClients release];
 	[super dealloc];
 }
 
-//-(char *)makeSendBuffer
 
 -(void)acceptedNewClient:(CFSocketRef)s
 {
 
-	NSValue *socketValue=[NSValue valueWithPointer:s];
-	[connectedClients addObject:socketValue];
+	CFRunLoopSourceRef FrameRunLoopSource = CFSocketCreateRunLoopSource(NULL, s , 0);
+	CFRunLoopAddSource(CFRunLoopGetCurrent(), FrameRunLoopSource, kCFRunLoopCommonModes); 
+
+	ConnectedClient *k=malloc(sizeof(ConnectedClient));
+	k->socketRef=s;
+	k->runLoopSourceRef=FrameRunLoopSource; 
+	k->clientId=maxUserId++;
+	
+	UIColor *userCol=[availableColors anyObject];
+	// Available Color 중 하나를 선택. 없으면 랜덤한 컬러 생성
+	if (userCol) {
+		[availableColors removeObject:userCol];
+		
+		const float *rgba=CGColorGetComponents(userCol.CGColor);
+		k->r=(Byte)(rgba[0]*255);
+		k->g=(Byte)(rgba[1]*255);
+		k->b=(Byte)(rgba[2]*255);
+	}else{
+		k->r=rand()%256;
+		k->g=rand()%256;
+		k->b=rand()%256;
+	}
+	
+	
+	NSValue *clientValue=[NSValue valueWithPointer:k];
+	[connectedClients addObject:clientValue];
 	
 	NSLog(@"%@",connectedClients);
 }
 
+-(ConnectedClient *)getClientBySocketRef:(CFSocketRef)s{
+	ConnectedClient *client;
+	for(NSValue *v in connectedClients){
+		ConnectedClient *k=[v pointerValue];
+		if(k->socketRef==s){
+			client=k;
+		}
+	}
+	return client;
+}
+
+
+
+
 -(void)sendData:(char *)buf toClient:(CFSocketRef)socket{
-	CFDataRef dt = CFDataCreate(NULL, (const UInt8*)buf, sizeof(buf));
+	CFDataRef dt = CFDataCreate(NULL, (const UInt8*)buf, SendBufferSize);
 	CFSocketSendData(socket, NULL, dt, 0);
 	
 }
 -(void)sendData:(char *)buf exceptClient:(CFSocketRef)socket{
 	for(NSValue *val in connectedClients){
-		CFSocketRef s=[val pointerValue];
+		ConnectedClient *p=[val pointerValue];
+		
+		CFSocketRef s=p->socketRef;
 		if(s==socket)continue;
 		[self sendData:buf toClient:s];
 	}
 }
 
--(void)recvData:(char *)buf{
-	NSLog(@"str - %s",buf);
-	UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"received" message:[NSString stringWithCString:buf encoding:NSUTF8StringEncoding] delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil];
-	[alert	 show];
-	[alert release];
+-(void)disconnectSocket:(CFSocketRef)s{
+	
+	ConnectedClient *client=[self getClientBySocketRef:s];
+	
+	char buf[SendBufferSize]={0};
+	buf[0]=5;
+	buf[1]=client->clientId;
+	[self sendData:buf exceptClient:s];
+	
+	NSValue *clientValue=[NSValue valueWithPointer:client];
+	
+	CFSocketInvalidate(client->socketRef);
+	CFRelease(client->socketRef);
+	CFRunLoopRemoveSource(CFRunLoopGetCurrent(), client->runLoopSourceRef, kCFRunLoopCommonModes);
+	[connectedClients removeObject:clientValue];
+	free(client);
+	
+}
+
+-(void)recvData:(char *)buf fromClient:(CFSocketRef)s{
+	Byte firstByte=buf[0];
+	NSLog(@"Server Get Message Code - %d",firstByte);
+	if(firstByte==1){	// 클라이언트 접속, 이름을 보내왔다
+
+		ConnectedClient *client=[self getClientBySocketRef:s];
+		
+		
+		int len=strlen(buf+1);
+		strncpy(client->name, buf+1, len);
+		client->name[len]='\0';
+
+		char sendBuf[SendBufferSize]={0};
+		sendBuf[0]=4;
+		sendBuf[1]=client->clientId;
+		sendBuf[2]=len;
+		strcpy(sendBuf+3, buf+1);
+		sendBuf[len+3]=client->r;
+		sendBuf[len+4]=client->g;
+		sendBuf[len+5]=client->b;
+		[self sendData:sendBuf exceptClient:s];
+		
+		sendBuf[0]=1;
+		sendBuf[1]=client->clientId;
+		sendBuf[2]=client->r;
+		sendBuf[3]=client->g;
+		sendBuf[4]=client->b;
+		Byte userCount=[connectedClients count];
+		sendBuf[5]= userCount-1;
+		NSUInteger index=6;
+		for(NSUInteger i=0;i<userCount;i++){
+			ConnectedClient *user=[[connectedClients objectAtIndex:i] pointerValue];
+			if(client==user)continue;
+			sendBuf[index++]=user->clientId;
+			sendBuf[index++]=strlen(user->name);
+			strncpy(sendBuf+index, user->name, strlen(user->name));
+			index+=strlen(user->name);
+			sendBuf[index++]=user->r;
+			sendBuf[index++]=user->g;
+			sendBuf[index++]=user->b;
+		}
+		[self sendData:sendBuf toClient:s];
+		
+	}
+	else if(firstByte==2){	// Presentation Started
+		[self sendData:buf exceptClient:s];
+	}
+	else if(firstByte==3){	// Page Moved
+		[self sendData:buf exceptClient:s];
+	}
+	else{
+		NSLog(@"str - %s",buf);
+		UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"received" message:[NSString stringWithCString:buf encoding:NSUTF8StringEncoding] delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil];
+		[alert	 show];
+		[alert release];
+	}
 }
 
 
@@ -71,12 +194,20 @@ void CFServerSocketCallBack (
 	
     if(callbackType == kCFSocketReadCallBack) {
         // 소켓에서 읽을 수 있습니다.
-        char buf[100] = {0};
+        char buf[SendBufferSize] = {0};
         int sock = CFSocketGetNative(s);
-		int cnt=recv(sock, &buf, 100, 0);
-		if(cnt>0){
+
+		int cnt=recv(sock, &buf, SendBufferSize, 0);
+		NSLog(@"readed %d",cnt);
+		if(cnt==0){
+			NSLog(@"접속 종료됨 %@",[NSValue valueWithPointer:s]);
+			[(ServerObject *)info disconnectSocket:s];
+			
+			
+		}
+		else if(cnt>0){
 			NSLog(@"to read : %d",cnt);
-			[(ServerObject *)info recvData:buf];
+			[(ServerObject *)info recvData:buf fromClient:s];
 		}
 		
     }
@@ -93,7 +224,7 @@ void CFServerSocketCallBack (
 }
 
 
-void CFListeningSockCallBack (
+static void CFListeningSockCallBack (
                      CFSocketRef s,
                      CFSocketCallBackType callbackType,
                      CFDataRef address,
@@ -112,9 +243,7 @@ void CFListeningSockCallBack (
 		CFSocketNativeHandle fd = *(CFSocketNativeHandle*)data;
 		CFSocketRef serverSocket=CFSocketCreateWithNative(kCFAllocatorDefault, fd, kCFSocketReadCallBack|kCFSocketWriteCallBack|kCFSocketConnectCallBack, (CFSocketCallBack)&CFServerSocketCallBack, &socketCtxt);
 
-		CFRunLoopSourceRef FrameRunLoopSource = CFSocketCreateRunLoopSource(NULL, serverSocket , 0);
-		CFRunLoopAddSource(CFRunLoopGetCurrent(), FrameRunLoopSource, kCFRunLoopCommonModes); 
-
+		
 		[(ServerObject *)info acceptedNewClient:serverSocket];
 		
 	}

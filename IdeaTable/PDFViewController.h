@@ -9,6 +9,12 @@
 
 
 #import	"FastPdfKit/FastPdfKit.h"
+#import "ClientObject.h"
 @interface PDFViewController : ReaderViewController
-
+{
+	BOOL isMaster;
+	ClientObject *clientObject;
+}
+@property (nonatomic, assign) BOOL isMaster;
+@property (nonatomic, retain) ClientObject *clientObject;
 @end
