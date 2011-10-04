@@ -18,6 +18,7 @@
 @interface ClientObject : NSObject
 {
 	CFSocketRef serverSocket;
+	CFRunLoopSourceRef FrameRunLoopSource;
 	id<WaitingRoomDelegate> waitingRoomDelegate;
 	id<PDFViewDelegate> pdfViewDelegate;
 }
@@ -29,6 +30,7 @@
 -(void)sendPresentationStartMessage;
 //-(void)sendPageMoveMessageFrom:(NSUInteger)fromPage to:(NSUInteger)toPage;
 -(void)sendMessagePageMovedTo:(NSUInteger)toPage;
+-(void)closeSocket;
 
 @end
 

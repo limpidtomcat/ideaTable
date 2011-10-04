@@ -89,4 +89,9 @@
 
 }
 
+-(void)joinComplete:(ClientObject *)clientObject{
+	WaitingRoomViewController *viewController=[[WaitingRoomViewController alloc] initWithClientObject:clientObject port:0 isMaster:NO];
+	
+}
+
 @end

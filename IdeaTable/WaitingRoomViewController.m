@@ -12,6 +12,7 @@
 
 
 @implementation WaitingRoomViewController
+@synthesize  serverObject;
 
 -(id)initWithClientObject:(ClientObject *)_clientObject port:(NSUInteger)_port isMaster:(BOOL)_master{
 	self = [super init];
@@ -28,6 +29,13 @@
 	}
 	return self;
 }
+
+-(void)goBack{
+	// client release
+	[clientObject closeSocket];
+	[self.navigationController popViewControllerAnimated:YES];
+}
+
 -(void)back:(id)sender{
 	if(isMaster){
 		UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"Idea Table" message:@"Table will be distroyed." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Yes", nil];
@@ -35,13 +43,15 @@
 		[alert release];
 	}
 	else{
-		[self.navigationController popViewControllerAnimated:YES];
+		[self goBack];
 	}
 }
 
 - (void)alertView:(UIAlertView *)alertView willDismissWithButtonIndex:(NSInteger)buttonIndex{
 	if(buttonIndex==alertView.firstOtherButtonIndex){
-		[self.navigationController popViewControllerAnimated:YES];
+		//서버 종료
+		[serverObject closeServer];
+		[self goBack];
 	}
 }
 
@@ -55,6 +65,14 @@
 -(void)newUserCome:(UserInfo *)userInfo{
 	[userList addObject:userInfo];
 	[userTable reloadData];
+}
+
+-(void)serverKilled{
+	UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"Idea Table" message:@"Server has shut down" delegate:nil cancelButtonTitle:@"Okay" otherButtonTitles:nil];
+	[alert show];
+	[alert release];
+	[self goBack];
+	
 }
 
 -(void)userOut:(NSUInteger)clientId{
@@ -139,7 +157,7 @@
 -(void)dealloc{
 	[userList release];
 	[userTable release];
-//	[serverObject release];
+	[serverObject release];
 	[clientObject release];
 	[super dealloc];
 }

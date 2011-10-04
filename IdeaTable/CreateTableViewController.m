@@ -224,6 +224,8 @@
 	
 	
 	WaitingRoomViewController *viewController=[[WaitingRoomViewController alloc] initWithClientObject:clientObject port:[serverObject port] isMaster:YES];
+	[viewController setServerObject:serverObject];
+	[serverObject release];
 
 	[clientObject release];
 	

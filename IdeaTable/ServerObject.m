@@ -11,12 +11,15 @@
 
 @implementation ServerObject
 @synthesize port;
+@synthesize maxUserCount;
+@synthesize connectedClients;
 
 - (id)init
 {
     self = [super init];
     if (self) {
 		maxUserId=0;
+		maxUserCount=3;
 		port=[self initServerSocket];
 
 		connectedClients=[[NSMutableArray alloc] init];
@@ -43,6 +46,22 @@
 	[super dealloc];
 }
 
+-(void)closeServer{
+	
+	// clients disconnect
+	NSArray *clients=[NSArray arrayWithArray:connectedClients];
+	for(NSValue *value in clients){
+		ConnectedClient *client=[value pointerValue];
+		[self disconnectSocket:client->socketRef];
+	}
+	
+	// CLOSE LISTENING SOCKET
+	CFSocketInvalidate(listeningSocket);
+	CFRelease(listeningSocket);
+	CFRunLoopRemoveSource(CFRunLoopGetCurrent(), listeningRunLoopSourceRef, kCFRunLoopCommonModes);
+	CFRelease(listeningRunLoopSourceRef);
+	
+}
 
 -(void)acceptedNewClient:(CFSocketRef)s
 {
@@ -92,6 +111,7 @@
 
 
 -(void)sendData:(char *)buf toClient:(CFSocketRef)socket{
+	NSLog(@"sending from server - %s",buf);
 	CFDataRef dt = CFDataCreate(NULL, (const UInt8*)buf, SendBufferSize);
 	CFSocketSendData(socket, NULL, dt, 0);
 	
@@ -120,6 +140,7 @@
 	CFSocketInvalidate(client->socketRef);
 	CFRelease(client->socketRef);
 	CFRunLoopRemoveSource(CFRunLoopGetCurrent(), client->runLoopSourceRef, kCFRunLoopCommonModes);
+	CFRelease(client->runLoopSourceRef);
 	[connectedClients removeObject:clientValue];
 	free(client);
 	
@@ -233,18 +254,32 @@ static void CFListeningSockCallBack (
 					 )
 {
 	
-
+	ServerObject *serverObject=(ServerObject*)info;
+	
 	if(callbackType == kCFSocketAcceptCallBack ){
         NSLog(@"accepted");
 
-		
-		CFSocketContext socketCtxt = {0, info, NULL, NULL, NULL};	
 
-		CFSocketNativeHandle fd = *(CFSocketNativeHandle*)data;
-		CFSocketRef serverSocket=CFSocketCreateWithNative(kCFAllocatorDefault, fd, kCFSocketReadCallBack|kCFSocketWriteCallBack|kCFSocketConnectCallBack, (CFSocketCallBack)&CFServerSocketCallBack, &socketCtxt);
-
-		
-		[(ServerObject *)info acceptedNewClient:serverSocket];
+		if([[serverObject connectedClients] count]>=serverObject.maxUserCount){//접속 거부
+			CFSocketNativeHandle fd = *(CFSocketNativeHandle*)data;
+			CFSocketRef serverSocket=CFSocketCreateWithNative(kCFAllocatorDefault, fd, kCFSocketNoCallBack, (CFSocketCallBack)&CFServerSocketCallBack, NULL);
+			char buf[100];
+			buf[0]=6;
+			[serverObject sendData:buf toClient:serverSocket];
+			CFSocketInvalidate(serverSocket);
+			CFRelease(serverSocket);
+			
+			
+		}else{
+			CFSocketContext socketCtxt = {0, info, NULL, NULL, NULL};	
+			
+			CFSocketNativeHandle fd = *(CFSocketNativeHandle*)data;
+			CFSocketRef serverSocket=CFSocketCreateWithNative(kCFAllocatorDefault, fd, kCFSocketReadCallBack|kCFSocketWriteCallBack|kCFSocketConnectCallBack, (CFSocketCallBack)&CFServerSocketCallBack, &socketCtxt);
+			
+			
+			[serverObject acceptedNewClient:serverSocket];
+			
+		}
 		
 	}
 
@@ -275,19 +310,21 @@ static void CFListeningSockCallBack (
 	if(listen(m_nSocket, 256) != 0)
 		@throw [NSException exceptionWithName: @"Server" reason: @"Can't listen socket" userInfo: nil];		
 	
-	CFSocketRef m_listeningSocket = CFSocketCreateWithNative(kCFAllocatorDefault, m_nSocket, kCFSocketAcceptCallBack, (CFSocketCallBack)&CFListeningSockCallBack, &socketCtxt);
+	listeningSocket = CFSocketCreateWithNative(kCFAllocatorDefault, m_nSocket, kCFSocketAcceptCallBack, (CFSocketCallBack)&CFListeningSockCallBack, &socketCtxt);
+//	CFSocketRef m_listeningSocket = CFSocketCreateWithNative(kCFAllocatorDefault, m_nSocket, kCFSocketAcceptCallBack, (CFSocketCallBack)&CFListeningSockCallBack, &socketCtxt);
 	
-	if(m_listeningSocket < 0)
+	if(listeningSocket < 0)
 		@throw [NSException exceptionWithName: @"Server" reason: @"Can't create CFScoket" userInfo: nil];
 	
 	// set up the run loop sources for the sockets
 	CFRunLoopRef cfRunLoopRef = CFRunLoopGetCurrent();
-	CFRunLoopSourceRef cfRunLoopSourceRef = CFSocketCreateRunLoopSource(kCFAllocatorDefault, m_listeningSocket, 0);
-	NSAssert(cfRunLoopSourceRef, @"Can't create RunLoopSource");
+	listeningRunLoopSourceRef = CFSocketCreateRunLoopSource(kCFAllocatorDefault, listeningSocket, 0);
+//	CFRunLoopSourceRef cfRunLoopSourceRef = CFSocketCreateRunLoopSource(kCFAllocatorDefault, listeningSocket, 0);
+	NSAssert(listeningRunLoopSourceRef, @"Can't create RunLoopSource");
 	
 	
-	CFRunLoopAddSource(cfRunLoopRef, cfRunLoopSourceRef, kCFRunLoopCommonModes);		
-	CFRelease(cfRunLoopSourceRef);		
+	CFRunLoopAddSource(cfRunLoopRef, listeningRunLoopSourceRef, kCFRunLoopCommonModes);		
+//	CFRelease(cfRunLoopSourceRef);		
 	
 	
 	// 콜백함수로 들어오도록 runloop에 등록
@@ -296,7 +333,7 @@ static void CFListeningSockCallBack (
 	
 
 	
-	CFDataRef	 dataRef = CFSocketCopyAddress(m_listeningSocket);
+	CFDataRef	 dataRef = CFSocketCopyAddress(listeningSocket);
 	struct sockaddr_in *sockaddr = (struct sockaddr_in*)CFDataGetBytePtr(dataRef);
 
 	

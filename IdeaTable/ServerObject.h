@@ -31,17 +31,23 @@ typedef struct {
 @interface ServerObject : NSObject
 {
 	NSUInteger port;
-//	CFSocketRef 
+	NSUInteger maxUserCount;
+	CFSocketRef listeningSocket;
+	CFRunLoopSourceRef listeningRunLoopSourceRef;
+	
 	NSMutableArray *connectedClients;
 	NSMutableSet *availableColors;
 	Byte maxUserId;
 	
 }
 
+@property (nonatomic, readonly) NSMutableArray *connectedClients;
+@property (nonatomic, readonly) NSUInteger maxUserCount;
 @property (nonatomic, assign) NSUInteger port;
 
 + (NSString *)localIPAddress;
 -(NSUInteger)initServerSocket;
+-(void)closeServer;
 
 
 @end

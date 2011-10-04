@@ -51,15 +51,25 @@ static void CFSockCallBack(
 		CFDataRef addressData = CFDataCreate( NULL, &theName, sizeof( struct sockaddr_in ) );
 		
 		// 연결 시도 (timeout에 -값을 주면 백그라운드 시도)
-		CFSocketConnectToAddress(serverSocket, addressData, 30);
+		CFSocketConnectToAddress(serverSocket, addressData, -1);
 		
 		// 콜백함수로 들어오도록 runloop에 등록
-		CFRunLoopSourceRef FrameRunLoopSource = CFSocketCreateRunLoopSource(NULL, serverSocket, 0);
+		FrameRunLoopSource = CFSocketCreateRunLoopSource(NULL, serverSocket, 0);
 		CFRunLoopAddSource(CFRunLoopGetCurrent(), FrameRunLoopSource, kCFRunLoopCommonModes); 
     
 	}
     
     return self;
+}
+
+
+-(void)closeSocket{
+	CFSocketInvalidate(serverSocket);
+	CFRelease(serverSocket);
+	CFRunLoopRemoveSource(CFRunLoopGetCurrent(), FrameRunLoopSource, kCFRunLoopCommonModes);
+	CFRelease(FrameRunLoopSource);
+
+
 }
 
 // 저장된 이름을 불러오고 저장되어있지 않을 경우 디바이스 이름을 리턴
@@ -179,6 +189,10 @@ static void CFSockCallBack(
 		Byte userId=buf[1];
 		[waitingRoomDelegate userOut:userId];
 	}
+	else if(firstByte==6){		// 접속 거부 - 풀방
+		NSLog(@"full room");
+		[waitingRoomDelegate goBack];
+	}
 	else{
 		NSLog(@"str - %s",buf);
 		UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"received" message:[NSString stringWithCString:buf encoding:NSUTF8StringEncoding] delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil];
@@ -205,7 +219,11 @@ static void CFSockCallBack(
         char buf[SendBufferSize] = {0};
         int sock = CFSocketGetNative(s);
 		int cnt=recv(sock, &buf, SendBufferSize, 0);
-		if(cnt>0){
+		if(cnt==0){	// Server killed
+			NSLog(@"connection lost");
+			[(ClientObject *)info closeSocket];
+		}
+		else if(cnt>0){
 			NSLog(@"to read : %d",cnt);
 			[(ClientObject *)info recvData:buf];
 		}
@@ -226,7 +244,7 @@ static void CFSockCallBack(
 
     }
     if(callbackType == kCFSocketConnectCallBack) {
-        NSLog(@"connected");
+        NSLog(@"client connected");
         // 연결이 이루어졌습니다.
 		// 이름 보내자
 	}
