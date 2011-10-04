@@ -8,7 +8,11 @@
 
 #import "CreateTableViewController.h"
 #import "WaitingRoomViewController.h"
+<<<<<<< HEAD
 #import "ServerObject.h"
+=======
+#import "PptFileSelectController.h"
+>>>>>>> 4b711b5cfc0745f374cdf051d6772ca0edbb21a4
 
 @implementation CreateTableViewController
 
@@ -17,10 +21,17 @@
     self = [super initWithStyle:style];
     if (self) {
 		self.modalTransitionStyle=UIModalTransitionStyleCoverVertical;
-		title=@"NO TITLE";
-		member=3;
+        title=[[NSString alloc] initWithString:@"NO TITLE"];
+		member=2;
 		time=10;
 		record=YES;
+        members = [[NSArray alloc] initWithObjects:@"2명",@"3명",@"4명",@"5명",@"6명",@"7명",@"8명", nil];
+        times = [[NSArray alloc] initWithObjects:@"10분",@"15분",@"20분",@"25분",@"30분",@"35분",@"40분",@"45분",@"50분", @"55분", nil];
+        timeRow=0;
+        memberRow=0;
+        titleTextField = [[UITextField alloc] initWithFrame:CGRectMake(60, 0, 230, 44)];
+        [titleTextField setDelegate:self];
+        [titleTextField setReturnKeyType:UIReturnKeyDone];
     }
     return self;
 }
@@ -74,6 +85,7 @@
 	recordSwitch=nil;
 }
 -(void)dealloc{
+    [title release];
 	[recordSwitch release];
 	[super dealloc];
 }
@@ -90,6 +102,8 @@
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+    [memberSetPicker removeFromSuperview];
+    [timeSetPicker removeFromSuperview];
     [super viewWillDisappear:animated];
 }
 
@@ -127,7 +141,9 @@
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier] autorelease];
     }
 	if([indexPath row]==0){
+        [cell addSubview:titleTextField];
 		cell.textLabel.text=@"제목";
+        cell.detailTextLabel.text = title;
 		cell.accessoryType=UITableViewCellAccessoryNone;
 	}
 	else if([indexPath row]==1){
@@ -147,11 +163,8 @@
 	else if([indexPath row]==4){
 		cell.textLabel.text=@"녹음";
 		cell.accessoryType=UITableViewCellAccessoryNone;
-//		cell.detailTextLabel
-		
 		[cell addSubview:recordSwitch];
 	}
-    
     // Configure the cell...
     
     return cell;
@@ -201,6 +214,63 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
+    if (indexPath.row == 0) {
+        [memberSetPicker removeFromSuperview];
+        memberSetPicker = nil;
+        [timeSetPicker removeFromSuperview];
+        timeSetPicker = nil;
+        [titleTextField setHidden:NO];
+        [titleTextField becomeFirstResponder];
+       
+    }
+    else if (indexPath.row == 1) {
+        [titleTextField resignFirstResponder];
+        [timeSetPicker removeFromSuperview];
+        timeSetPicker = nil;
+        
+        if (memberSetPicker) {
+            return;
+        }
+        memberSetPicker = [[UIPickerView alloc] initWithFrame:CGRectMake(0, 300, 320, 100)];
+        [memberSetPicker setDataSource:self];
+        [memberSetPicker setShowsSelectionIndicator:YES];
+        [memberSetPicker setDelegate:self];
+        [memberSetPicker selectRow:memberRow inComponent:0 animated:YES];
+        [self.navigationController.view addSubview:memberSetPicker];
+        [memberSetPicker release];
+
+    }
+    else if (indexPath.row == 2) {
+        [memberSetPicker removeFromSuperview];
+        memberSetPicker = nil;
+        if (timeSetPicker) {
+            return;
+        }
+        timeSetPicker = [[UIPickerView alloc] initWithFrame:CGRectMake(0, 300, 320, 100)];
+        [timeSetPicker setDataSource:self];
+        [timeSetPicker setShowsSelectionIndicator:YES];
+        [timeSetPicker setDelegate:self];
+        [timeSetPicker selectRow:timeRow inComponent:0 animated:YES];
+        [self.navigationController.view addSubview:timeSetPicker];
+        [timeSetPicker release];
+        
+    }
+    else if (indexPath.row == 3) {
+        [memberSetPicker removeFromSuperview];
+        memberSetPicker = nil;
+        [timeSetPicker removeFromSuperview];
+        timeSetPicker = nil;
+        [titleTextField resignFirstResponder];
+        PptFileSelectController* pptFileSelectList = [[PptFileSelectController alloc]init];
+        [self.navigationController pushViewController:pptFileSelectList animated:YES];
+        [pptFileSelectList release];
+    }
+    else {
+        [memberSetPicker removeFromSuperview];
+        memberSetPicker = nil;
+        [timeSetPicker removeFromSuperview];
+        timeSetPicker = nil;
+    }
     // Navigation logic may go here. Create and push another view controller.
     /*
      <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
@@ -210,7 +280,116 @@
      [detailViewController release];
      */
 }
+-(NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView {
+    return 1;
+}
+-(NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
+    if (pickerView == memberSetPicker)
+        return [members count];
+    else if (pickerView == timeSetPicker)
+        return [times count];
+    else
+        return 0;
+}
 
+-(NSString *)pickerView: (UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
+    if (pickerView == memberSetPicker)
+        return [members objectAtIndex:row];
+    else if (pickerView == timeSetPicker)
+        return [times objectAtIndex:row];
+    else
+        return nil;
+}
+
+- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
+    if (pickerView == memberSetPicker) {
+        switch (row) {
+            case 0:
+                member = 2;
+                memberRow = 0;
+                break;
+            case 1:
+                member = 3;
+                memberRow = 1;
+                break;
+            case 2:
+                member = 4;
+                memberRow = 2;
+                break;
+            case 3:
+                member = 5;
+                memberRow = 3;
+                break;
+            case 4:
+                member = 6;
+                memberRow = 4;
+                break;
+            case 5:
+                member = 7;
+                memberRow = 5;
+                break;
+            case 6:
+                member = 8;
+                memberRow = 6;
+                break;
+            default:
+                break;
+        }
+        [self.tableView reloadData];
+    
+    }
+    else if (pickerView == timeSetPicker) {
+        switch (row) {
+            case 0:
+                time = 15;
+                timeRow = 0;
+                break;
+            case 1:
+                time = 20;
+                timeRow = 1;
+                break;
+            case 2:
+                time = 25;
+                timeRow = 2;
+                break;
+            case 3:
+                time = 30;
+                timeRow = 3;
+                break;
+            case 4:
+                time = 35;
+                timeRow = 4;
+                break;
+            case 5:
+                time = 40;
+                timeRow = 5;
+                break;
+            case 6:
+                time = 45;
+                timeRow = 6;
+                break;
+            case 7:
+                time = 50;
+                timeRow = 7;
+                break;
+            case 8:
+                time = 55;
+                timeRow = 8;
+                break;
+            default:
+                break;
+        }
+        [self.tableView reloadData];
+    }
+}
+-(BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [titleTextField resignFirstResponder];
+    [title release];
+    title =[[NSString alloc] initWithString:titleTextField.text];
+    [titleTextField setHidden:true];
+    [self.tableView reloadData];
+    return YES;
+}
 -(void)closeCreateTable{
 	[self.navigationController dismissModalViewControllerAnimated:YES];
 }

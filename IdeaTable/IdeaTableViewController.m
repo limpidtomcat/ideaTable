@@ -7,9 +7,13 @@
 //
 
 #import "IdeaTableViewController.h"
-
 #import "CreateTableViewController.h"
+<<<<<<< HEAD
 #import "JoinViewController.h"
+=======
+#import "OptionMenuViewController.h"
+
+>>>>>>> 4b711b5cfc0745f374cdf051d6772ca0edbb21a4
 
 @implementation IdeaTableViewController
 
@@ -53,6 +57,7 @@
 	[navigationController release];
 }
 
+<<<<<<< HEAD
 -(IBAction)joinTable:(id)sender{
 	JoinViewController *viewController=[[JoinViewController alloc] initWithNibName:@"JoinViewController" bundle:nil];
 	UINavigationController *navigationController=[[UINavigationController alloc] initWithRootViewController:viewController];
@@ -60,6 +65,15 @@
 	
 	[self presentModalViewController:navigationController animated:YES];
 	[navigationController release];
+=======
+-(IBAction)createOptMenu:(id)sender {
+    OptionMenuViewController *optMenuViewController=[[OptionMenuViewController alloc] initWithStyle:UITableViewStyleGrouped];
+    UINavigationController *optNavigationController=[[UINavigationController alloc] initWithRootViewController:optMenuViewController];
+    [optMenuViewController release];
+    
+    [self presentModalViewController:optNavigationController animated:YES];
+    [optNavigationController release];
+>>>>>>> 4b711b5cfc0745f374cdf051d6772ca0edbb21a4
 }
 
 @end

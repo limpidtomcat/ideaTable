@@ -135,6 +135,7 @@
 	userTable.delegate=self;
 	userTable.dataSource=self;
 	[self.view addSubview:userTable];
+<<<<<<< HEAD
 	NSLog(@"ppp - %d",port);
 	if(port>0){
 		UILabel *labe=[[UILabel alloc] initWithFrame:CGRectMake(0, 0, 300, 30)];
@@ -143,6 +144,8 @@
 		[labe release];
 	}
 
+=======
+>>>>>>> 4b711b5cfc0745f374cdf051d6772ca0edbb21a4
 	
 }
 

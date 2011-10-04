@@ -2,9 +2,9 @@
 <archive type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="7.10">
 	<data>
 		<int key="IBDocument.SystemTarget">1056</int>
-		<string key="IBDocument.SystemVersion">11B26</string>
+		<string key="IBDocument.SystemVersion">11B2118</string>
 		<string key="IBDocument.InterfaceBuilderVersion">1617</string>
-		<string key="IBDocument.AppKitVersion">1138</string>
+		<string key="IBDocument.AppKitVersion">1138.1</string>
 		<string key="IBDocument.HIToolboxVersion">566.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
@@ -184,8 +184,13 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchEventConnection" key="connection">
+<<<<<<< HEAD
 						<string key="label">joinTable:</string>
 						<reference key="source" ref="933299224"/>
+=======
+						<string key="label">createOptMenu:</string>
+						<reference key="source" ref="307427983"/>
+>>>>>>> 4b711b5cfc0745f374cdf051d6772ca0edbb21a4
 						<reference key="destination" ref="372490531"/>
 						<int key="IBEventType">7</int>
 					</object>
