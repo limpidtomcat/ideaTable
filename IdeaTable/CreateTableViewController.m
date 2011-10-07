@@ -8,11 +8,8 @@
 
 #import "CreateTableViewController.h"
 #import "WaitingRoomViewController.h"
-<<<<<<< HEAD
-#import "ServerObject.h"
-=======
 #import "PptFileSelectController.h"
->>>>>>> 4b711b5cfc0745f374cdf051d6772ca0edbb21a4
+#import "ServerObject.h"
 
 @implementation CreateTableViewController
 
@@ -21,18 +18,21 @@
     self = [super initWithStyle:style];
     if (self) {
 		self.modalTransitionStyle=UIModalTransitionStyleCoverVertical;
-        title=[[NSString alloc] initWithString:@"NO TITLE"];
+        tableTitle=[[NSString alloc] initWithString:@"NO TITLE"];
 		member=2;
 		time=10;
 		record=YES;
-        members = [[NSArray alloc] initWithObjects:@"2명",@"3명",@"4명",@"5명",@"6명",@"7명",@"8명", nil];
-        times = [[NSArray alloc] initWithObjects:@"10분",@"15분",@"20분",@"25분",@"30분",@"35분",@"40분",@"45분",@"50분", @"55분", nil];
+		members = [[NSArray alloc] initWithObjects:@"2명",@"3명",@"4명",@"5명",@"6명",@"7명",@"8명", nil];
+		times = [[NSArray alloc] initWithObjects:@"10분",@"15분",@"20분",@"25분",@"30분",@"35분",@"40분",@"45분",@"50분", @"55분", nil];
         timeRow=0;
         memberRow=0;
-        titleTextField = [[UITextField alloc] initWithFrame:CGRectMake(60, 0, 230, 44)];
+        titleTextField = [[UITextField alloc] initWithFrame:CGRectMake(100, 11, 210, 22)];
         [titleTextField setDelegate:self];
+		[titleTextField setHidden:YES];
         [titleTextField setReturnKeyType:UIReturnKeyDone];
-    }
+		pptFile=nil;
+
+	}
     return self;
 }
 
@@ -44,7 +44,7 @@
     // Release any cached data, images, etc that aren't in use.
 }
 
-#pragma mark - View lifecycle
+#pragma mark - View liithfecycle
 
 - (void)viewDidLoad
 {
@@ -85,7 +85,11 @@
 	recordSwitch=nil;
 }
 -(void)dealloc{
-    [title release];
+	[pptFile release];
+    [tableTitle release];
+	[titleTextField release];
+	[members release];
+	[times	release];
 	[recordSwitch release];
 	[super dealloc];
 }
@@ -143,7 +147,7 @@
 	if([indexPath row]==0){
         [cell addSubview:titleTextField];
 		cell.textLabel.text=@"제목";
-        cell.detailTextLabel.text = title;
+        cell.detailTextLabel.text = tableTitle;
 		cell.accessoryType=UITableViewCellAccessoryNone;
 	}
 	else if([indexPath row]==1){
@@ -158,12 +162,14 @@
 	}
 	else if([indexPath row]==3){
 		cell.textLabel.text=@"PPT File";
+		cell.detailTextLabel.text=pptFile;
 		cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
 	}
 	else if([indexPath row]==4){
 		cell.textLabel.text=@"녹음";
 		cell.accessoryType=UITableViewCellAccessoryNone;
 		[cell addSubview:recordSwitch];
+		cell.selectionStyle=UITableViewCellSelectionStyleNone;
 	}
     // Configure the cell...
     
@@ -262,6 +268,7 @@
         timeSetPicker = nil;
         [titleTextField resignFirstResponder];
         PptFileSelectController* pptFileSelectList = [[PptFileSelectController alloc]init];
+		[pptFileSelectList setDelegate:self];
         [self.navigationController pushViewController:pptFileSelectList animated:YES];
         [pptFileSelectList release];
     }
@@ -303,34 +310,28 @@
 
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
     if (pickerView == memberSetPicker) {
+		memberRow=row;
         switch (row) {
             case 0:
                 member = 2;
-                memberRow = 0;
                 break;
             case 1:
                 member = 3;
-                memberRow = 1;
                 break;
             case 2:
                 member = 4;
-                memberRow = 2;
                 break;
             case 3:
                 member = 5;
-                memberRow = 3;
                 break;
             case 4:
                 member = 6;
-                memberRow = 4;
                 break;
             case 5:
                 member = 7;
-                memberRow = 5;
                 break;
             case 6:
                 member = 8;
-                memberRow = 6;
                 break;
             default:
                 break;
@@ -339,42 +340,34 @@
     
     }
     else if (pickerView == timeSetPicker) {
+		timeRow=row;
         switch (row) {
             case 0:
                 time = 15;
-                timeRow = 0;
                 break;
             case 1:
                 time = 20;
-                timeRow = 1;
                 break;
             case 2:
                 time = 25;
-                timeRow = 2;
                 break;
             case 3:
                 time = 30;
-                timeRow = 3;
                 break;
             case 4:
                 time = 35;
-                timeRow = 4;
                 break;
             case 5:
                 time = 40;
-                timeRow = 5;
                 break;
             case 6:
                 time = 45;
-                timeRow = 6;
                 break;
             case 7:
                 time = 50;
-                timeRow = 7;
                 break;
             case 8:
                 time = 55;
-                timeRow = 8;
                 break;
             default:
                 break;
@@ -382,12 +375,28 @@
         [self.tableView reloadData];
     }
 }
+
+-(void)setTableTitle:(NSString *)title{
+	[tableTitle release];
+	tableTitle=[title copy];
+}
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField{
+	[((UITableViewCell *)titleTextField.superview).detailTextLabel setHidden:YES];
+	[titleTextField setText:((UITableViewCell *)titleTextField.superview).detailTextLabel.text];
+}
+- (void)textFieldDidEndEditing:(UITextField *)textField{
+	[((UITableViewCell *)titleTextField.superview).detailTextLabel setHidden:NO];
+	if(![textField.text isEqualToString:@""]){
+		[self setTableTitle:textField.text];
+		[self.tableView reloadData];
+	}
+    [titleTextField setHidden:true];
+}
+
+
 -(BOOL)textFieldShouldReturn:(UITextField *)textField {
     [titleTextField resignFirstResponder];
-    [title release];
-    title =[[NSString alloc] initWithString:titleTextField.text];
-    [titleTextField setHidden:true];
-    [self.tableView reloadData];
     return YES;
 }
 -(void)closeCreateTable{
@@ -395,7 +404,21 @@
 }
 
 -(void)onDoneBtn{
-	ServerObject *serverObject=[[ServerObject alloc] init];
+	if(pptFile==nil){
+		UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"Idea Table" message:@"PDF 파일을 고르세요" delegate:nil cancelButtonTitle:@"Okay" otherButtonTitles:nil];
+		[alert	 show];
+		[alert release];
+		return;
+	}
+	NSLog(@"%@",NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES));
+	
+	NSString *documentPath=[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+	
+	NSString *file=[documentPath stringByAppendingPathComponent:pptFile];
+	NSURL *pptFileURL=[NSURL fileURLWithPath:file];
+	
+	ServerObject *serverObject=[[ServerObject alloc] initWithTableTitle:tableTitle maxUserCount:member];
+	[serverObject setPptFile:pptFileURL];
 	NSLog(@"주소 : %@",[ServerObject localIPAddress]);
 	NSLog(@"포트 : %d",[serverObject port]);
 	
@@ -403,6 +426,9 @@
 	
 	
 	WaitingRoomViewController *viewController=[[WaitingRoomViewController alloc] initWithClientObject:clientObject port:[serverObject port] isMaster:YES];
+	
+	
+	[viewController setPptFileURL:pptFileURL];
 	[viewController setServerObject:serverObject];
 	[serverObject release];
 
@@ -410,6 +436,12 @@
 	
 	[self.navigationController pushViewController:viewController animated:YES];
 	[viewController release];
+}
+
+-(void)setPptFile:(NSString *)_pptFile{
+	[pptFile release];
+	pptFile=[_pptFile retain];
+	[self.tableView reloadData];
 }
 
 @end

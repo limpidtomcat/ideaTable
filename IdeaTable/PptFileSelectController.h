@@ -12,6 +12,10 @@
 {
     UITableView *pptFileTable;
     NSMutableArray *pptFileList;
+	
+	id delegate;
 }
+
+@property (nonatomic,assign) id delegate;
 
 @end

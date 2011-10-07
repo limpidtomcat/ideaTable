@@ -30,6 +30,10 @@ typedef struct {
 
 @interface ServerObject : NSObject
 {
+	NSString *tableTitle;
+	NSURL *pptFile;
+	NSNetService *netService;
+	
 	NSUInteger port;
 	NSUInteger maxUserCount;
 	CFSocketRef listeningSocket;
@@ -44,10 +48,12 @@ typedef struct {
 @property (nonatomic, readonly) NSMutableArray *connectedClients;
 @property (nonatomic, readonly) NSUInteger maxUserCount;
 @property (nonatomic, assign) NSUInteger port;
+@property (nonatomic ,retain) NSURL *pptFile;
 
 + (NSString *)localIPAddress;
 -(NSUInteger)initServerSocket;
 -(void)closeServer;
+- (id)initWithTableTitle:(NSString *)title maxUserCount:(NSUInteger)count;
 
 
 @end

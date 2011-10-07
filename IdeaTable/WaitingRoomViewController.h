@@ -20,10 +20,14 @@
 	ServerObject *serverObject;
 	ClientObject *clientObject;
 	
+	NSURL *pptFileURL;
+	NSString *tableTitle;
+	
 	NSUInteger port;
 }
 
 @property (nonatomic, retain) ServerObject *serverObject;
+@property (nonatomic ,retain) NSURL *pptFileURL;
 
 -(id)initWithClientObject:(ClientObject *)_clientObject port:(NSUInteger)_port isMaster:(BOOL)_master;
 -(void)newUserCome:(UserInfo *)userInfo;

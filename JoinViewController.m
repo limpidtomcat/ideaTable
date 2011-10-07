@@ -56,8 +56,68 @@
 	UIBarButtonItem *doneBtn=[[UIBarButtonItem alloc] initWithTitle:@"Join" style:UIBarButtonItemStyleDone target:self action:@selector(onJoinBtn)];
 	[self.navigationItem setRightBarButtonItem:doneBtn];
 	[doneBtn release];
+	
+	NSNetServiceBrowser *browser=[[NSNetServiceBrowser alloc] init];
+	[browser setDelegate:self];
+	[browser searchForServicesOfType:@"_idea._tcp." inDomain:@"local."];
+//	[browser searchForServicesOfType:<#(NSString *)#> inDomain:<#(NSString *)#>
+
+	NSLog(@"let's search");
+//	[browser	 release];
 
 }
+
+- (void)netServiceBrowserWillSearch:(NSNetServiceBrowser *)netServiceBrowser
+{
+	NSLog(@"start search");
+}
+
+- (void)netServiceBrowser:(NSNetServiceBrowser *)netServiceBrowser didNotSearch:(NSDictionary *)errorInfo
+{
+
+	NSLog(@"error search %@",errorInfo);
+}
+
+- (void)netServiceBrowser:(NSNetServiceBrowser *)netServiceBrowser didFindService:(NSNetService *)netService moreComing:(BOOL)moreServicesComing
+{
+	NSLog(@"found %@",netService);
+	NSLog(@"more ? %d",moreServicesComing);
+	[netService retain];
+	[netService setDelegate:self];
+	[netService resolveWithTimeout:1];
+
+}
+
+- (void)netServiceDidResolveAddress:(NSNetService *)sender
+{
+	NSLog(@"didresolve %@",sender.hostName);
+	NSNetService *netService=sender;
+	NSLog(@"%@",netService.addresses);
+	for (NSData *data in netService.addresses) {
+		
+		
+//		if (socketAddress && socketAddress->sa_family == AF_INET) {
+		struct sockaddr_in *address=(struct sockaddr_in *)[data bytes];
+		if(address->sin_family != AF_INET)continue;
+		NSLog(@"data/");
+		NSString *ip=[NSString stringWithCString:inet_ntoa(address->sin_addr) encoding:NSUTF8StringEncoding];
+		NSLog(@"%@",ip);
+	}
+	//	netService.addresses 
+	//	netService.addresses
+	//	netService.port
+	[netService stop];
+	NSString *addr;
+//	[self autoJoinToAddr:addr port:netService.port];
+}
+- (void)netService:(NSNetService *)sender didNotResolve:(NSDictionary *)errorDict{
+	NSLog(@"resolve fail %@",errorDict);
+}
+
+- (void)netServiceWillResolve:(NSNetService *)sender{
+	NSLog(@"will resolve");
+}
+
 
 - (void)viewDidUnload
 {
@@ -87,6 +147,15 @@
 	[viewController release];
 	[clientObject release];
 
+}
+
+-(void)autoJoinToAddr:(NSString *)addr port:(NSUInteger)port{
+	ClientObject *clientObject=[[ClientObject alloc] initWithAddress:addr port:port];
+	WaitingRoomViewController *viewController=[[WaitingRoomViewController alloc] initWithClientObject:clientObject port:0 isMaster:NO];
+	[self.navigationController pushViewController:viewController animated:YES];
+	[viewController release];
+	[clientObject release];
+	
 }
 
 -(void)joinComplete:(ClientObject *)clientObject{

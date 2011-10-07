@@ -13,13 +13,15 @@
 @synthesize port;
 @synthesize maxUserCount;
 @synthesize connectedClients;
+@synthesize pptFile;
 
-- (id)init
+- (id)initWithTableTitle:(NSString *)title maxUserCount:(NSUInteger)count
 {
     self = [super init];
     if (self) {
+		tableTitle=[title retain];
 		maxUserId=0;
-		maxUserCount=3;
+		maxUserCount=count;
 		port=[self initServerSocket];
 
 		connectedClients=[[NSMutableArray alloc] init];
@@ -56,6 +58,8 @@
 	}
 	
 	// CLOSE LISTENING SOCKET
+	
+	[netService release];
 	CFSocketInvalidate(listeningSocket);
 	CFRelease(listeningSocket);
 	CFRunLoopRemoveSource(CFRunLoopGetCurrent(), listeningRunLoopSourceRef, kCFRunLoopCommonModes);
@@ -153,29 +157,67 @@
 
 		ConnectedClient *client=[self getClientBySocketRef:s];
 		
-		
-		int len=strlen(buf+1);
-		strncpy(client->name, buf+1, len);
+		BOOL isMaster=buf[1];
+
+		int len=strlen(buf+2);
+		strncpy(client->name, buf+2, len);
 		client->name[len]='\0';
 
 		char sendBuf[SendBufferSize]={0};
-		sendBuf[0]=4;
-		sendBuf[1]=client->clientId;
-		sendBuf[2]=len;
-		strcpy(sendBuf+3, buf+1);
-		sendBuf[len+3]=client->r;
-		sendBuf[len+4]=client->g;
-		sendBuf[len+5]=client->b;
+		NSUInteger index=0;
+		
+		sendBuf[index++]=4;
+		sendBuf[index++]=client->clientId;
+		sendBuf[index++]=len;
+		memcpy(sendBuf+index, client->name, len);
+		
+		index+=len;
+		sendBuf[index++]=client->r;
+		sendBuf[index++]=client->g;
+		sendBuf[index++]=client->b;
 		[self sendData:sendBuf exceptClient:s];
 		
-		sendBuf[0]=1;
-		sendBuf[1]=client->clientId;
-		sendBuf[2]=client->r;
-		sendBuf[3]=client->g;
-		sendBuf[4]=client->b;
+
+		
+		NSLog(@"%@",pptFile);
+		NSData *pptData=[NSData dataWithContentsOfURL:pptFile];
+
+
+		index=0;
+		// first Byte
+		sendBuf[index++]=1;
+
+		// file Size
+		NSUInteger dataLength=pptData.length;
+		if(isMaster)dataLength=0;
+		memcpy(sendBuf+index, &(dataLength), sizeof(NSUInteger));
+		index+=sizeof(NSUInteger);
+		NSLog(@"보내는 사이즈 %d",dataLength);
+
+		// title length
+		Byte titleLength=tableTitle.length;
+		sendBuf[index++]=titleLength;
+		NSLog(@"보내는 길이 %d",titleLength);
+		
+		// title string
+		const char *title=[tableTitle cStringUsingEncoding:NSUTF8StringEncoding];
+		NSLog(@"sending title  %s",title);
+		memcpy(sendBuf+index, title, strlen(title));
+		index+=strlen(title);
+		
+		// ID
+		sendBuf[index++]=client->clientId;
+		
+		//rgb
+		sendBuf[index++]=client->r;
+		sendBuf[index++]=client->g;
+		sendBuf[index++]=client->b;
+		
+		// user count
 		Byte userCount=[connectedClients count];
-		sendBuf[5]= userCount-1;
-		NSUInteger index=6;
+		sendBuf[index++]= userCount-1;
+
+		// user info
 		for(NSUInteger i=0;i<userCount;i++){
 			ConnectedClient *user=[[connectedClients objectAtIndex:i] pointerValue];
 			if(client==user)continue;
@@ -188,6 +230,13 @@
 			sendBuf[index++]=user->b;
 		}
 		[self sendData:sendBuf toClient:s];
+
+		CFDataRef pptCFData = CFDataCreate(NULL, (const UInt8*)pptData.bytes, pptData.length);
+		CFSocketSendData(s, NULL, pptCFData, 0);
+		
+		CFRelease(pptCFData);
+		
+		pptCFData=NULL;
 		
 	}
 	else if(firstByte==2){	// Presentation Started
@@ -347,6 +396,11 @@ static void CFListeningSockCallBack (
 	
 
 	CFRelease(dataRef);
+	
+	
+	netService=[[NSNetService alloc] initWithDomain:@"local." type:@"_idea._tcp." name:tableTitle port:p];
+	[netService publish];
+//	[netService release];
 	
 	//	NSLog(@"%@",[NSString stringwithcf])
 	return (NSUInteger)p;

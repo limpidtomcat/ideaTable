@@ -10,15 +10,20 @@
 
 
 @implementation PptFileSelectController
+@synthesize delegate;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
     self = [super initWithStyle:style];
     if (self) {
+		
+		NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+		NSString *path = [paths objectAtIndex:0];
+		
+		NSArray *fileArr=[[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error:nil];
+		
         // Custom initialization
-        pptFileList=[[NSMutableArray alloc] initWithObjects:
-				  @"a",@"b",@"c",
-				  nil];
+        pptFileList=[[NSMutableArray alloc] initWithArray:fileArr];
     }
     return self;
 }
@@ -120,7 +125,7 @@
     }
     
     // Configure the cell...
-    
+    cell.textLabel.text=[pptFileList objectAtIndex:indexPath.row];
     return cell;
 }
 
@@ -167,14 +172,13 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // Navigation logic may go here. Create and push another view controller.
-    /*
-     <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
-     // ...
-     // Pass the selected object to the new view controller.
-     [self.navigationController pushViewController:detailViewController animated:YES];
-     [detailViewController release];
-     */
+	[tableView deselectRowAtIndexPath:indexPath animated:YES];
+	NSString *selectedFile=[pptFileList objectAtIndex:indexPath.row];
+	[delegate setPptFile:selectedFile];
+	[self.navigationController popViewControllerAnimated:YES];
+//	UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"file" message:selectedFile delegate:nil cancelButtonTitle:@"okay" otherButtonTitles:nil];
+//	[alert	 show];
+//	[alert release];
 }
 
 @end

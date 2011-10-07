@@ -15,10 +15,12 @@
 {
     self = [super initWithStyle:style];
     if (self) {
-        // Custom initialization
-        name = [[NSString alloc]initWithString:@"NUL"];
-        version = [[NSString alloc]initWithString:@"0.1"];
-        
+		nameTextField=[[UITextField alloc] initWithFrame:CGRectMake(100, 11, 210, 22)];
+		[nameTextField setHidden:YES];
+		[nameTextField setReturnKeyType:UIReturnKeyDone];
+//		[nameTextField setUserInteractionEnabled:NO];
+//		[nameTextField setBackgroundColor:[UIColor redColor]];
+		[nameTextField setDelegate:self];
         
     }
     return self;
@@ -64,8 +66,7 @@
 
 -(void)dealloc
 {
-    [name release];
-    [version release];
+	[nameTextField release];
     [super dealloc];
 }
 
@@ -136,7 +137,11 @@
 	if([indexPath section]==0){
         [cell addSubview:nameTextField];
 		cell.textLabel.text=@"내 이름";
-        cell.detailTextLabel.text = name;
+
+		NSString *myName=[[NSUserDefaults standardUserDefaults] objectForKey:@"myName"];
+		if(myName==nil)myName=[[UIDevice currentDevice] name];
+		
+        cell.detailTextLabel.text = myName;
 		cell.accessoryType=UITableViewCellAccessoryNone;
 	}
 	else if([indexPath section]==1 && [indexPath row]==0){
@@ -151,7 +156,7 @@
 	}
 	else if([indexPath section]==2){
 		cell.textLabel.text=@"버전정보";
-        cell.detailTextLabel.text = version;
+        cell.detailTextLabel.text = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey];
 		cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
 	}
 	else if([indexPath section]==3){
@@ -205,6 +210,20 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+	[tableView deselectRowAtIndexPath:indexPath animated:YES];
+	if(indexPath.section==0&&indexPath.row==0){
+		[[tableView cellForRowAtIndexPath:indexPath].detailTextLabel setHidden:YES];
+		[nameTextField setText:[[tableView cellForRowAtIndexPath:indexPath].detailTextLabel text]];
+		[nameTextField setHidden:NO];
+		[nameTextField becomeFirstResponder];
+		
+	}
+	else if([nameTextField isFirstResponder]){
+		[self saveMyName:nameTextField.text];
+		[nameTextField resignFirstResponder];
+		[nameTextField setHidden:YES];
+		[[((UITableViewCell *)[nameTextField superview]) detailTextLabel] setHidden:NO];
+	}
     // Navigation logic may go here. Create and push another view controller.
     /*
      <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
@@ -218,5 +237,33 @@
 -(void)closeOptMenu{
 	[self.navigationController dismissModalViewControllerAnimated:YES];
 }
+
+-(void)saveMyName:(NSString *)name{
+	if([name isEqualToString:@""])return;
+	[[NSUserDefaults standardUserDefaults] setObject:name forKey:@"myName"];
+	[[NSUserDefaults standardUserDefaults] synchronize];
+	[self.tableView reloadData];
+}
+
+-(void)textFieldDidBeginEditing:(UITextField *)textField{
+	[[((UITableViewCell *)[textField superview]) detailTextLabel] setHidden:YES];
+	
+}
+-(void)textFieldDidEndEditing:(UITextField *)textField{
+	[self saveMyName:textField.text];
+	[textField setHidden:YES];
+	[[((UITableViewCell *)[textField superview]) detailTextLabel] setHidden:NO];
+	
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField{
+	
+	
+	
+	[textField resignFirstResponder];
+	return YES;
+	
+}
+
 
 @end

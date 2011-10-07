@@ -8,12 +8,8 @@
 
 #import "IdeaTableViewController.h"
 #import "CreateTableViewController.h"
-<<<<<<< HEAD
-#import "JoinViewController.h"
-=======
 #import "OptionMenuViewController.h"
-
->>>>>>> 4b711b5cfc0745f374cdf051d6772ca0edbb21a4
+#import "JoinViewController.h"
 
 @implementation IdeaTableViewController
 
@@ -51,29 +47,30 @@
 -(IBAction)createTable:(id)sender{
 	CreateTableViewController *viewController=[[CreateTableViewController alloc] initWithStyle:UITableViewStyleGrouped];
 	UINavigationController *navigationController=[[UINavigationController alloc] initWithRootViewController:viewController];
+	[navigationController.navigationBar setTintColor:[UIColor colorWithRed:70/255.0f green:180/255.0f blue:70/255.0f alpha:1.0f]];
 	[viewController release];
 	
 	[self presentModalViewController:navigationController animated:YES];
 	[navigationController release];
 }
 
-<<<<<<< HEAD
 -(IBAction)joinTable:(id)sender{
 	JoinViewController *viewController=[[JoinViewController alloc] initWithNibName:@"JoinViewController" bundle:nil];
 	UINavigationController *navigationController=[[UINavigationController alloc] initWithRootViewController:viewController];
+	[navigationController.navigationBar setTintColor:[UIColor colorWithRed:120/255.0f green:180/255.0f blue:120/255.0f alpha:1.0f]];
 	[viewController release];
 	
 	[self presentModalViewController:navigationController animated:YES];
 	[navigationController release];
-=======
+}
+
 -(IBAction)createOptMenu:(id)sender {
     OptionMenuViewController *optMenuViewController=[[OptionMenuViewController alloc] initWithStyle:UITableViewStyleGrouped];
     UINavigationController *optNavigationController=[[UINavigationController alloc] initWithRootViewController:optMenuViewController];
+	[optNavigationController.navigationBar setTintColor:[UIColor colorWithRed:170/255.0f green:190/255.0f blue:130/255.0f alpha:1.0f]];
     [optMenuViewController release];
     
     [self presentModalViewController:optNavigationController animated:YES];
     [optNavigationController release];
->>>>>>> 4b711b5cfc0745f374cdf051d6772ca0edbb21a4
 }
-
 @end

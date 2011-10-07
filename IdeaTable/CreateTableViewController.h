@@ -12,12 +12,14 @@
 {
 	UISwitch *recordSwitch;
 	
-	NSString	*title;
+	NSString	*tableTitle;
 	NSUInteger	member;
 	NSUInteger	time;
 	BOOL		record;
     NSUInteger  memberRow;
     NSUInteger  timeRow;
+	
+	NSString *pptFile;
 	
     UITextField *titleTextField;
     NSArray* members;

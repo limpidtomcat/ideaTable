@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface JoinViewController : UIViewController
+@interface JoinViewController : UIViewController<NSNetServiceBrowserDelegate, NSNetServiceDelegate>
 {
 	IBOutlet UITextField *ipField;
 	IBOutlet UITextField *portField;

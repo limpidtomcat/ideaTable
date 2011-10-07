@@ -13,10 +13,12 @@
 
 @implementation WaitingRoomViewController
 @synthesize  serverObject;
+@synthesize  pptFileURL;
 
 -(id)initWithClientObject:(ClientObject *)_clientObject port:(NSUInteger)_port isMaster:(BOOL)_master{
 	self = [super init];
 	if(self){
+		tableTitle=nil;
 		isMaster=_master;
 		port=_port;
 		clientObject=[_clientObject retain];
@@ -103,7 +105,7 @@
 {
     [super viewDidLoad];
 	
-	[self setTitle:@"Waiting Room"];
+//	[self setTitle:@"Waiting Room"];
 
 	
 //	NSLog(@"뷰 목록 - %@",self.navigationController);
@@ -135,7 +137,6 @@
 	userTable.delegate=self;
 	userTable.dataSource=self;
 	[self.view addSubview:userTable];
-<<<<<<< HEAD
 	NSLog(@"ppp - %d",port);
 	if(port>0){
 		UILabel *labe=[[UILabel alloc] initWithFrame:CGRectMake(0, 0, 300, 30)];
@@ -144,8 +145,6 @@
 		[labe release];
 	}
 
-=======
->>>>>>> 4b711b5cfc0745f374cdf051d6772ca0edbb21a4
 	
 }
 
@@ -158,6 +157,7 @@
 }
 
 -(void)dealloc{
+	[tableTitle release];
 	[userList release];
 	[userTable release];
 	[serverObject release];
@@ -272,11 +272,12 @@
     /** Set thumbnails path */
     NSString *thumbnailsPath = [[paths objectAtIndex:0] stringByAppendingPathComponent:[NSString stringWithFormat:@"%@",documentName]];
     
+
     /** Get document from the App Bundle */
-    NSURL *documentUrl = [NSURL fileURLWithPath:[[NSBundle mainBundle]pathForResource:documentName ofType:@"pdf"]];
+//    NSURL *documentUrl = [NSURL fileURLWithPath:[[NSBundle mainBundle]pathForResource:documentName ofType:@"pdf"]];
     
     /** Instancing the documentManager */
-	MFDocumentManager *documentManager = [[MFDocumentManager alloc]initWithFileUrl:documentUrl];
+	MFDocumentManager *documentManager = [[MFDocumentManager alloc]initWithFileUrl:pptFileURL];
 	
 	/** Instancing the readerViewController */
 	PDFViewController *pdfViewController = [[PDFViewController alloc]initWithDocumentManager:documentManager];
@@ -290,7 +291,7 @@
 	/** Present the pdf on screen in a modal view */
     [self presentModalViewController:pdfViewController animated:YES]; 
     
-    /** Release the pdf controller*/
+	/** Release the pdf controller*/
     [pdfViewController release];
 	NSLog(@"pdf start");
 	[clientObject setPdfViewDelegate:pdfViewController];
@@ -302,5 +303,11 @@
 		
 	}
 
+}
+
+-(void)setTableTitle:(NSString *)title{
+	[tableTitle release];
+	tableTitle=[title retain];	
+	[self setTitle:title];
 }
 @end

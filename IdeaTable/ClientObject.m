@@ -23,6 +23,36 @@ static void CFSockCallBack(
 					void *info
 					);
 
+- (id)initWithSockaddr:(struct sockaddr_in)theName{
+    self = [super init];
+    if (self) {
+		
+		// 소켓 생성
+		
+		CFSocketContext socketCtxt = {0, self, NULL, NULL, NULL};	
+		serverSocket = CFSocketCreate(kCFAllocatorDefault,
+									  PF_INET,
+									  SOCK_STREAM,
+									  0,	
+									  kCFSocketReadCallBack|kCFSocketConnectCallBack|kCFSocketWriteCallBack,
+									  (CFSocketCallBack)&CFSockCallBack,
+									  &socketCtxt);
+		
+		
+		CFDataRef addressData = CFDataCreate( NULL, &theName, sizeof( struct sockaddr_in ) );
+		
+		// 연결 시도 (timeout에 -값을 주면 백그라운드 시도)fsocketconnec
+		CFSocketConnectToAddress(serverSocket, addressData, -1);
+		
+		// 콜백함수로 들어오도록 runloop에 등록
+		FrameRunLoopSource = CFSocketCreateRunLoopSource(NULL, serverSocket, 0);
+		CFRunLoopAddSource(CFRunLoopGetCurrent(), FrameRunLoopSource, kCFRunLoopCommonModes); 
+		
+	}
+    
+    return self;
+}
+
 - (id)initWithAddress:(NSString *)address port:(NSUInteger)port
 {
     self = [super init];
@@ -56,7 +86,7 @@ static void CFSockCallBack(
 		// 콜백함수로 들어오도록 runloop에 등록
 		FrameRunLoopSource = CFSocketCreateRunLoopSource(NULL, serverSocket, 0);
 		CFRunLoopAddSource(CFRunLoopGetCurrent(), FrameRunLoopSource, kCFRunLoopCommonModes); 
-    
+
 	}
     
     return self;
@@ -116,20 +146,36 @@ static void CFSockCallBack(
 	// 클라이언트의 id, rgb, 기존 접속자리스트를 보내온다
 	if(firstByte==1){
 		NSLog(@"welcome");
-		Byte clientId=buf[1];
+		NSUInteger index=1;
+		NSUInteger dataLength;
+		memcpy(&dataLength, buf+1, sizeof(NSUInteger));
+		index+=sizeof(NSUInteger);
+		NSLog(@"받은 사이즈 %d",dataLength);
+		
+		Byte titleLength=buf[index++];
+		NSLog(@"받은 길이 %d",titleLength);
+		
+		char *titleBuffer=malloc(titleLength+1);
+		memcpy(titleBuffer, buf+index, titleLength);
+		titleBuffer[titleLength]='\0';
+		NSLog(@"%s",titleBuffer);
+		[waitingRoomDelegate setTableTitle:[NSString stringWithCString:titleBuffer encoding:NSUTF8StringEncoding]];
+		free(titleBuffer);
+		index+=titleLength;
+		
+		Byte clientId=buf[index++];
 		Byte r,g,b;
-		r=buf[2];
-		g=buf[3];
-		b=buf[4];
+		r=buf[index++];
+		g=buf[index++];
+		b=buf[index++];
 		//나부터 생성
 		UserInfo *userInfo=[[UserInfo alloc] initWithName:[self myName] color:[UIColor colorWithRed:r/255.0f green:g/255.0f blue:b/255.0f alpha:1.0f] clientId:clientId];
 		[waitingRoomDelegate newUserCome:userInfo];
 		[UserInfo release];
 		
 		
-		Byte userCount=buf[5];
+		Byte userCount=buf[index++];
 		NSLog(@"connected user count - %d",userCount);
-		Byte index=6;
 		for(Byte i=0;i<userCount;i++){
 			Byte userId=buf[index++];
 			Byte len=buf[index++];
@@ -147,6 +193,38 @@ static void CFSockCallBack(
 			[waitingRoomDelegate newUserCome:userInfo];
 			[UserInfo release];
 		}
+		
+		if(dataLength>0){
+			NSLog(@"받을 파일 크기 - %d",dataLength);
+			int receivedByte=0;
+			int requestByte;
+			char *fileBuf[100];
+			NSMutableData *fileData=[[NSMutableData alloc] init];
+			int fd=CFSocketGetNative(serverSocket);
+			while(receivedByte<dataLength){
+				requestByte=dataLength-receivedByte;
+				if(requestByte>100)requestByte=100;
+				int cnt=recv(fd, &fileBuf, requestByte, 0);
+				
+				receivedByte+=cnt;
+				
+				[fileData appendBytes:&fileBuf length:cnt];
+			}
+			
+			NSString *documentPath=[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+			
+			NSLog(@"DOWNLOAD COMPLETE - %d bytes",fileData.length);
+
+			NSUInteger timeInterval=[[NSDate date] timeIntervalSince1970];
+			NSString *timeString=[NSString stringWithFormat:@"%d.pdf",timeInterval];
+
+			
+			NSString *file=[documentPath stringByAppendingPathComponent:timeString];
+			[fileData writeToFile:file atomically:YES];
+			[fileData release];
+		}
+
+
 	}
 	// 2. Start
 	// 3. Pagemove
@@ -234,11 +312,15 @@ static void CFSockCallBack(
 		char buf[SendBufferSize]={0};
 		buf[0]=1;
 
+		Byte isMaster=NO;
+		buf[1]=isMaster;
+
 		// 전송을 위해 C String으로 변경
 		const char *myNameCString=[[(ClientObject *)info myName] cStringUsingEncoding:NSUTF8StringEncoding];
 		
-		strncpy(buf+1, myNameCString,strlen(myNameCString));
-		buf[strlen(myNameCString)+1]='\0';
+		strncpy(buf+2, myNameCString,strlen(myNameCString));
+		buf[strlen(myNameCString)+2]='\0';
+		NSLog(@"보내는 이름  %s",buf+2);
 
 		[(ClientObject *)info sendData:buf];
 

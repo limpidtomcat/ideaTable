@@ -7,20 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-<<<<<<< HEAD
 		E12187F21434A67300F5156F /* ClientObject.m in Sources */ = {isa = PBXBuildFile; fileRef = E12187F11434A67300F5156F /* ClientObject.m */; };
+		E169425B143C8739002B5029 /* OptionMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E169425A143C8739002B5029 /* OptionMenuViewController.m */; };
+		E169425E143C874C002B5029 /* PptFileSelectController.m in Sources */ = {isa = PBXBuildFile; fileRef = E169425D143C874C002B5029 /* PptFileSelectController.m */; };
 		E1E64DFE1434C76000952186 /* JoinViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E1E64DFC1434C76000952186 /* JoinViewController.m */; };
 		E1E64DFF1434C76000952186 /* JoinViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E1E64DFD1434C76000952186 /* JoinViewController.xib */; };
 		E1E64E1714355FDF00952186 /* PDFViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E1E64E1614355FDF00952186 /* PDFViewController.m */; };
 		E1E64E34143563A600952186 /* FastPdfKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1E64E2F143563A600952186 /* FastPdfKit.framework */; };
-		E1E64E35143563A600952186 /* FastPdfKitFramework.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = E1E64E31143563A600952186 /* FastPdfKitFramework.xcconfig */; };
 		E1E64E36143563A600952186 /* FPKReaderBundle.bundle in Resources */ = {isa = PBXBuildFile; fileRef = E1E64E32143563A600952186 /* FPKReaderBundle.bundle */; };
 		E1E64E37143563A600952186 /* Snippets.txt in Resources */ = {isa = PBXBuildFile; fileRef = E1E64E33143563A600952186 /* Snippets.txt */; };
 		E1E64E391435672E00952186 /* Manual.pdf in Resources */ = {isa = PBXBuildFile; fileRef = E1E64E381435672E00952186 /* Manual.pdf */; };
-=======
-		4AE45D6C1435B55A00475052 /* PptFileSelectController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AE45D6B1435B55A00475052 /* PptFileSelectController.m */; };
-		4AE45D6F1435C24200475052 /* OptionMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AE45D6E1435C24100475052 /* OptionMenuViewController.m */; };
->>>>>>> 4b711b5cfc0745f374cdf051d6772ca0edbb21a4
 		E1F4F8401431A5410032D2A0 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1F4F83F1431A5410032D2A0 /* UIKit.framework */; };
 		E1F4F8421431A5410032D2A0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1F4F8411431A5410032D2A0 /* Foundation.framework */; };
 		E1F4F8441431A5410032D2A0 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1F4F8431431A5410032D2A0 /* CoreGraphics.framework */; };
@@ -38,9 +34,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-<<<<<<< HEAD
 		E12187F01434A67300F5156F /* ClientObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClientObject.h; sourceTree = "<group>"; };
 		E12187F11434A67300F5156F /* ClientObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClientObject.m; sourceTree = "<group>"; };
+		E1694259143C8739002B5029 /* OptionMenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OptionMenuViewController.h; sourceTree = "<group>"; };
+		E169425A143C8739002B5029 /* OptionMenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OptionMenuViewController.m; sourceTree = "<group>"; };
+		E169425C143C874C002B5029 /* PptFileSelectController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PptFileSelectController.h; sourceTree = "<group>"; };
+		E169425D143C874C002B5029 /* PptFileSelectController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PptFileSelectController.m; sourceTree = "<group>"; };
 		E1E64DFB1434C76000952186 /* JoinViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JoinViewController.h; path = ../JoinViewController.h; sourceTree = "<group>"; };
 		E1E64DFC1434C76000952186 /* JoinViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JoinViewController.m; path = ../JoinViewController.m; sourceTree = "<group>"; };
 		E1E64DFD1434C76000952186 /* JoinViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = JoinViewController.xib; path = ../JoinViewController.xib; sourceTree = "<group>"; };
@@ -51,12 +50,6 @@
 		E1E64E32143563A600952186 /* FPKReaderBundle.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = FPKReaderBundle.bundle; sourceTree = "<group>"; };
 		E1E64E33143563A600952186 /* Snippets.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Snippets.txt; sourceTree = "<group>"; };
 		E1E64E381435672E00952186 /* Manual.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = Manual.pdf; sourceTree = "<group>"; };
-=======
-		4AE45D6A1435B55900475052 /* PptFileSelectController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PptFileSelectController.h; sourceTree = "<group>"; };
-		4AE45D6B1435B55A00475052 /* PptFileSelectController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PptFileSelectController.m; sourceTree = "<group>"; };
-		4AE45D6D1435C24100475052 /* OptionMenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OptionMenuViewController.h; sourceTree = "<group>"; };
-		4AE45D6E1435C24100475052 /* OptionMenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OptionMenuViewController.m; sourceTree = "<group>"; };
->>>>>>> 4b711b5cfc0745f374cdf051d6772ca0edbb21a4
 		E1F4F83B1431A5410032D2A0 /* IdeaTable.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IdeaTable.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E1F4F83F1431A5410032D2A0 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		E1F4F8411431A5410032D2A0 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -166,17 +159,14 @@
 				E1F4F86E1431D8770032D2A0 /* UserInfo.m */,
 				E1F4F8701431E9D40032D2A0 /* ServerObject.h */,
 				E1F4F8711431E9D40032D2A0 /* ServerObject.m */,
-<<<<<<< HEAD
 				E12187F01434A67300F5156F /* ClientObject.h */,
 				E12187F11434A67300F5156F /* ClientObject.m */,
 				E1E64E1514355FDE00952186 /* PDFViewController.h */,
 				E1E64E1614355FDF00952186 /* PDFViewController.m */,
-=======
-				4AE45D6A1435B55900475052 /* PptFileSelectController.h */,
-				4AE45D6B1435B55A00475052 /* PptFileSelectController.m */,
-				4AE45D6D1435C24100475052 /* OptionMenuViewController.h */,
-				4AE45D6E1435C24100475052 /* OptionMenuViewController.m */,
->>>>>>> 4b711b5cfc0745f374cdf051d6772ca0edbb21a4
+				E169425C143C874C002B5029 /* PptFileSelectController.h */,
+				E169425D143C874C002B5029 /* PptFileSelectController.m */,
+				E1694259143C8739002B5029 /* OptionMenuViewController.h */,
+				E169425A143C8739002B5029 /* OptionMenuViewController.m */,
 			);
 			path = IdeaTable;
 			sourceTree = "<group>";
@@ -227,6 +217,7 @@
 		E1F4F8321431A5410032D2A0 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastUpgradeCheck = 0420;
 				ORGANIZATIONNAME = O.o.Z;
 			};
 			buildConfigurationList = E1F4F8351431A5410032D2A0 /* Build configuration list for PBXProject "IdeaTable" */;
@@ -256,7 +247,6 @@
 				E1F4F8591431A5410032D2A0 /* IdeaTableViewController.xib in Resources */,
 				E1F4F8621431A5700032D2A0 /* MainWindow-iPad.xib in Resources */,
 				E1E64DFF1434C76000952186 /* JoinViewController.xib in Resources */,
-				E1E64E35143563A600952186 /* FastPdfKitFramework.xcconfig in Resources */,
 				E1E64E36143563A600952186 /* FPKReaderBundle.bundle in Resources */,
 				E1E64E37143563A600952186 /* Snippets.txt in Resources */,
 				E1E64E391435672E00952186 /* Manual.pdf in Resources */,
@@ -277,14 +267,11 @@
 				E1F4F8681431BCE40032D2A0 /* WaitingRoomViewController.m in Sources */,
 				E1F4F86F1431D8770032D2A0 /* UserInfo.m in Sources */,
 				E1F4F8721431E9D40032D2A0 /* ServerObject.m in Sources */,
-<<<<<<< HEAD
 				E12187F21434A67300F5156F /* ClientObject.m in Sources */,
 				E1E64DFE1434C76000952186 /* JoinViewController.m in Sources */,
 				E1E64E1714355FDF00952186 /* PDFViewController.m in Sources */,
-=======
-				4AE45D6C1435B55A00475052 /* PptFileSelectController.m in Sources */,
-				4AE45D6F1435C24200475052 /* OptionMenuViewController.m in Sources */,
->>>>>>> 4b711b5cfc0745f374cdf051d6772ca0edbb21a4
+				E169425B143C8739002B5029 /* OptionMenuViewController.m in Sources */,
+				E169425E143C874C002B5029 /* PptFileSelectController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -346,7 +333,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
-				SDKROOT = iphoneos4.3;
+				SDKROOT = iphoneos;
 				VALID_ARCHS = "armv7 armv6";
 			};
 			name = Debug;
@@ -365,7 +352,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				SDKROOT = iphoneos4.3;
+				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 				VALID_ARCHS = "armv7 armv6";
 			};
@@ -384,6 +371,7 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "IdeaTable/IdeaTable-Prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "IdeaTable/IdeaTable-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -406,6 +394,7 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "IdeaTable/IdeaTable-Prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "IdeaTable/IdeaTable-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				PRODUCT_NAME = "$(TARGET_NAME)";

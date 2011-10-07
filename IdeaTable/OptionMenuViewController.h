@@ -11,8 +11,6 @@
 @interface OptionMenuViewController : UITableViewController <UITextFieldDelegate>
 {
     UITextField *nameTextField;
-    NSString    *name;
-    NSString    *version;
     
     
 }
