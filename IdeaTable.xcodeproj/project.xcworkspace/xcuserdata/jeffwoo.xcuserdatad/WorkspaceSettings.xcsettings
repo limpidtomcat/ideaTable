@@ -5,6 +5,6 @@
 	<key>IDEWorkspaceUserSettings_HasAskedToTakeAutomaticSnapshotBeforeSignificantChanges</key>
 	<true/>
 	<key>IDEWorkspaceUserSettings_SnapshotAutomaticallyBeforeSignificantChanges</key>
-	<true/>
+	<false/>
 </dict>
 </plist>
