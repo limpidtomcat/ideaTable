@@ -10,6 +10,8 @@
 		E12187F21434A67300F5156F /* ClientObject.m in Sources */ = {isa = PBXBuildFile; fileRef = E12187F11434A67300F5156F /* ClientObject.m */; };
 		E169425B143C8739002B5029 /* OptionMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E169425A143C8739002B5029 /* OptionMenuViewController.m */; };
 		E169425E143C874C002B5029 /* PptFileSelectController.m in Sources */ = {isa = PBXBuildFile; fileRef = E169425D143C874C002B5029 /* PptFileSelectController.m */; };
+		E1694289144190F4002B5029 /* ClearTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E1694288144190F3002B5029 /* ClearTableViewController.m */; };
+		E169429A1442AAEE002B5029 /* TableInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = E16942991442AAED002B5029 /* TableInfo.m */; };
 		E1E64DFE1434C76000952186 /* JoinViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E1E64DFC1434C76000952186 /* JoinViewController.m */; };
 		E1E64DFF1434C76000952186 /* JoinViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E1E64DFD1434C76000952186 /* JoinViewController.xib */; };
 		E1E64E1714355FDF00952186 /* PDFViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E1E64E1614355FDF00952186 /* PDFViewController.m */; };
@@ -40,6 +42,10 @@
 		E169425A143C8739002B5029 /* OptionMenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OptionMenuViewController.m; sourceTree = "<group>"; };
 		E169425C143C874C002B5029 /* PptFileSelectController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PptFileSelectController.h; sourceTree = "<group>"; };
 		E169425D143C874C002B5029 /* PptFileSelectController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PptFileSelectController.m; sourceTree = "<group>"; };
+		E1694287144190F3002B5029 /* ClearTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClearTableViewController.h; sourceTree = "<group>"; };
+		E1694288144190F3002B5029 /* ClearTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClearTableViewController.m; sourceTree = "<group>"; };
+		E16942981442AAED002B5029 /* TableInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TableInfo.h; sourceTree = "<group>"; };
+		E16942991442AAED002B5029 /* TableInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TableInfo.m; sourceTree = "<group>"; };
 		E1E64DFB1434C76000952186 /* JoinViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JoinViewController.h; path = ../JoinViewController.h; sourceTree = "<group>"; };
 		E1E64DFC1434C76000952186 /* JoinViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JoinViewController.m; path = ../JoinViewController.m; sourceTree = "<group>"; };
 		E1E64DFD1434C76000952186 /* JoinViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = JoinViewController.xib; path = ../JoinViewController.xib; sourceTree = "<group>"; };
@@ -90,6 +96,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E16942971442AA45002B5029 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				E1F4F8701431E9D40032D2A0 /* ServerObject.h */,
+				E1F4F8711431E9D40032D2A0 /* ServerObject.m */,
+				E12187F01434A67300F5156F /* ClientObject.h */,
+				E12187F11434A67300F5156F /* ClientObject.m */,
+			);
+			name = Network;
+			sourceTree = "<group>";
+		};
 		E1E64E2E143563A600952186 /* FastPdfKit.embeddedframework */ = {
 			isa = PBXGroup;
 			children = (
@@ -140,6 +157,7 @@
 		E1F4F8451431A5410032D2A0 /* IdeaTable */ = {
 			isa = PBXGroup;
 			children = (
+				E16942971442AA45002B5029 /* Network */,
 				E1F4F85F1431A56F0032D2A0 /* iPad */,
 				E1F4F84E1431A5410032D2A0 /* IdeaTableAppDelegate.h */,
 				E1F4F84F1431A5410032D2A0 /* IdeaTableAppDelegate.m */,
@@ -157,16 +175,16 @@
 				E1E64DFD1434C76000952186 /* JoinViewController.xib */,
 				E1F4F86D1431D8770032D2A0 /* UserInfo.h */,
 				E1F4F86E1431D8770032D2A0 /* UserInfo.m */,
-				E1F4F8701431E9D40032D2A0 /* ServerObject.h */,
-				E1F4F8711431E9D40032D2A0 /* ServerObject.m */,
-				E12187F01434A67300F5156F /* ClientObject.h */,
-				E12187F11434A67300F5156F /* ClientObject.m */,
 				E1E64E1514355FDE00952186 /* PDFViewController.h */,
 				E1E64E1614355FDF00952186 /* PDFViewController.m */,
 				E169425C143C874C002B5029 /* PptFileSelectController.h */,
 				E169425D143C874C002B5029 /* PptFileSelectController.m */,
 				E1694259143C8739002B5029 /* OptionMenuViewController.h */,
 				E169425A143C8739002B5029 /* OptionMenuViewController.m */,
+				E1694287144190F3002B5029 /* ClearTableViewController.h */,
+				E1694288144190F3002B5029 /* ClearTableViewController.m */,
+				E16942981442AAED002B5029 /* TableInfo.h */,
+				E16942991442AAED002B5029 /* TableInfo.m */,
 			);
 			path = IdeaTable;
 			sourceTree = "<group>";
@@ -272,6 +290,8 @@
 				E1E64E1714355FDF00952186 /* PDFViewController.m in Sources */,
 				E169425B143C8739002B5029 /* OptionMenuViewController.m in Sources */,
 				E169425E143C874C002B5029 /* PptFileSelectController.m in Sources */,
+				E1694289144190F4002B5029 /* ClearTableViewController.m in Sources */,
+				E169429A1442AAEE002B5029 /* TableInfo.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

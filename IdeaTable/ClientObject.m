@@ -13,7 +13,7 @@
 @implementation ClientObject
 @synthesize waitingRoomDelegate;
 @synthesize pdfViewDelegate;
-
+@synthesize tableInfo;
 
 static void CFSockCallBack(
 					CFSocketRef s,
@@ -23,40 +23,12 @@ static void CFSockCallBack(
 					void *info
 					);
 
-- (id)initWithSockaddr:(struct sockaddr_in)theName{
-    self = [super init];
-    if (self) {
-		
-		// 소켓 생성
-		
-		CFSocketContext socketCtxt = {0, self, NULL, NULL, NULL};	
-		serverSocket = CFSocketCreate(kCFAllocatorDefault,
-									  PF_INET,
-									  SOCK_STREAM,
-									  0,	
-									  kCFSocketReadCallBack|kCFSocketConnectCallBack|kCFSocketWriteCallBack,
-									  (CFSocketCallBack)&CFSockCallBack,
-									  &socketCtxt);
-		
-		
-		CFDataRef addressData = CFDataCreate( NULL, &theName, sizeof( struct sockaddr_in ) );
-		
-		// 연결 시도 (timeout에 -값을 주면 백그라운드 시도)fsocketconnec
-		CFSocketConnectToAddress(serverSocket, addressData, -1);
-		
-		// 콜백함수로 들어오도록 runloop에 등록
-		FrameRunLoopSource = CFSocketCreateRunLoopSource(NULL, serverSocket, 0);
-		CFRunLoopAddSource(CFRunLoopGetCurrent(), FrameRunLoopSource, kCFRunLoopCommonModes); 
-		
-	}
-    
-    return self;
-}
-
-- (id)initWithAddress:(NSString *)address port:(NSUInteger)port
+- (id)initWithAddress:(NSString *)address port:(NSUInteger)port tableInfo:(TableInfo *)_tableInfo
 {
     self = [super init];
     if (self) {
+		
+		tableInfo=[_tableInfo retain];
 
 		// 소켓 생성
 		
@@ -78,7 +50,7 @@ static void CFSockCallBack(
 		theName.sin_port = htons(port);
 		theName.sin_family = AF_INET;
 		
-		CFDataRef addressData = CFDataCreate( NULL, &theName, sizeof( struct sockaddr_in ) );
+		CFDataRef addressData = CFDataCreate( NULL, (const UInt8 *)&theName, sizeof( struct sockaddr_in ) );
 		
 		// 연결 시도 (timeout에 -값을 주면 백그라운드 시도)
 		CFSocketConnectToAddress(serverSocket, addressData, -1);
@@ -90,6 +62,11 @@ static void CFSockCallBack(
 	}
     
     return self;
+}
+
+-(void)dealloc{
+	[tableInfo release];
+	[super dealloc];
 }
 
 
@@ -159,7 +136,9 @@ static void CFSockCallBack(
 		memcpy(titleBuffer, buf+index, titleLength);
 		titleBuffer[titleLength]='\0';
 		NSLog(@"%s",titleBuffer);
-		[waitingRoomDelegate setTableTitle:[NSString stringWithCString:titleBuffer encoding:NSUTF8StringEncoding]];
+		tableInfo.title=[NSString stringWithCString:titleBuffer encoding:NSUTF8StringEncoding];
+		[waitingRoomDelegate reloadTitle];
+//		[waitingRoomDelegate setTableTitle:[NSString stringWithCString:titleBuffer encoding:NSUTF8StringEncoding]];
 		free(titleBuffer);
 		index+=titleLength;
 		
@@ -211,7 +190,8 @@ static void CFSockCallBack(
 				[fileData appendBytes:&fileBuf length:cnt];
 			}
 			
-			NSString *documentPath=[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+			NSString *tmpPath=NSTemporaryDirectory();
+//			NSString *documentPath=[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
 			
 			NSLog(@"DOWNLOAD COMPLETE - %d bytes",fileData.length);
 
@@ -219,8 +199,14 @@ static void CFSockCallBack(
 			NSString *timeString=[NSString stringWithFormat:@"%d.pdf",timeInterval];
 
 			
-			NSString *file=[documentPath stringByAppendingPathComponent:timeString];
+			NSString *file=[tmpPath stringByAppendingPathComponent:timeString];
+			NSLog(@"file path - %@",file);
 			[fileData writeToFile:file atomically:YES];
+			NSURL *url=[NSURL fileURLWithPath:file];
+
+//			[waitingRoomDelegate setPptFileURL:url];
+			[tableInfo setPptFile:url];
+			
 			[fileData release];
 		}
 

@@ -157,7 +157,7 @@
 	else if([indexPath section]==2){
 		cell.textLabel.text=@"버전정보";
         cell.detailTextLabel.text = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey];
-		cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
+//		cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
 	}
 	else if([indexPath section]==3){
 		cell.textLabel.text=@"dropbox 연결";

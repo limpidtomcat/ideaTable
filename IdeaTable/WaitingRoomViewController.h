@@ -10,8 +10,12 @@
 #import "ServerObject.h"
 #import "ClientObject.h"
 #import "UserInfo.h"
+#import "TableInfo.h"
+
 @interface WaitingRoomViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
 {
+	TableInfo *tableInfo;
+	
 	BOOL isMaster;
 	
 	UITableView *userTable;
@@ -20,16 +24,15 @@
 	ServerObject *serverObject;
 	ClientObject *clientObject;
 	
-	NSURL *pptFileURL;
-	NSString *tableTitle;
-	
 	NSUInteger port;
 }
 
+@property (nonatomic, retain) TableInfo *tableInfo;
 @property (nonatomic, retain) ServerObject *serverObject;
-@property (nonatomic ,retain) NSURL *pptFileURL;
+
 
 -(id)initWithClientObject:(ClientObject *)_clientObject port:(NSUInteger)_port isMaster:(BOOL)_master;
 -(void)newUserCome:(UserInfo *)userInfo;
 -(void)startTable:(id)sender;
+-(void)reloadTitle;
 @end

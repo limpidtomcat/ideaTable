@@ -10,15 +10,16 @@
 
 #import "PDFViewController.h"
 
+#import "ClearTableViewController.h"
 
 @implementation WaitingRoomViewController
 @synthesize  serverObject;
-@synthesize  pptFileURL;
+
+@synthesize  tableInfo;
 
 -(id)initWithClientObject:(ClientObject *)_clientObject port:(NSUInteger)_port isMaster:(BOOL)_master{
 	self = [super init];
 	if(self){
-		tableTitle=nil;
 		isMaster=_master;
 		port=_port;
 		clientObject=[_clientObject retain];
@@ -157,7 +158,6 @@
 }
 
 -(void)dealloc{
-	[tableTitle release];
 	[userList release];
 	[userTable release];
 	[serverObject release];
@@ -277,22 +277,22 @@
 //    NSURL *documentUrl = [NSURL fileURLWithPath:[[NSBundle mainBundle]pathForResource:documentName ofType:@"pdf"]];
     
     /** Instancing the documentManager */
-	MFDocumentManager *documentManager = [[MFDocumentManager alloc]initWithFileUrl:pptFileURL];
+	MFDocumentManager *documentManager = [[MFDocumentManager alloc]initWithFileUrl:tableInfo.pptFile];
 	
 	/** Instancing the readerViewController */
 	PDFViewController *pdfViewController = [[PDFViewController alloc]initWithDocumentManager:documentManager];
-    
+//	[pdfViewController setOverlayEnabled:NO];
+    [pdfViewController setWaitingViewDelegate:self];
+	[pdfViewController setDocumentDelegate:pdfViewController];
     /** Set resources folder on the manager */
     documentManager.resourceFolder = thumbnailsPath;
 	
     /** Set document id for thumbnail generation */
-    pdfViewController.documentId = documentName;
+//    pdfViewController.documentId = documentName;
     
 	/** Present the pdf on screen in a modal view */
     [self presentModalViewController:pdfViewController animated:YES]; 
     
-	/** Release the pdf controller*/
-    [pdfViewController release];
 	NSLog(@"pdf start");
 	[clientObject setPdfViewDelegate:pdfViewController];
 	[pdfViewController setClientObject:clientObject];
@@ -302,12 +302,24 @@
 		[clientObject sendPresentationStartMessage];
 		
 	}
+	/** Release the pdf controller*/
+    [pdfViewController release];
 
 }
 
--(void)setTableTitle:(NSString *)title{
-	[tableTitle release];
-	tableTitle=[title retain];	
-	[self setTitle:title];
+-(void)endTable:(PDFViewController *)pdfViewController{
+	ClearTableViewController *viewController=[[ClearTableViewController alloc] initWithStyle:UITableViewStyleGrouped];
+	[viewController setTableInfo:tableInfo];
+	[self.navigationController pushViewController:viewController animated:NO];
+
+	[pdfViewController dismissModalViewControllerAnimated:YES];
+	[pdfViewController cleanUp];
+	[viewController release];
+//	[];
 }
+
+-(void)reloadTitle{
+	self.title=tableInfo.title;
+}
+
 @end

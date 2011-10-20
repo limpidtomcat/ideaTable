@@ -11,21 +11,24 @@
 #import <sys/socket.h>
 #import <netinet/in.h>
 #import <netdb.h>
+#import "TableInfo.h"
 
 @protocol WaitingRoomDelegate;
 @protocol PDFViewDelegate;
 
 @interface ClientObject : NSObject
 {
+	TableInfo *tableInfo;
 	CFSocketRef serverSocket;
 	CFRunLoopSourceRef FrameRunLoopSource;
 	id<WaitingRoomDelegate> waitingRoomDelegate;
 	id<PDFViewDelegate> pdfViewDelegate;
 }
 
+@property (nonatomic, retain) TableInfo *tableInfo;
 @property (nonatomic, assign) id<WaitingRoomDelegate> waitingRoomDelegate;
 @property (nonatomic, assign) id<PDFViewDelegate> pdfViewDelegate;
-- (id)initWithAddress:(NSString *)address port:(NSUInteger)port;
+- (id)initWithAddress:(NSString *)address port:(NSUInteger)port tableInfo:(TableInfo *)_tableInfo;
 
 -(void)sendPresentationStartMessage;
 //-(void)sendPageMoveMessageFrom:(NSUInteger)fromPage to:(NSUInteger)toPage;

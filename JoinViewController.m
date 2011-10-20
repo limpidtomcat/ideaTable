@@ -57,13 +57,13 @@
 	[self.navigationItem setRightBarButtonItem:doneBtn];
 	[doneBtn release];
 	
-	NSNetServiceBrowser *browser=[[NSNetServiceBrowser alloc] init];
-	[browser setDelegate:self];
-	[browser searchForServicesOfType:@"_idea._tcp." inDomain:@"local."];
-//	[browser searchForServicesOfType:<#(NSString *)#> inDomain:<#(NSString *)#>
-
-	NSLog(@"let's search");
-//	[browser	 release];
+//	NSNetServiceBrowser *browser=[[NSNetServiceBrowser alloc] init];
+//	[browser setDelegate:self];
+//	[browser searchForServicesOfType:@"_idea._tcp." inDomain:@"local."];
+////	[browser searchForServicesOfType:<#(NSString *)#> inDomain:<#(NSString *)#>
+//
+//	NSLog(@"let's search");
+////	[browser	 release];
 
 }
 
@@ -141,9 +141,13 @@
 
 -(void)onJoinBtn{
 	NSLog(@"join");
-	ClientObject *clientObject=[[ClientObject alloc] initWithAddress:[ipField text] port:[[portField text] intValue]];
+	TableInfo *tableInfo=[[TableInfo alloc] init];
+	
+	ClientObject *clientObject=[[ClientObject alloc] initWithAddress:[ipField text] port:[[portField text] intValue] tableInfo:tableInfo];
 	WaitingRoomViewController *viewController=[[WaitingRoomViewController alloc] initWithClientObject:clientObject port:0 isMaster:NO];
+	[viewController setTableInfo:tableInfo];
 	[self.navigationController pushViewController:viewController animated:YES];
+	[tableInfo release];
 	[viewController release];
 	[clientObject release];
 

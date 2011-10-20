@@ -11,14 +11,19 @@
 @implementation PDFViewController
 @synthesize isMaster;
 @synthesize  clientObject;
+@synthesize waitingViewDelegate;
+
 -(id)initWithClientObject:(ClientObject *)_clientObject{
 	self=[super init];
 	if(self	){
 		clientObject=[_clientObject retain];
+		self.documentDelegate=self;
+		
 	}
 	return self;
 }
 -(void)dealloc{
+	[closeBtn release];
 	[clientObject release];
 	[super dealloc];
 }
@@ -41,16 +46,26 @@
 }
 */
 
-/*
-// Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+	closeBtn=[[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
+	[closeBtn setTitle:@"Close" forState:UIControlStateNormal];
+	[closeBtn setFrame:CGRectMake(0, 0, 50, 50)];
+	[closeBtn addTarget:self action:@selector(closeTable) forControlEvents:UIControlEventTouchUpInside];
+	[self.view addSubview:closeBtn];
+	[self.view bringSubviewToFront:closeBtn];
+	
 }
-*/
+
+-(void)closeTable{
+	[waitingViewDelegate endTable:self];
+}
 
 - (void)viewDidUnload
 {
+	[closeBtn release];
+	closeBtn=nil;
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -76,4 +91,11 @@
 	
 }
 
+//- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
+//	[super scrollViewDidScroll:scrollView];
+//	
+//	NSLog(@"scrollview dudscroll %@",NSStringFromCGPoint(scrollView.contentOffset));1
+////	if(isMaster)[clientObject sendMessagePageScrollWidth:(CGFloat)scrollView.contentOffset.x];
+//}
+//
 @end

@@ -1,31 +1,33 @@
 //
-//  PptFileSelectController.m
+//  ClearTableViewController.m
 //  IdeaTable
 //
-//  Created by DongNyeok Jeong on 9/30/11.
-//  Copyright 2011 O.o.Z. All rights reserved.
+//  Created by Woo Jeff on 11. 10. 9..
+//  Copyright (c) 2011년 O.o.Z. All rights reserved.
 //
 
-#import "PptFileSelectController.h"
+#import "ClearTableViewController.h"
 
 
-@implementation PptFileSelectController
-@synthesize delegate;
+@implementation ClearTableViewController
+@synthesize tableInfo;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
     self = [super initWithStyle:style];
     if (self) {
-		
-		NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-		NSString *path = [paths objectAtIndex:0];
-		
-		NSArray *fileArr=[[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error:nil];
-		
+		[self.navigationItem setHidesBackButton:YES];
+		UIBarButtonItem *doneBtn=[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(done)];
+		[self.navigationItem setRightBarButtonItem:doneBtn];
+		[self setTitle:@"테이블 정리"];
+		[doneBtn release];
         // Custom initialization
-        pptFileList=[[NSMutableArray alloc] initWithArray:fileArr];
     }
     return self;
+}
+
+-(void)done{
+	[self.navigationController dismissModalViewControllerAnimated:YES];
 }
 
 - (void)didReceiveMemoryWarning
@@ -41,14 +43,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    [self setTitle:@"ppt Files List"];
-    
-    pptFileTable = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
-    pptFileTable.delegate = self;
-    pptFileTable.dataSource = self;
-    [self.view addSubview:pptFileTable];
-    
 
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -60,19 +54,8 @@
 - (void)viewDidUnload
 {
     [super viewDidUnload];
-    
-    [pptFileTable release];
-    pptFileTable = nil;
-    
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
-}
-- (void)dealloc
-{  
-    [pptFileTable release];
-    [pptFileList release];
-    [super dealloc];
-    
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -85,27 +68,29 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    // Return the number of sections.
     return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    // Return the number of rows in the section.
-    return [pptFileList count];
+    return 3;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"pptFileSelectTableCell";
+    static NSString *CellIdentifier = @"Cell";
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
     }
+	
+	if(indexPath.row==0)cell.textLabel.text=@"PDF 저장";
+	else if(indexPath.row==1)cell.textLabel.text=@"메모 저장";
+	else if(indexPath.row==2)cell.textLabel.text=@"녹음 내용 저장";
     
     // Configure the cell...
-    cell.textLabel.text=[pptFileList objectAtIndex:indexPath.row];
+    
     return cell;
 }
 
@@ -153,12 +138,45 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
-	NSString *selectedFile=[pptFileList objectAtIndex:indexPath.row];
-	[delegate setPptFile:selectedFile];
-	[self.navigationController popViewControllerAnimated:YES];
-//	UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"file" message:selectedFile delegate:nil cancelButtonTitle:@"okay" otherButtonTitles:nil];
-//	[alert	 show];
-//	[alert release];
+
+	if(indexPath.row==0){
+		
+		NSLog(@"주소 - %@",[tableInfo.pptFile absoluteString]);
+		
+		NSString *docPath=[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+
+		NSString *newFilePath=[docPath stringByAppendingPathComponent:tableInfo.title];
+//		[docPath stringByAppendingPathExtension:<#(NSString *)#>
+		
+		NSLog(@"new file path - %@",newFilePath);
+		
+		NSFileManager *fm=[NSFileManager defaultManager];
+		if([fm fileExistsAtPath:[newFilePath stringByAppendingPathExtension:@"pdf"]]){
+			NSUInteger index=1;
+			while([fm fileExistsAtPath:[newFilePath stringByAppendingFormat:@"_%d.pdf",index]]){
+				index++;
+			}
+			newFilePath=[newFilePath stringByAppendingFormat:@"_%d",index];
+		}
+		newFilePath=[newFilePath stringByAppendingPathExtension:@"pdf"];
+		NSLog(@"new file path - %@",newFilePath);
+		NSError *fileMoveError=nil;
+		
+		[[NSFileManager defaultManager] moveItemAtURL:tableInfo.pptFile toURL:[NSURL fileURLWithPath:newFilePath] error:&fileMoveError];
+//		[[NSFileManager defaultManager] moveItemAtPath:[tableInfo.pptFile absoluteString] toPath:newFilePath error:&fileMoveError];
+		if(fileMoveError){
+			NSLog(@"%@",fileMoveError);
+			UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"Idea Table" message:@"파일 복사 실패" delegate:nil cancelButtonTitle:@"Okay" otherButtonTitles:nil];
+			[alert show];
+			[alert release];
+		}else{
+			UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"Idea Table" message:@"파일이 저장되었습니다" delegate:nil cancelButtonTitle:@"Okay" otherButtonTitles:nil];
+			[alert show];
+			[alert release];
+		}
+//		[fileMoveError release];
+		
+	}
 }
 
 @end

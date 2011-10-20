@@ -20,6 +20,8 @@
 #include <net/if.h>
 #include <net/if_dl.h>
 
+#import "TableInfo.h"
+
 typedef struct {
 	CFSocketRef socketRef;
 	CFRunLoopSourceRef runLoopSourceRef;
@@ -30,18 +32,22 @@ typedef struct {
 
 @interface ServerObject : NSObject
 {
-	NSString *tableTitle;
-	NSURL *pptFile;
+	TableInfo *tableInfo;
+	
+//	NSString *tableTitle;
+//	NSURL *pptFile;
 	NSNetService *netService;
 	
 	NSUInteger port;
-	NSUInteger maxUserCount;
+//	NSUInteger maxUserCount;
 	CFSocketRef listeningSocket;
 	CFRunLoopSourceRef listeningRunLoopSourceRef;
 	
 	NSMutableArray *connectedClients;
 	NSMutableSet *availableColors;
 	Byte maxUserId;
+	
+	NSTimer	 *quitTimer;
 	
 }
 
@@ -53,7 +59,8 @@ typedef struct {
 + (NSString *)localIPAddress;
 -(NSUInteger)initServerSocket;
 -(void)closeServer;
-- (id)initWithTableTitle:(NSString *)title maxUserCount:(NSUInteger)count;
+//- (id)initWithTableTitle:(NSString *)title maxUserCount:(NSUInteger)count;
+- (id)initWithTableInfo:(TableInfo *)tableInfo;
 
 
 @end

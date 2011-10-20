@@ -11,19 +11,26 @@
 
 @implementation ServerObject
 @synthesize port;
-@synthesize maxUserCount;
+
 @synthesize connectedClients;
 @synthesize pptFile;
 
-- (id)initWithTableTitle:(NSString *)title maxUserCount:(NSUInteger)count
-{
-    self = [super init];
-    if (self) {
-		tableTitle=[title retain];
-		maxUserId=0;
-		maxUserCount=count;
-		port=[self initServerSocket];
 
+-(NSUInteger)maxUserCount{
+	return tableInfo.maxUser;
+}
+- (id)initWithTableInfo:(TableInfo *)_tableInfo{
+	self =[super init];
+	if(self){
+		tableInfo=[_tableInfo retain];
+		maxUserId=0;
+		port=[self initServerSocket];
+		if(tableInfo.quitTime>0){
+			NSLog(@"timer set - %d",tableInfo.quitTime);
+			quitTimer=[[NSTimer scheduledTimerWithTimeInterval:tableInfo.quitTime target:self selector:@selector(tableTimeOut:) userInfo:nil repeats:NO] retain];
+			
+		}
+		
 		connectedClients=[[NSMutableArray alloc] init];
 		availableColors=[[NSMutableSet alloc] initWithObjects:
 						 [UIColor blackColor],
@@ -36,11 +43,10 @@
 						 [UIColor magentaColor],
 						 [UIColor orangeColor],
 						 nil];
-
-    }
-    
-    return self;
+	}
+	return self;
 }
+
 
 -(void)dealloc{
 	[availableColors release];
@@ -195,12 +201,12 @@
 		NSLog(@"보내는 사이즈 %d",dataLength);
 
 		// title length
-		Byte titleLength=tableTitle.length;
+		Byte titleLength=tableInfo.title.length;
 		sendBuf[index++]=titleLength;
 		NSLog(@"보내는 길이 %d",titleLength);
 		
 		// title string
-		const char *title=[tableTitle cStringUsingEncoding:NSUTF8StringEncoding];
+		const char *title=[tableInfo.title cStringUsingEncoding:NSUTF8StringEncoding];
 		NSLog(@"sending title  %s",title);
 		memcpy(sendBuf+index, title, strlen(title));
 		index+=strlen(title);
@@ -240,6 +246,9 @@
 		
 	}
 	else if(firstByte==2){	// Presentation Started
+		// fire
+		NSLog(@"timer firing");
+		[quitTimer fire];
 		[self sendData:buf exceptClient:s];
 	}
 	else if(firstByte==3){	// Page Moved
@@ -307,7 +316,6 @@ static void CFListeningSockCallBack (
 	
 	if(callbackType == kCFSocketAcceptCallBack ){
         NSLog(@"accepted");
-
 
 		if([[serverObject connectedClients] count]>=serverObject.maxUserCount){//접속 거부
 			CFSocketNativeHandle fd = *(CFSocketNativeHandle*)data;
@@ -398,7 +406,7 @@ static void CFListeningSockCallBack (
 	CFRelease(dataRef);
 	
 	
-	netService=[[NSNetService alloc] initWithDomain:@"local." type:@"_idea._tcp." name:tableTitle port:p];
+	netService=[[NSNetService alloc] initWithDomain:@"local." type:@"_idea._tcp." name:tableInfo.title port:p];
 	[netService publish];
 //	[netService release];
 	
@@ -441,6 +449,10 @@ static void CFListeningSockCallBack (
 	}
 	return address;	
 	
+}
+
+-(void)tableTimeOut:(NSTimer *)timer{
+	NSLog(@"table time out");
 }
 
 @end

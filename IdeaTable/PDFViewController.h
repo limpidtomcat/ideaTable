@@ -10,11 +10,15 @@
 
 #import	"FastPdfKit/FastPdfKit.h"
 #import "ClientObject.h"
-@interface PDFViewController : ReaderViewController
+@interface PDFViewController : MFDocumentViewController<MFDocumentOverlayDataSource, MFDocumentViewControllerDelegate>
 {
 	BOOL isMaster;
 	ClientObject *clientObject;
+	UIButton *closeBtn;
+	
+	id waitingViewDelegate;
 }
 @property (nonatomic, assign) BOOL isMaster;
 @property (nonatomic, retain) ClientObject *clientObject;
+@property (nonatomic ,assign) id waitingViewDelegate;
 @end
