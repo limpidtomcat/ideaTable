@@ -10,11 +10,16 @@
 
 #import	"FastPdfKit/FastPdfKit.h"
 #import "ClientObject.h"
+#import "PaintingView.h"
+
 @interface PDFViewController : MFDocumentViewController<MFDocumentOverlayDataSource, MFDocumentViewControllerDelegate>
 {
 	BOOL isMaster;
+	BOOL isDrawing;
 	ClientObject *clientObject;
 	UIButton *closeBtn;
+	UIButton *drawBtn;
+	PaintingView *paintView;
 	
 	id waitingViewDelegate;
 }

@@ -7,23 +7,39 @@
 //
 
 #import "PDFViewController.h"
+#import "FastPdfKit/MFDocumentViewController.h"
 
 @implementation PDFViewController
 @synthesize isMaster;
 @synthesize  clientObject;
 @synthesize waitingViewDelegate;
 
+-(void)setScrollLock:(BOOL)isLocked{
+	UIScrollView *pageView=nil;
+	
+	for(UIView *view in self.view.subviews){
+		if([view isKindOfClass:[UIScrollView class]])
+			pageView=(UIScrollView *)view;
+	}
+
+	if(pageView){
+		[pageView setScrollEnabled:!isLocked];
+	}
+
+}
+
 -(id)initWithClientObject:(ClientObject *)_clientObject{
 	self=[super init];
 	if(self	){
 		clientObject=[_clientObject retain];
 		self.documentDelegate=self;
-		
 	}
 	return self;
 }
 -(void)dealloc{
 	[closeBtn release];
+	[drawBtn release];
+	[paintView release];
 	[clientObject release];
 	[super dealloc];
 }
@@ -53,9 +69,48 @@
 	[closeBtn setTitle:@"Close" forState:UIControlStateNormal];
 	[closeBtn setFrame:CGRectMake(0, 0, 50, 50)];
 	[closeBtn addTarget:self action:@selector(closeTable) forControlEvents:UIControlEventTouchUpInside];
+	
+	drawBtn=[[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
+	[drawBtn setTitle:@"Draw" forState:UIControlStateNormal];
+	[drawBtn setTitle:@"Over" forState:UIControlStateSelected];
+	[drawBtn setFrame:CGRectMake(320-50, 0, 50, 50)];
+	[drawBtn addTarget:self action:@selector(toggleDraw) forControlEvents:UIControlEventTouchUpInside];
+
+	paintView=[[PaintingView alloc] initWithFrame:CGRectMake(0, 0, 320, 460) photoSize:CGSizeMake(1000, 1000) delegate:self drawQueue:nil];
+//	[paintView setBackgroundColor:[UIColor redColor]];
+	[paintView resetData];
+	[paintView erase];
+	[paintView setBrushColorWithRed:0 green:0 blue:0];
+	[paintView setBrushAlpha:1.0f];
+	[paintView setBrushScale:5.0f];
+	[paintView setUserInteractionEnabled:NO];
+
+	[self.view addSubview:paintView];
+	[self.view bringSubviewToFront:paintView];
+
 	[self.view addSubview:closeBtn];
 	[self.view bringSubviewToFront:closeBtn];
+	[self.view addSubview:drawBtn];
+	[self.view bringSubviewToFront:drawBtn];
 	
+}
+
+-(void)toggleDraw{
+	isDrawing=!isDrawing;
+	[drawBtn setSelected:isDrawing];
+
+	
+//	NSStringFromCGRect(<#CGRect rect#>)
+//	NSLog(@"페이지 크기 - %@",nsstring)
+	
+	[self setScrollLock:isDrawing];
+	
+	if(isDrawing){
+		[paintView setUserInteractionEnabled:YES];
+		[paintView startDrawing];
+		
+	}
+
 }
 
 -(void)closeTable{
@@ -64,8 +119,12 @@
 
 - (void)viewDidUnload
 {
+	[paintView release];
+	paintView=nil;
 	[closeBtn release];
 	closeBtn=nil;
+	[drawBtn release];
+	drawBtn=nil;
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;

@@ -8,16 +8,21 @@
 
 /* Begin PBXBuildFile section */
 		E12187F21434A67300F5156F /* ClientObject.m in Sources */ = {isa = PBXBuildFile; fileRef = E12187F11434A67300F5156F /* ClientObject.m */; };
+		E15150F114502C3600B36295 /* PaintingView.m in Sources */ = {isa = PBXBuildFile; fileRef = E15150F014502C3600B36295 /* PaintingView.m */; };
+		E15150F414502DFA00B36295 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E15150F314502DFA00B36295 /* QuartzCore.framework */; };
+		E15150F614502E1C00B36295 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E15150F514502E1C00B36295 /* OpenGLES.framework */; };
+		E15150FC14505AF100B36295 /* Particle.png in Resources */ = {isa = PBXBuildFile; fileRef = E15150FB14505AF100B36295 /* Particle.png */; };
 		E169425B143C8739002B5029 /* OptionMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E169425A143C8739002B5029 /* OptionMenuViewController.m */; };
 		E169425E143C874C002B5029 /* PptFileSelectController.m in Sources */ = {isa = PBXBuildFile; fileRef = E169425D143C874C002B5029 /* PptFileSelectController.m */; };
 		E1694289144190F4002B5029 /* ClearTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E1694288144190F3002B5029 /* ClearTableViewController.m */; };
 		E169429A1442AAEE002B5029 /* TableInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = E16942991442AAED002B5029 /* TableInfo.m */; };
+		E1728D8C145025A000A6FD6C /* FastPdfKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1728D87145025A000A6FD6C /* FastPdfKit.framework */; };
+		E1728D8D145025A000A6FD6C /* FastPdfKitFramework.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = E1728D89145025A000A6FD6C /* FastPdfKitFramework.xcconfig */; };
+		E1728D8E145025A000A6FD6C /* FPKReaderBundle.bundle in Resources */ = {isa = PBXBuildFile; fileRef = E1728D8A145025A000A6FD6C /* FPKReaderBundle.bundle */; };
+		E1728D8F145025A000A6FD6C /* Snippets.txt in Resources */ = {isa = PBXBuildFile; fileRef = E1728D8B145025A000A6FD6C /* Snippets.txt */; };
 		E1E64DFE1434C76000952186 /* JoinViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E1E64DFC1434C76000952186 /* JoinViewController.m */; };
 		E1E64DFF1434C76000952186 /* JoinViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E1E64DFD1434C76000952186 /* JoinViewController.xib */; };
 		E1E64E1714355FDF00952186 /* PDFViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E1E64E1614355FDF00952186 /* PDFViewController.m */; };
-		E1E64E34143563A600952186 /* FastPdfKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1E64E2F143563A600952186 /* FastPdfKit.framework */; };
-		E1E64E36143563A600952186 /* FPKReaderBundle.bundle in Resources */ = {isa = PBXBuildFile; fileRef = E1E64E32143563A600952186 /* FPKReaderBundle.bundle */; };
-		E1E64E37143563A600952186 /* Snippets.txt in Resources */ = {isa = PBXBuildFile; fileRef = E1E64E33143563A600952186 /* Snippets.txt */; };
 		E1E64E391435672E00952186 /* Manual.pdf in Resources */ = {isa = PBXBuildFile; fileRef = E1E64E381435672E00952186 /* Manual.pdf */; };
 		E1F4F8401431A5410032D2A0 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1F4F83F1431A5410032D2A0 /* UIKit.framework */; };
 		E1F4F8421431A5410032D2A0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1F4F8411431A5410032D2A0 /* Foundation.framework */; };
@@ -38,6 +43,11 @@
 /* Begin PBXFileReference section */
 		E12187F01434A67300F5156F /* ClientObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClientObject.h; sourceTree = "<group>"; };
 		E12187F11434A67300F5156F /* ClientObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClientObject.m; sourceTree = "<group>"; };
+		E15150EF14502C3600B36295 /* PaintingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PaintingView.h; sourceTree = "<group>"; };
+		E15150F014502C3600B36295 /* PaintingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PaintingView.m; sourceTree = "<group>"; };
+		E15150F314502DFA00B36295 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		E15150F514502E1C00B36295 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		E15150FB14505AF100B36295 /* Particle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Particle.png; sourceTree = "<group>"; };
 		E1694259143C8739002B5029 /* OptionMenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OptionMenuViewController.h; sourceTree = "<group>"; };
 		E169425A143C8739002B5029 /* OptionMenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OptionMenuViewController.m; sourceTree = "<group>"; };
 		E169425C143C874C002B5029 /* PptFileSelectController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PptFileSelectController.h; sourceTree = "<group>"; };
@@ -46,15 +56,15 @@
 		E1694288144190F3002B5029 /* ClearTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClearTableViewController.m; sourceTree = "<group>"; };
 		E16942981442AAED002B5029 /* TableInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TableInfo.h; sourceTree = "<group>"; };
 		E16942991442AAED002B5029 /* TableInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TableInfo.m; sourceTree = "<group>"; };
+		E1728D87145025A000A6FD6C /* FastPdfKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FastPdfKit.framework; sourceTree = "<group>"; };
+		E1728D89145025A000A6FD6C /* FastPdfKitFramework.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = FastPdfKitFramework.xcconfig; sourceTree = "<group>"; };
+		E1728D8A145025A000A6FD6C /* FPKReaderBundle.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = FPKReaderBundle.bundle; sourceTree = "<group>"; };
+		E1728D8B145025A000A6FD6C /* Snippets.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Snippets.txt; sourceTree = "<group>"; };
 		E1E64DFB1434C76000952186 /* JoinViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JoinViewController.h; path = ../JoinViewController.h; sourceTree = "<group>"; };
 		E1E64DFC1434C76000952186 /* JoinViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JoinViewController.m; path = ../JoinViewController.m; sourceTree = "<group>"; };
 		E1E64DFD1434C76000952186 /* JoinViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = JoinViewController.xib; path = ../JoinViewController.xib; sourceTree = "<group>"; };
 		E1E64E1514355FDE00952186 /* PDFViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFViewController.h; sourceTree = "<group>"; };
 		E1E64E1614355FDF00952186 /* PDFViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFViewController.m; sourceTree = "<group>"; };
-		E1E64E2F143563A600952186 /* FastPdfKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FastPdfKit.framework; sourceTree = "<group>"; };
-		E1E64E31143563A600952186 /* FastPdfKitFramework.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = FastPdfKitFramework.xcconfig; sourceTree = "<group>"; };
-		E1E64E32143563A600952186 /* FPKReaderBundle.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = FPKReaderBundle.bundle; sourceTree = "<group>"; };
-		E1E64E33143563A600952186 /* Snippets.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Snippets.txt; sourceTree = "<group>"; };
 		E1E64E381435672E00952186 /* Manual.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = Manual.pdf; sourceTree = "<group>"; };
 		E1F4F83B1431A5410032D2A0 /* IdeaTable.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IdeaTable.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E1F4F83F1431A5410032D2A0 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -86,16 +96,26 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E15150F614502E1C00B36295 /* OpenGLES.framework in Frameworks */,
+				E15150F414502DFA00B36295 /* QuartzCore.framework in Frameworks */,
 				E1F4F8401431A5410032D2A0 /* UIKit.framework in Frameworks */,
 				E1F4F8421431A5410032D2A0 /* Foundation.framework in Frameworks */,
 				E1F4F8441431A5410032D2A0 /* CoreGraphics.framework in Frameworks */,
-				E1E64E34143563A600952186 /* FastPdfKit.framework in Frameworks */,
+				E1728D8C145025A000A6FD6C /* FastPdfKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E15150FA14505AEA00B36295 /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				E15150FB14505AF100B36295 /* Particle.png */,
+			);
+			path = Images;
+			sourceTree = "<group>";
+		};
 		E16942971442AA45002B5029 /* Network */ = {
 			isa = PBXGroup;
 			children = (
@@ -107,21 +127,21 @@
 			name = Network;
 			sourceTree = "<group>";
 		};
-		E1E64E2E143563A600952186 /* FastPdfKit.embeddedframework */ = {
+		E1728D86145025A000A6FD6C /* FastPdfKit.embeddedframework */ = {
 			isa = PBXGroup;
 			children = (
-				E1E64E2F143563A600952186 /* FastPdfKit.framework */,
-				E1E64E30143563A600952186 /* Resources */,
+				E1728D87145025A000A6FD6C /* FastPdfKit.framework */,
+				E1728D88145025A000A6FD6C /* Resources */,
 			);
 			path = FastPdfKit.embeddedframework;
 			sourceTree = "<group>";
 		};
-		E1E64E30143563A600952186 /* Resources */ = {
+		E1728D88145025A000A6FD6C /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				E1E64E31143563A600952186 /* FastPdfKitFramework.xcconfig */,
-				E1E64E32143563A600952186 /* FPKReaderBundle.bundle */,
-				E1E64E33143563A600952186 /* Snippets.txt */,
+				E1728D89145025A000A6FD6C /* FastPdfKitFramework.xcconfig */,
+				E1728D8A145025A000A6FD6C /* FPKReaderBundle.bundle */,
+				E1728D8B145025A000A6FD6C /* Snippets.txt */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -129,6 +149,7 @@
 		E1F4F8301431A5410032D2A0 = {
 			isa = PBXGroup;
 			children = (
+				E15150F514502E1C00B36295 /* OpenGLES.framework */,
 				E1F4F8451431A5410032D2A0 /* IdeaTable */,
 				E1F4F83E1431A5410032D2A0 /* Frameworks */,
 				E1F4F83C1431A5410032D2A0 /* Products */,
@@ -146,7 +167,8 @@
 		E1F4F83E1431A5410032D2A0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				E1E64E2E143563A600952186 /* FastPdfKit.embeddedframework */,
+				E15150F314502DFA00B36295 /* QuartzCore.framework */,
+				E1728D86145025A000A6FD6C /* FastPdfKit.embeddedframework */,
 				E1F4F83F1431A5410032D2A0 /* UIKit.framework */,
 				E1F4F8411431A5410032D2A0 /* Foundation.framework */,
 				E1F4F8431431A5410032D2A0 /* CoreGraphics.framework */,
@@ -157,6 +179,7 @@
 		E1F4F8451431A5410032D2A0 /* IdeaTable */ = {
 			isa = PBXGroup;
 			children = (
+				E15150FA14505AEA00B36295 /* Images */,
 				E16942971442AA45002B5029 /* Network */,
 				E1F4F85F1431A56F0032D2A0 /* iPad */,
 				E1F4F84E1431A5410032D2A0 /* IdeaTableAppDelegate.h */,
@@ -185,6 +208,8 @@
 				E1694288144190F3002B5029 /* ClearTableViewController.m */,
 				E16942981442AAED002B5029 /* TableInfo.h */,
 				E16942991442AAED002B5029 /* TableInfo.m */,
+				E15150EF14502C3600B36295 /* PaintingView.h */,
+				E15150F014502C3600B36295 /* PaintingView.m */,
 			);
 			path = IdeaTable;
 			sourceTree = "<group>";
@@ -265,9 +290,11 @@
 				E1F4F8591431A5410032D2A0 /* IdeaTableViewController.xib in Resources */,
 				E1F4F8621431A5700032D2A0 /* MainWindow-iPad.xib in Resources */,
 				E1E64DFF1434C76000952186 /* JoinViewController.xib in Resources */,
-				E1E64E36143563A600952186 /* FPKReaderBundle.bundle in Resources */,
-				E1E64E37143563A600952186 /* Snippets.txt in Resources */,
 				E1E64E391435672E00952186 /* Manual.pdf in Resources */,
+				E1728D8D145025A000A6FD6C /* FastPdfKitFramework.xcconfig in Resources */,
+				E1728D8E145025A000A6FD6C /* FPKReaderBundle.bundle in Resources */,
+				E1728D8F145025A000A6FD6C /* Snippets.txt in Resources */,
+				E15150FC14505AF100B36295 /* Particle.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -292,6 +319,7 @@
 				E169425E143C874C002B5029 /* PptFileSelectController.m in Sources */,
 				E1694289144190F4002B5029 /* ClearTableViewController.m in Sources */,
 				E169429A1442AAEE002B5029 /* TableInfo.m in Sources */,
+				E15150F114502C3600B36295 /* PaintingView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -380,7 +408,7 @@
 		};
 		E1F4F85D1431A5410032D2A0 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E1E64E31143563A600952186 /* FastPdfKitFramework.xcconfig */;
+			baseConfigurationReference = E1728D89145025A000A6FD6C /* FastPdfKitFramework.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_UNIVERSAL_IPHONE_OS)";
 				CODE_SIGN_IDENTITY = "iPhone Developer: Jeff Woo (72Q6UY22J7)";
@@ -405,7 +433,7 @@
 		};
 		E1F4F85E1431A5410032D2A0 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E1E64E31143563A600952186 /* FastPdfKitFramework.xcconfig */;
+			baseConfigurationReference = E1728D89145025A000A6FD6C /* FastPdfKitFramework.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_UNIVERSAL_IPHONE_OS)";
 				FRAMEWORK_SEARCH_PATHS = (
