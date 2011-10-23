@@ -23,6 +23,7 @@
 		E1AF96CE14542083008162AC /* DrawingData.m in Sources */ = {isa = PBXBuildFile; fileRef = E1AF96CD14542083008162AC /* DrawingData.m */; };
 		E1AF96D414543632008162AC /* CreateMemoController.m in Sources */ = {isa = PBXBuildFile; fileRef = E1AF96D214543632008162AC /* CreateMemoController.m */; };
 		E1AF96D514543632008162AC /* CreateMemoController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E1AF96D314543632008162AC /* CreateMemoController.xib */; };
+		E1AF96D8145439B1008162AC /* PresentationController.m in Sources */ = {isa = PBXBuildFile; fileRef = E1AF96D7145439B1008162AC /* PresentationController.m */; };
 		E1E64DFE1434C76000952186 /* JoinViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E1E64DFC1434C76000952186 /* JoinViewController.m */; };
 		E1E64DFF1434C76000952186 /* JoinViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E1E64DFD1434C76000952186 /* JoinViewController.xib */; };
 		E1E64E1714355FDF00952186 /* PDFViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E1E64E1614355FDF00952186 /* PDFViewController.m */; };
@@ -68,6 +69,8 @@
 		E1AF96D114543632008162AC /* CreateMemoController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateMemoController.h; sourceTree = "<group>"; };
 		E1AF96D214543632008162AC /* CreateMemoController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreateMemoController.m; sourceTree = "<group>"; };
 		E1AF96D314543632008162AC /* CreateMemoController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CreateMemoController.xib; sourceTree = "<group>"; };
+		E1AF96D6145439B1008162AC /* PresentationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PresentationController.h; sourceTree = "<group>"; };
+		E1AF96D7145439B1008162AC /* PresentationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PresentationController.m; sourceTree = "<group>"; };
 		E1E64DFB1434C76000952186 /* JoinViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JoinViewController.h; path = ../JoinViewController.h; sourceTree = "<group>"; };
 		E1E64DFC1434C76000952186 /* JoinViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JoinViewController.m; path = ../JoinViewController.m; sourceTree = "<group>"; };
 		E1E64DFD1434C76000952186 /* JoinViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = JoinViewController.xib; path = ../JoinViewController.xib; sourceTree = "<group>"; };
@@ -216,6 +219,8 @@
 				E1F4F86E1431D8770032D2A0 /* UserInfo.m */,
 				E1E64E1514355FDE00952186 /* PDFViewController.h */,
 				E1E64E1614355FDF00952186 /* PDFViewController.m */,
+				E1AF96D6145439B1008162AC /* PresentationController.h */,
+				E1AF96D7145439B1008162AC /* PresentationController.m */,
 				E169425C143C874C002B5029 /* PptFileSelectController.h */,
 				E169425D143C874C002B5029 /* PptFileSelectController.m */,
 				E1694259143C8739002B5029 /* OptionMenuViewController.h */,
@@ -344,6 +349,7 @@
 				E15150F114502C3600B36295 /* PaintingView.m in Sources */,
 				E1AF96CE14542083008162AC /* DrawingData.m in Sources */,
 				E1AF96D414543632008162AC /* CreateMemoController.m in Sources */,
+				E1AF96D8145439B1008162AC /* PresentationController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -390,7 +396,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_UNIVERSAL_IPHONE_OS)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Jeff Woo (72Q6UY22J7)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Jeff Woo (72Q6UY22J7)";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -405,6 +412,8 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				PROVISIONING_PROFILE = "FA5DB032-3966-4A59-829F-48341253DDB4";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "FA5DB032-3966-4A59-829F-48341253DDB4";
 				SDKROOT = iphoneos;
 				VALID_ARCHS = "armv7 armv6";
 			};
@@ -447,8 +456,8 @@
 				INFOPLIST_FILE = "IdeaTable/IdeaTable-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "7140719E-4725-4FDC-AF4C-9A6308A50C54";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "7140719E-4725-4FDC-AF4C-9A6308A50C54";
+				PROVISIONING_PROFILE = "FA5DB032-3966-4A59-829F-48341253DDB4";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "FA5DB032-3966-4A59-829F-48341253DDB4";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "i386 armv7 armv6";
 				WRAPPER_EXTENSION = app;

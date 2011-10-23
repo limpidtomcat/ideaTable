@@ -14,7 +14,8 @@
 #import "TableInfo.h"
 
 @protocol WaitingRoomDelegate;
-@protocol PDFViewDelegate;
+
+@protocol PresentationDelegate;
 
 @interface ClientObject : NSObject
 {
@@ -22,12 +23,13 @@
 	CFSocketRef serverSocket;
 	CFRunLoopSourceRef FrameRunLoopSource;
 	id<WaitingRoomDelegate> waitingRoomDelegate;
-	id<PDFViewDelegate> pdfViewDelegate;
+	id<PresentationDelegate> presentationDelegate;
 }
 
 @property (nonatomic, retain) TableInfo *tableInfo;
 @property (nonatomic, assign) id<WaitingRoomDelegate> waitingRoomDelegate;
-@property (nonatomic, assign) id<PDFViewDelegate> pdfViewDelegate;
+@property (nonatomic, assign) id<PresentationDelegate> presentationDelegate;
+
 - (id)initWithAddress:(NSString *)address port:(NSUInteger)port tableInfo:(TableInfo *)_tableInfo;
 
 -(void)sendPresentationStartMessage;

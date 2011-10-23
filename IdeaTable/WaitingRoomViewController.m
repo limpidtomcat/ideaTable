@@ -11,6 +11,7 @@
 #import "PDFViewController.h"
 
 #import "ClearTableViewController.h"
+#import "PresentationController.h"
 
 @implementation WaitingRoomViewController
 @synthesize  serverObject;
@@ -263,51 +264,40 @@
 }
 
 -(void)startTable:(id)sender{
-	/** Set document name */
-    NSString *documentName = @"Manual";
+
+	PresentationController *presentationController=[[PresentationController alloc] initWithPdfUrl:tableInfo.pptFile];
 	
-    /** Get temporary directory to save thumbnails */
-	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    
-    /** Set thumbnails path */
-    NSString *thumbnailsPath = [[paths objectAtIndex:0] stringByAppendingPathComponent:[NSString stringWithFormat:@"%@",documentName]];
+	/** Present the pdf on screen in a modal view */
+    [self presentModalViewController:presentationController.pdfViewController animated:YES]; 
     
 
-    /** Get document from the App Bundle */
-//    NSURL *documentUrl = [NSURL fileURLWithPath:[[NSBundle mainBundle]pathForResource:documentName ofType:@"pdf"]];
-    
-    /** Instancing the documentManager */
-	MFDocumentManager *documentManager = [[MFDocumentManager alloc]initWithFileUrl:tableInfo.pptFile];
-	
-	/** Instancing the readerViewController */
-	PDFViewController *pdfViewController = [[PDFViewController alloc]initWithDocumentManager:documentManager];
-//	[pdfViewController setOverlayEnabled:NO];
-    [pdfViewController setWaitingViewDelegate:self];
-	[pdfViewController setDocumentDelegate:pdfViewController];
-    /** Set resources folder on the manager */
-    documentManager.resourceFolder = thumbnailsPath;
-	
-    /** Set document id for thumbnail generation */
-//    pdfViewController.documentId = documentName;
-    
-	/** Present the pdf on screen in a modal view */
-    [self presentModalViewController:pdfViewController animated:YES]; 
-    
-	NSLog(@"pdf start");
-	[clientObject setPdfViewDelegate:pdfViewController];
-	[pdfViewController setClientObject:clientObject];
+	[clientObject setPresentationDelegate:presentationController];
+	[presentationController setClientObject:clientObject];
+	[presentationController setWaitingViewDelegate:self];
+
 	if(sender!=clientObject){
 		NSLog(@"it's master");
-		[pdfViewController setIsMaster:YES];
+		[presentationController setIsMaster:YES];
 		[clientObject sendPresentationStartMessage];
-		
 	}
+	
+//	[clientObject setPdfViewDelegate:pdfViewController];
+//	[pdfViewController setClientObject:clientObject];
+//	if(sender!=clientObject){
+//		NSLog(@"it's master");
+//		[pdfViewController setIsMaster:YES];
+//		[clientObject sendPresentationStartMessage];
+//		
+//	}
+
 	/** Release the pdf controller*/
-    [pdfViewController release];
+
+	[presentationController release];
 
 }
 
 -(void)endTable:(PDFViewController *)pdfViewController{
+	NSLog(@"closing table");
 	ClearTableViewController *viewController=[[ClearTableViewController alloc] initWithStyle:UITableViewStyleGrouped];
 	[viewController setTableInfo:tableInfo];
 	[self.navigationController pushViewController:viewController animated:NO];

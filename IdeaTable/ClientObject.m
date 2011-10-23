@@ -12,7 +12,7 @@
 
 @implementation ClientObject
 @synthesize waitingRoomDelegate;
-@synthesize pdfViewDelegate;
+@synthesize presentationDelegate;
 @synthesize tableInfo;
 
 static void CFSockCallBack(
@@ -221,7 +221,7 @@ static void CFSockCallBack(
 		NSUInteger toPage;
 		memcpy(&toPage, buf+1, sizeof(NSUInteger));
 		NSLog(@"received page movement signal - %d",toPage);
-		[pdfViewDelegate setPage:toPage];
+		[presentationDelegate setPage:toPage];
 	}
 	
 	// 4. UserCome

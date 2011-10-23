@@ -11,10 +11,8 @@
 #import "CreateMemoController.h"
 
 @implementation PDFViewController
-@synthesize isMaster;
-@synthesize  clientObject;
-@synthesize waitingViewDelegate;
 
+@synthesize  presentationDelegate;
 -(void)setScrollLock:(BOOL)isLocked{
 	UIScrollView *pageView=nil;
 	
@@ -29,70 +27,10 @@
 
 }
 
-- (NSSet *)documentViewController:(MFDocumentViewController *)dvc overlayViewsForPage:(NSUInteger)page
-{
-	NSLog(@"finding drawables - %d",page);
-
-	NSSet *arr=[NSSet setWithObjects:paintView, nil];
-	[paintView resetData];
-	
-	NSLog(@"drawing data array - %@",drawingDataArray);
-	[paintView setDrawingData:[drawingDataArray objectAtIndex:page]];
-
-	
-	return arr;
-}
-- (CGRect)documentViewController:(MFDocumentViewController *)dvc rectForOverlayView:(UIView *)view
-{
-	NSLog(@"rect for overlay view %@",view);
-	NSLog(@"converted rect - %@",NSStringFromCGRect([self convertRect:CGRectMake(0, 0, 586, 842) fromViewToPage:0]));
-	
-	return [self convertRect:CGRectMake(0, 0, 586, 842) fromViewToPage:0];
-
-}
-- (void)documentViewController:(MFDocumentViewController *)dvc willAddOverlayView:(UIView *)view
-{
-	NSLog(@"will add overlay");
-}
-
-//- (NSArray *)documentViewController:(MFDocumentViewController *)dvc drawablesForPage:(NSUInteger)page
-//{
-//}
-
-
--(id)initWithDocumentManager:(MFDocumentManager *)aDocumentManager{
-	self=[super initWithDocumentManager:aDocumentManager];
-	if(self){
-		drawingDataArray= [[NSMutableArray alloc] init];
-		for(NSUInteger i=0;i<6;i++){
-			DrawingData *data=[[DrawingData alloc] init];
-			[drawingDataArray addObject:data];
-			[data release];
-		}
-		NSLog(@"array - %@",drawingDataArray);
-		
-	}
-	return self;
-}
-
--(id)initWithClientObject:(ClientObject *)_clientObject{
-	self=[super init];
-	if(self	){
-//		self.
-		clientObject=[_clientObject retain];
-		self.documentDelegate=self;
-//		NSLog(@"overlay view datasource - %@",self.)
-//		[self addOverlayDataSource:self];
-		
-
-	}
-	return self;
-}
 -(void)dealloc{
 	[closeBtn release];
 	[drawBtn release];
-	[paintView release];
-	[clientObject release];
+
 	[super dealloc];
 }
 			   
@@ -115,13 +53,23 @@
 */
 
 
+-(id)initWithDocumentManager:(MFDocumentManager *)aDocumentManager presentationDelegate:(id)_presentationDelegate{
+	self=[super	initWithDocumentManager:aDocumentManager];
+	if(self){
+		presentationDelegate=_presentationDelegate;
+	}
+	return self;
+}
+
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 	closeBtn=[[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
 	[closeBtn setTitle:@"Close" forState:UIControlStateNormal];
 	[closeBtn setFrame:CGRectMake(0, 0, 50, 50)];
-	[closeBtn addTarget:self action:@selector(closeTable) forControlEvents:UIControlEventTouchUpInside];
+	[closeBtn addTarget:presentationDelegate action:@selector(closeTable) forControlEvents:UIControlEventTouchUpInside];
+	NSLog(@"dsjkal %@",presentationDelegate);
 	
 	drawBtn=[[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
 	[drawBtn setTitle:@"Draw" forState:UIControlStateNormal];
@@ -129,26 +77,16 @@
 	[drawBtn setFrame:CGRectMake(320-50, 0, 50, 50)];
 	[drawBtn addTarget:self action:@selector(toggleDraw) forControlEvents:UIControlEventTouchUpInside];
 
-	paintView=[[PaintingView alloc] initWithFrame:CGRectMake(0, 0, 320, 460) photoSize:CGSizeMake(576, 822) delegate:self drawQueue:nil];
-//	[paintView setBackgroundColor:[UIColor redColor]];
-	[paintView resetData];
-	[paintView erase];
-	[paintView setBrushColorWithRed:0 green:0 blue:0];
-	[paintView setBrushAlpha:1.0f];
-	[paintView setBrushScale:5.0f];
-	[paintView setUserInteractionEnabled:NO];
-
-//	[self.view addSubview:paintView];
-//	[self.view bringSubviewToFront:paintView];
 
 	[self.view addSubview:closeBtn];
 	[self.view bringSubviewToFront:closeBtn];
 	[self.view addSubview:drawBtn];
 	[self.view bringSubviewToFront:drawBtn];
 	[self setOverlayEnabled:YES];
-	[self addOverlayViewDataSource:self];
+	[self addOverlayViewDataSource:presentationDelegate];
 	[self setUseTiledOverlayView:YES];
 	[self reloadOverlay];
+	
     UILongPressGestureRecognizer *longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(showMemoView:)];
     [self.view addGestureRecognizer:longPressGesture];
     [longPressGesture release];
@@ -165,25 +103,14 @@
 	
 	[self setScrollLock:isDrawing];
 	
-	if(isDrawing){
-		[paintView setUserInteractionEnabled:YES];
-		[paintView startDrawing];
-		
-	}else{
-		[paintView setUserInteractionEnabled:NO];
-		[paintView stopDrawing];
-	}
 
+	[presentationDelegate setDrawing:isDrawing];
+	
 }
 
--(void)closeTable{
-	[waitingViewDelegate endTable:self];
-}
 
 - (void)viewDidUnload
 {
-	[paintView release];
-	paintView=nil;
 	[closeBtn release];
 	closeBtn=nil;
 	[drawBtn release];
@@ -199,27 +126,11 @@
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
-- (void)documentViewController:(MFDocumentViewController *)dvc didGoToPage:(NSUInteger)page{
-	NSLog(@"did go to page %d",page);
-
-	if(isMaster)[clientObject sendMessagePageMovedTo:page];
-}
-
 
 -(void)signalPageMove:(NSUInteger )page{
 	if(self.page==page-1)[self moveToNextPage];
 	else if(self.page==page-1)[self moveToNextPage];
 	else [self setPage:page];
-	
-}
-
--(void)scrollViewDidZoom:(UIScrollView *)scrollView
-{
-	
-	NSLog(@"scrollviewdidzoom");
-	[super scrollViewDidZoom:scrollView];
-	[paintView setFrame:[self viewForZoomingInScrollView:scrollView].frame];
-
 	
 }
 

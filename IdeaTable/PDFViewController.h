@@ -14,17 +14,17 @@
 
 @interface PDFViewController : MFDocumentViewController<MFDocumentOverlayDataSource, MFDocumentViewControllerDelegate, FPKOverlayViewDataSource>
 {
-	BOOL isMaster;
 	BOOL isDrawing;
-	ClientObject *clientObject;
 	UIButton *closeBtn;
 	UIButton *drawBtn;
-	PaintingView *paintView;
-	NSMutableArray *drawingDataArray;
 	
-	id waitingViewDelegate;
+
+	id presentationDelegate;
 }
-@property (nonatomic, assign) BOOL isMaster;
-@property (nonatomic, retain) ClientObject *clientObject;
-@property (nonatomic ,assign) id waitingViewDelegate;
+
+@property (nonatomic, assign) id presentationDelegate;
+
+-(id)initWithDocumentManager:(MFDocumentManager *)aDocumentManager presentationDelegate:(id)_presentationDelegate;
+-(void)setScrollLock:(BOOL)isLocked;
+
 @end
