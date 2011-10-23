@@ -32,8 +32,18 @@
 //		[pdfViewController setWaitingViewDelegate:waitingViewDelegate];
 
 		[pdfViewController setDocumentDelegate:self];
-
 		
+//		[documentManager.docu
+//		 CG
+		
+
+		CGPDFDocumentRef pdf=CGPDFDocumentCreateWithURL((CFURLRef)url);
+		
+		CGPDFPageRef pdfPage=CGPDFDocumentGetPage(pdf, 1);
+		CGRect pdfRect= CGPDFPageGetBoxRect(pdfPage, kCGPDFBleedBox);
+
+		pdfSize=pdfRect.size;
+
 	
 		drawingDataArray= [[NSMutableArray alloc] init];
 		
@@ -44,9 +54,8 @@
 		}
 		NSLog(@"array - %@",drawingDataArray);
 
-//		CGSize bookSize=documentManager.
 		
-		paintView=[[PaintingView alloc] initWithFrame:CGRectMake(0, 0, 320, 460) photoSize:CGSizeMake(576, 822) delegate:self drawQueue:nil];
+		paintView=[[PaintingView alloc] initWithFrame:CGRectMake(0, 0, 320, 460) photoSize:pdfSize delegate:self drawQueue:nil];
 		//	[paintView setBackgroundColor:[UIColor redColor]];
 		[paintView resetData];
 		[paintView erase];
@@ -89,9 +98,12 @@
 - (CGRect)documentViewController:(MFDocumentViewController *)dvc rectForOverlayView:(UIView *)view
 {
 	NSLog(@"rect for overlay view %@",view);
-	NSLog(@"converted rect - %@",NSStringFromCGRect([pdfViewController convertRect:CGRectMake(0, 0, 596, 842) fromViewToPage:0]));
 	
-	return [pdfViewController convertRect:CGRectMake(0, 0, 586, 842) fromViewToPage:0];
+	CGRect rect;
+	rect.origin=CGPointMake(0, 0);
+	rect.size=pdfSize;
+	NSLog(@"converted rect - %@",NSStringFromCGRect([pdfViewController convertRect:rect fromViewToPage:0]));
+	return [pdfViewController convertRect:rect fromViewToPage:0];
 	
 }
 - (void)documentViewController:(MFDocumentViewController *)dvc willAddOverlayView:(UIView *)view
