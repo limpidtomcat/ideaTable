@@ -12,7 +12,7 @@
 #import "ClientObject.h"
 #import "PaintingView.h"
 
-@interface PDFViewController : MFDocumentViewController<MFDocumentOverlayDataSource, MFDocumentViewControllerDelegate>
+@interface PDFViewController : MFDocumentViewController<MFDocumentOverlayDataSource, MFDocumentViewControllerDelegate, FPKOverlayViewDataSource>
 {
 	BOOL isMaster;
 	BOOL isDrawing;
@@ -20,6 +20,7 @@
 	UIButton *closeBtn;
 	UIButton *drawBtn;
 	PaintingView *paintView;
+	NSMutableArray *drawingDataArray;
 	
 	id waitingViewDelegate;
 }

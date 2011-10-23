@@ -24,7 +24,7 @@
     
     NSString * resourceFolder;  /* If nil, will default to Documents folder */
 	
-	NSUInteger numberOfPages;
+	   NSUInteger numberOfPages;
 	
 	NSString * password;
 	

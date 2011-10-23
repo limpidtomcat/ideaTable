@@ -330,11 +330,11 @@
 	// Render the vertex array
 	glVertexPointer(2, GL_FLOAT, 0, vertexBuffer);
 	glDrawArrays(GL_POINTS, 0, vertexCount);
-//	[pageInfo.countArr addObject:[NSNumber numberWithInt:count]];
-//	[pageInfo.infoArr addObject:currentPenInfo];
+	[drawingData.countArr addObject:[NSNumber numberWithInt:count]];
+	[drawingData.infoArr addObject:currentPenInfo];
 	
-//	pageInfo.dataArr=realloc(pageInfo.dataArr, [pageInfo.countArr count] * sizeof(GLfloat*));
-//	pageInfo.dataArr[[pageInfo.countArr count]-1]=vertexBuffer;
+	drawingData.dataArr=realloc(drawingData.dataArr, [drawingData.countArr count] * sizeof(GLfloat*));
+	drawingData.dataArr[[drawingData.countArr count]-1]=vertexBuffer;
 	
 	
 	// Display the buffer
@@ -530,6 +530,73 @@
 //	[pageInfo saveDrawing];
 	
 }
+
+
+
+
+
+-(void)setDrawingData:(DrawingData *)_drawingData{
+
+	[drawingData release];
+	drawingData=[_drawingData retain];
+	
+	CGFloat r,g,b,alpha,scale;
+
+	
+	[EAGLContext setCurrentContext:context];
+	glBindFramebufferOES(GL_FRAMEBUFFER_OES, viewFramebuffer);
+	
+	glClearColor(0.0, 0.0, 0.0, 0.0);
+	glClear(GL_COLOR_BUFFER_BIT);
+	
+	for(NSUInteger i=0;i<[drawingData.infoArr count];i++){
+//		if([self isCancelled])break;
+		CGFloat *infoFloat=(CGFloat *)[[drawingData.infoArr objectAtIndex:i] bytes];
+		
+		
+		if(i==0||r!=infoFloat[0]||g!=infoFloat[1]||b!=infoFloat[2]||alpha!=infoFloat[4]){
+			
+			glColor4f(infoFloat[0] * infoFloat[4],
+					  infoFloat[1] * infoFloat[4],
+					  infoFloat[2] * infoFloat[4],
+					  infoFloat[4]
+					  );
+			if((i==0||alpha==0)&&infoFloat[4]>0)glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+			if((i==0||alpha>0)&&infoFloat[4]==0)glBlendFunc(1, 0);
+			
+			r=infoFloat[0];
+			g=infoFloat[1];
+			b=infoFloat[2];
+			alpha=infoFloat[4];
+			
+		}
+		if(i==0||scale!=infoFloat[3]){
+			glPointSize(width/infoFloat[3]);
+			scale=infoFloat[3];
+		}
+		
+		// Render the vertex array
+		glVertexPointer(2, GL_FLOAT, 0, drawingData.dataArr[i]);
+		glDrawArrays(GL_POINTS, 0, [[drawingData.countArr objectAtIndex:i] intValue]);
+		
+		
+		
+	}
+	
+	//	메인 쓰레드에서 진행되므로 뒤로 밀려있는 사이에 cancel이 되느것 같아서
+	//	printContex 안에서 isCancelled를 체크
+	//	if([self isCancelled]==NO){
+	// 화면에 뿌릴땐 메인 쓰레드에서 해준다
+
+	glBindRenderbufferOES(GL_RENDERBUFFER_OES, viewRenderbuffer);
+	[context presentRenderbuffer:GL_RENDERBUFFER_OES];
+
+//	[delegate performSelector:@selector(loadComplete)];
+
+	
+}
+
+
 
 @end
 

@@ -51,7 +51,8 @@
 #import <OpenGLES/EAGL.h>
 #import <OpenGLES/ES1/gl.h>
 #import <OpenGLES/ES1/glext.h>
-
+#import	"FastPdfKit/FastPdfKit.h"
+#import "DrawingData.h"
 //CONSTANTS:
 
 
@@ -65,7 +66,7 @@
 @class DrawingSavedDataOperation;
 
 
-@interface PaintingView : UIView
+@interface PaintingView : UIView<MFOverlayDrawable>
 {
 @private
 	// The pixel dimensions of the backbuffer
@@ -108,6 +109,9 @@
 	
 	NSOperationQueue *drawQueue;					// 현재 그리기 작업
 	DrawingSavedDataOperation *drawOperation;		// 그리기 작업 큐
+	
+	
+	DrawingData *drawingData;
 }
 
 @property(nonatomic, readwrite) CGPoint location;
@@ -130,6 +134,7 @@
 -(void)startDrawing;
 -(void)stopDrawing;
 -(void)resetData;
+-(void)setDrawingData:(DrawingData *)_drawingData;
 
 @end
 

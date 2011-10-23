@@ -20,6 +20,9 @@
 		E1728D8D145025A000A6FD6C /* FastPdfKitFramework.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = E1728D89145025A000A6FD6C /* FastPdfKitFramework.xcconfig */; };
 		E1728D8E145025A000A6FD6C /* FPKReaderBundle.bundle in Resources */ = {isa = PBXBuildFile; fileRef = E1728D8A145025A000A6FD6C /* FPKReaderBundle.bundle */; };
 		E1728D8F145025A000A6FD6C /* Snippets.txt in Resources */ = {isa = PBXBuildFile; fileRef = E1728D8B145025A000A6FD6C /* Snippets.txt */; };
+		E1AF96CE14542083008162AC /* DrawingData.m in Sources */ = {isa = PBXBuildFile; fileRef = E1AF96CD14542083008162AC /* DrawingData.m */; };
+		E1AF96D414543632008162AC /* CreateMemoController.m in Sources */ = {isa = PBXBuildFile; fileRef = E1AF96D214543632008162AC /* CreateMemoController.m */; };
+		E1AF96D514543632008162AC /* CreateMemoController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E1AF96D314543632008162AC /* CreateMemoController.xib */; };
 		E1E64DFE1434C76000952186 /* JoinViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E1E64DFC1434C76000952186 /* JoinViewController.m */; };
 		E1E64DFF1434C76000952186 /* JoinViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E1E64DFD1434C76000952186 /* JoinViewController.xib */; };
 		E1E64E1714355FDF00952186 /* PDFViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E1E64E1614355FDF00952186 /* PDFViewController.m */; };
@@ -60,6 +63,11 @@
 		E1728D89145025A000A6FD6C /* FastPdfKitFramework.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = FastPdfKitFramework.xcconfig; sourceTree = "<group>"; };
 		E1728D8A145025A000A6FD6C /* FPKReaderBundle.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = FPKReaderBundle.bundle; sourceTree = "<group>"; };
 		E1728D8B145025A000A6FD6C /* Snippets.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Snippets.txt; sourceTree = "<group>"; };
+		E1AF96CC14542083008162AC /* DrawingData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DrawingData.h; sourceTree = "<group>"; };
+		E1AF96CD14542083008162AC /* DrawingData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DrawingData.m; sourceTree = "<group>"; };
+		E1AF96D114543632008162AC /* CreateMemoController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateMemoController.h; sourceTree = "<group>"; };
+		E1AF96D214543632008162AC /* CreateMemoController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreateMemoController.m; sourceTree = "<group>"; };
+		E1AF96D314543632008162AC /* CreateMemoController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CreateMemoController.xib; sourceTree = "<group>"; };
 		E1E64DFB1434C76000952186 /* JoinViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JoinViewController.h; path = ../JoinViewController.h; sourceTree = "<group>"; };
 		E1E64DFC1434C76000952186 /* JoinViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JoinViewController.m; path = ../JoinViewController.m; sourceTree = "<group>"; };
 		E1E64DFD1434C76000952186 /* JoinViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = JoinViewController.xib; path = ../JoinViewController.xib; sourceTree = "<group>"; };
@@ -146,6 +154,13 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
+		E1AF96D014543574008162AC /* New Group */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "New Group";
+			sourceTree = "<group>";
+		};
 		E1F4F8301431A5410032D2A0 = {
 			isa = PBXGroup;
 			children = (
@@ -179,6 +194,7 @@
 		E1F4F8451431A5410032D2A0 /* IdeaTable */ = {
 			isa = PBXGroup;
 			children = (
+				E1AF96D014543574008162AC /* New Group */,
 				E15150FA14505AEA00B36295 /* Images */,
 				E16942971442AA45002B5029 /* Network */,
 				E1F4F85F1431A56F0032D2A0 /* iPad */,
@@ -210,6 +226,11 @@
 				E16942991442AAED002B5029 /* TableInfo.m */,
 				E15150EF14502C3600B36295 /* PaintingView.h */,
 				E15150F014502C3600B36295 /* PaintingView.m */,
+				E1AF96CC14542083008162AC /* DrawingData.h */,
+				E1AF96CD14542083008162AC /* DrawingData.m */,
+				E1AF96D114543632008162AC /* CreateMemoController.h */,
+				E1AF96D214543632008162AC /* CreateMemoController.m */,
+				E1AF96D314543632008162AC /* CreateMemoController.xib */,
 			);
 			path = IdeaTable;
 			sourceTree = "<group>";
@@ -295,6 +316,7 @@
 				E1728D8E145025A000A6FD6C /* FPKReaderBundle.bundle in Resources */,
 				E1728D8F145025A000A6FD6C /* Snippets.txt in Resources */,
 				E15150FC14505AF100B36295 /* Particle.png in Resources */,
+				E1AF96D514543632008162AC /* CreateMemoController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -320,6 +342,8 @@
 				E1694289144190F4002B5029 /* ClearTableViewController.m in Sources */,
 				E169429A1442AAEE002B5029 /* TableInfo.m in Sources */,
 				E15150F114502C3600B36295 /* PaintingView.m in Sources */,
+				E1AF96CE14542083008162AC /* DrawingData.m in Sources */,
+				E1AF96D414543632008162AC /* CreateMemoController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

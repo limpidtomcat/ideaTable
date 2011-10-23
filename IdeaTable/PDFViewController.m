@@ -8,6 +8,7 @@
 
 #import "PDFViewController.h"
 #import "FastPdfKit/MFDocumentViewController.h"
+#import "CreateMemoController.h"
 
 @implementation PDFViewController
 @synthesize isMaster;
@@ -28,11 +29,62 @@
 
 }
 
+- (NSSet *)documentViewController:(MFDocumentViewController *)dvc overlayViewsForPage:(NSUInteger)page
+{
+	NSLog(@"finding drawables - %d",page);
+
+	NSSet *arr=[NSSet setWithObjects:paintView, nil];
+	[paintView resetData];
+	
+	NSLog(@"drawing data array - %@",drawingDataArray);
+	[paintView setDrawingData:[drawingDataArray objectAtIndex:page]];
+
+	
+	return arr;
+}
+- (CGRect)documentViewController:(MFDocumentViewController *)dvc rectForOverlayView:(UIView *)view
+{
+	NSLog(@"rect for overlay view %@",view);
+	NSLog(@"converted rect - %@",NSStringFromCGRect([self convertRect:CGRectMake(0, 0, 586, 842) fromViewToPage:0]));
+	
+	return [self convertRect:CGRectMake(0, 0, 586, 842) fromViewToPage:0];
+
+}
+- (void)documentViewController:(MFDocumentViewController *)dvc willAddOverlayView:(UIView *)view
+{
+	NSLog(@"will add overlay");
+}
+
+//- (NSArray *)documentViewController:(MFDocumentViewController *)dvc drawablesForPage:(NSUInteger)page
+//{
+//}
+
+
+-(id)initWithDocumentManager:(MFDocumentManager *)aDocumentManager{
+	self=[super initWithDocumentManager:aDocumentManager];
+	if(self){
+		drawingDataArray= [[NSMutableArray alloc] init];
+		for(NSUInteger i=0;i<6;i++){
+			DrawingData *data=[[DrawingData alloc] init];
+			[drawingDataArray addObject:data];
+			[data release];
+		}
+		NSLog(@"array - %@",drawingDataArray);
+		
+	}
+	return self;
+}
+
 -(id)initWithClientObject:(ClientObject *)_clientObject{
 	self=[super init];
 	if(self	){
+//		self.
 		clientObject=[_clientObject retain];
 		self.documentDelegate=self;
+//		NSLog(@"overlay view datasource - %@",self.)
+//		[self addOverlayDataSource:self];
+		
+
 	}
 	return self;
 }
@@ -62,6 +114,7 @@
 }
 */
 
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -76,7 +129,7 @@
 	[drawBtn setFrame:CGRectMake(320-50, 0, 50, 50)];
 	[drawBtn addTarget:self action:@selector(toggleDraw) forControlEvents:UIControlEventTouchUpInside];
 
-	paintView=[[PaintingView alloc] initWithFrame:CGRectMake(0, 0, 320, 460) photoSize:CGSizeMake(1000, 1000) delegate:self drawQueue:nil];
+	paintView=[[PaintingView alloc] initWithFrame:CGRectMake(0, 0, 320, 460) photoSize:CGSizeMake(576, 822) delegate:self drawQueue:nil];
 //	[paintView setBackgroundColor:[UIColor redColor]];
 	[paintView resetData];
 	[paintView erase];
@@ -85,13 +138,20 @@
 	[paintView setBrushScale:5.0f];
 	[paintView setUserInteractionEnabled:NO];
 
-	[self.view addSubview:paintView];
-	[self.view bringSubviewToFront:paintView];
+//	[self.view addSubview:paintView];
+//	[self.view bringSubviewToFront:paintView];
 
 	[self.view addSubview:closeBtn];
 	[self.view bringSubviewToFront:closeBtn];
 	[self.view addSubview:drawBtn];
 	[self.view bringSubviewToFront:drawBtn];
+	[self setOverlayEnabled:YES];
+	[self addOverlayViewDataSource:self];
+	[self setUseTiledOverlayView:YES];
+	[self reloadOverlay];
+    UILongPressGestureRecognizer *longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(showMemoView:)];
+    [self.view addGestureRecognizer:longPressGesture];
+    [longPressGesture release];
 	
 }
 
@@ -109,6 +169,9 @@
 		[paintView setUserInteractionEnabled:YES];
 		[paintView startDrawing];
 		
+	}else{
+		[paintView setUserInteractionEnabled:NO];
+		[paintView stopDrawing];
 	}
 
 }
@@ -150,11 +213,42 @@
 	
 }
 
-//- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
-//	[super scrollViewDidScroll:scrollView];
-//	
-//	NSLog(@"scrollview dudscroll %@",NSStringFromCGPoint(scrollView.contentOffset));1
-////	if(isMaster)[clientObject sendMessagePageScrollWidth:(CGFloat)scrollView.contentOffset.x];
-//}
-//
+-(void)scrollViewDidZoom:(UIScrollView *)scrollView
+{
+	
+	NSLog(@"scrollviewdidzoom");
+	[super scrollViewDidZoom:scrollView];
+	[paintView setFrame:[self viewForZoomingInScrollView:scrollView].frame];
+
+	
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
+	[super scrollViewDidScroll:scrollView];
+	
+	NSLog(@"scrollview dudscroll %@",NSStringFromCGPoint(scrollView.contentOffset));
+//	if(isMaster)[clientObject sendMessagePageScrollWidth:(CGFloat)scrollView.contentOffset.x];
+}
+
+
+- (void)showMemoView:(UILongPressGestureRecognizer *)gestureRecognizer
+{
+
+	if(gestureRecognizer.state==UIGestureRecognizerStateBegan){
+		NSLog(@"memo success! - %@",gestureRecognizer.view);
+		CGPoint pl = [gestureRecognizer locationInView:self.view];
+		NSLog(NSStringFromCGPoint(pl));
+		
+		CreateMemoController *createMemoController=[[CreateMemoController alloc] initWithNibName:@"CreateMemoController" bundle:nil];
+		UINavigationController *memoNavigationController=[[UINavigationController alloc] initWithRootViewController:createMemoController];
+		//[memoNavigationController.navigationBar setTintColor:[UIColor colorWithRed:20/255.0f green:190/255.0f blue:130/255.0f alpha:1.0f]];
+		[createMemoController release];
+		
+		[self presentModalViewController:memoNavigationController animated:YES];
+		[memoNavigationController release];
+
+	}
+    
+    
+}
 @end
