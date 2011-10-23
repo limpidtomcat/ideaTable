@@ -19,7 +19,6 @@
 	PDFViewController *pdfViewController;
 	PaintingView *paintView;
 	NSMutableArray *drawingDataArray;
-	CGSize pdfSize;
 	
 	id waitingViewDelegate;
 }
