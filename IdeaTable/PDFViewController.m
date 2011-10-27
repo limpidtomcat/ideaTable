@@ -151,6 +151,7 @@
 		NSLog(NSStringFromCGPoint(pl));
 		
 		CreateMemoController *createMemoController=[[CreateMemoController alloc] initWithNibName:@"CreateMemoController" bundle:nil];
+		[createMemoController setDelegate:self];
 		UINavigationController *memoNavigationController=[[UINavigationController alloc] initWithRootViewController:createMemoController];
 		//[memoNavigationController.navigationBar setTintColor:[UIColor colorWithRed:20/255.0f green:190/255.0f blue:130/255.0f alpha:1.0f]];
 		[createMemoController release];
@@ -162,4 +163,11 @@
     
     
 }
+
+- (void)closeMemoView:(NSInteger) temp{
+	NSLog(@"received - %d",temp);
+	NSLog(@"current page = %d",[self page]);
+	
+}
+
 @end

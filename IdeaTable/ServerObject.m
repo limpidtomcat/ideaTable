@@ -25,12 +25,7 @@
 		tableInfo=[_tableInfo retain];
 		maxUserId=0;
 		port=[self initServerSocket];
-		if(tableInfo.quitTime>0){
-			NSLog(@"timer set - %d",tableInfo.quitTime);
-			quitTimer=[[NSTimer scheduledTimerWithTimeInterval:tableInfo.quitTime target:self selector:@selector(tableTimeOut:) userInfo:nil repeats:NO] retain];
-			
-		}
-		
+
 		connectedClients=[[NSMutableArray alloc] init];
 		availableColors=[[NSMutableSet alloc] initWithObjects:
 						 [UIColor blackColor],
@@ -237,18 +232,17 @@
 		}
 		[self sendData:sendBuf toClient:s];
 
-		CFDataRef pptCFData = CFDataCreate(NULL, (const UInt8*)pptData.bytes, pptData.length);
-		CFSocketSendData(s, NULL, pptCFData, 0);
-		
-		CFRelease(pptCFData);
-		
-		pptCFData=NULL;
+		NSArray *tempArr=[NSArray arrayWithObjects:[NSValue valueWithPointer:s],pptData, nil];
+
+		[self performSelectorInBackground:@selector(sendPptFile:) withObject:tempArr];
+
 		
 	}
 	else if(firstByte==2){	// Presentation Started
-		// fire
-		NSLog(@"timer firing");
-		[quitTimer fire];
+		if(tableInfo.quitTime>0){
+			NSLog(@"timer set - %d",tableInfo.quitTime);
+			quitTimer=[[NSTimer scheduledTimerWithTimeInterval:tableInfo.quitTime target:self selector:@selector(tableTimeOut:) userInfo:nil repeats:NO] retain];
+		}
 		[self sendData:buf exceptClient:s];
 	}
 	else if(firstByte==3){	// Page Moved
@@ -262,6 +256,26 @@
 	}
 }
 
+-(void)sendPptFile:(NSArray *)tData{
+	NSAutoreleasePool *pool=[[NSAutoreleasePool alloc] init];
+
+	NSData *pptData=[tData objectAtIndex:1];
+	CFSocketRef s=[[tData objectAtIndex:0] pointerValue];
+
+	CFDataRef pptCFData = CFDataCreate(NULL, (const UInt8*)pptData.bytes, pptData.length);
+	NSLog(@"sending ppd data");
+	
+
+	CFSocketSendData(s, NULL, pptCFData, 0);
+	NSLog(@"sended ppd data");
+
+	CFRelease(pptCFData);
+	
+	pptCFData=NULL;
+	
+	[pool release];
+}
+
 
 void CFServerSocketCallBack (
 							  CFSocketRef s,
@@ -270,7 +284,7 @@ void CFServerSocketCallBack (
 							  const void *data,
 							  void *info
 							  ){
-	
+	NSLog(@"callback is main thread - %d",[NSThread isMainThread]);
     if(callbackType == kCFSocketReadCallBack) {
         // 소켓에서 읽을 수 있습니다.
         char buf[SendBufferSize] = {0};

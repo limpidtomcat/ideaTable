@@ -11,7 +11,9 @@
 @interface CreateMemoController : UIViewController
 {
     IBOutlet UITextView *memoField;
+	id delegate;
 }
 @property (nonatomic, retain) UITextView *memoField;
+@property (nonatomic, assign) id delegate;
 
 @end

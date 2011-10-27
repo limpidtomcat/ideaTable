@@ -10,7 +10,7 @@
 
 @implementation CreateMemoController
 @synthesize memoField;
-
+@synthesize delegate;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -47,6 +47,7 @@
 	[backBtn release];
 	
 	UIBarButtonItem *doneBtn=[[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(doneBtn)];
+//	[doneBtn add
 	[self.navigationItem setRightBarButtonItem:doneBtn];
 	[doneBtn release];
 }
@@ -79,6 +80,7 @@
 - (void)doneBtn
 {
     //배열에 저장..StoredContentsMemo로
+	[delegate closeMemoView:33];
 }
 
 @end

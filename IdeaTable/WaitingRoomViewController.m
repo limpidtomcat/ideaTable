@@ -143,7 +143,7 @@
 	if(port>0){
 		UILabel *labe=[[UILabel alloc] initWithFrame:CGRectMake(0, 0, 300, 30)];
 		[labe setText:[NSString stringWithFormat:@"%d",port]];
-		[self.view addSubview:labe];
+//		[self.view addSubview:labe];
 		[labe release];
 	}
 

@@ -298,7 +298,7 @@
 }
 
 // Drawings a line onscreen based on where the user touches
-- (void) renderLineFromPoint:(CGPoint)start toPoint:(CGPoint)end
+- (void) renderLineFromPoint:(CGPoint)start toPoint:(CGPoint)end fromTouch:(BOOL)fromTouch
 {
 	GLfloat*		vertexBuffer = NULL;
 	static NSUInteger	vertexMax = 64;
@@ -325,6 +325,11 @@
 		vertexBuffer[2 * vertexCount + 1] = start.y + (end.y - start.y) * ((GLfloat)i / (GLfloat)count);
 		
 		vertexCount += 1;
+	}
+	
+	if(fromTouch){
+//		전송하기
+		NSLog(@"전송해댜 ");
 	}
 	
 	// Render the vertex array
@@ -439,7 +444,7 @@
 	NSLog(@"touch moved");
 	[currentDrawing appendBytes:&location length:sizeof(CGPoint)];
 	// Render the stroke
-	[self renderLineFromPoint:previousLocation toPoint:location];
+	[self renderLineFromPoint:previousLocation toPoint:location fromTouch:YES];
 }
 
 // Handles the end of a touch event when the touch is a tap.
@@ -456,7 +461,7 @@
 		//		previousLocation.y*=imageSize.width/self.frame.size.width;
 		//		previousLocation.y = imageSize.height - previousLocation.y;
 		
-		[self renderLineFromPoint:location toPoint:location];
+		[self renderLineFromPoint:location toPoint:location fromTouch:YES];
 	}
 	
 //	[pageInfo. drawData addObject:currentPenInfo];
