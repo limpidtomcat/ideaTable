@@ -20,5 +20,6 @@
 @property (nonatomic, readonly) UIColor *penColor;
 
 -(id) initWithName:(NSString *)_name color:(UIColor *)_col clientId:(NSUInteger)_id;
-
++(void)setMe:(UserInfo *)userInfo;
++(UserInfo *)me;
 @end

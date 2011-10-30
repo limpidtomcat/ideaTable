@@ -33,7 +33,7 @@ typedef struct {
 @interface ServerObject : NSObject
 {
 	TableInfo *tableInfo;
-	
+	BOOL isListening;
 //	NSString *tableTitle;
 //	NSURL *pptFile;
 	NSNetService *netService;

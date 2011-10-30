@@ -49,7 +49,18 @@
 	[super dealloc];
 }
 
+-(void)stopListening{
+	// CLOSE LISTENING SOCKET
+	
+	[netService release];
+	CFSocketInvalidate(listeningSocket);
+	CFRelease(listeningSocket);
+	CFRunLoopRemoveSource(CFRunLoopGetCurrent(), listeningRunLoopSourceRef, kCFRunLoopCommonModes);
+	CFRelease(listeningRunLoopSourceRef);
+}
+
 -(void)closeServer{
+	if(isListening)[self stopListening];
 	
 	// clients disconnect
 	NSArray *clients=[NSArray arrayWithArray:connectedClients];
@@ -58,13 +69,6 @@
 		[self disconnectSocket:client->socketRef];
 	}
 	
-	// CLOSE LISTENING SOCKET
-	
-	[netService release];
-	CFSocketInvalidate(listeningSocket);
-	CFRelease(listeningSocket);
-	CFRunLoopRemoveSource(CFRunLoopGetCurrent(), listeningRunLoopSourceRef, kCFRunLoopCommonModes);
-	CFRelease(listeningRunLoopSourceRef);
 	
 }
 
@@ -195,13 +199,14 @@
 		index+=sizeof(NSUInteger);
 		NSLog(@"보내는 사이즈 %d",dataLength);
 
+		// title string
 		// title length
-		Byte titleLength=tableInfo.title.length;
+		const char *title=[tableInfo.title cStringUsingEncoding:NSUTF8StringEncoding];
+		
+		Byte titleLength=strlen(title);//tableInfo.title.length;
 		sendBuf[index++]=titleLength;
 		NSLog(@"보내는 길이 %d",titleLength);
 		
-		// title string
-		const char *title=[tableInfo.title cStringUsingEncoding:NSUTF8StringEncoding];
 		NSLog(@"sending title  %s",title);
 		memcpy(sendBuf+index, title, strlen(title));
 		index+=strlen(title);
@@ -239,6 +244,7 @@
 		
 	}
 	else if(firstByte==2){	// Presentation Started
+		[self stopListening];
 		if(tableInfo.quitTime>0){
 			NSLog(@"timer set - %d",tableInfo.quitTime);
 			quitTimer=[[NSTimer scheduledTimerWithTimeInterval:tableInfo.quitTime target:self selector:@selector(tableTimeOut:) userInfo:nil repeats:NO] retain];
@@ -250,6 +256,7 @@
 	}
 	else if(firstByte==7){	// Drawing
 		[self sendData:buf exceptClient:s];
+//		[self sendData:buf toClient:s];
 	}
 	else{
 		NSLog(@"str - %s",buf);
@@ -294,6 +301,9 @@ void CFServerSocketCallBack (
         int sock = CFSocketGetNative(s);
 
 		int cnt=recv(sock, &buf, SendBufferSize, 0);
+		while(cnt!=0 && cnt<SendBufferSize){
+			cnt+=recv(sock,(&buf)+cnt,SendBufferSize-cnt,0);
+		}
 		NSLog(@"readed %d",cnt);
 		if(cnt==0){
 			NSLog(@"접속 종료됨 %@",[NSValue valueWithPointer:s]);
@@ -425,7 +435,8 @@ static void CFListeningSockCallBack (
 	
 	netService=[[NSNetService alloc] initWithDomain:@"local." type:@"_idea._tcp." name:tableInfo.title port:p];
 	[netService publish];
-//	[netService release];
+
+	isListening=YES;
 	
 	//	NSLog(@"%@",[NSString stringwithcf])
 	return (NSUInteger)p;

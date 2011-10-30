@@ -12,9 +12,16 @@
 {
 	IBOutlet UITextField *ipField;
 	IBOutlet UITextField *portField;
+	
+	NSMutableArray *waitingRooms;
+	
+	IBOutlet UITableView *waitingRoomTable;
+	
+	NSNetServiceBrowser *browser;
 }
 
 @property (nonatomic ,retain) UITextField *ipField;
 @property (nonatomic ,retain) UITextField *portField;
+@property (nonatomic ,retain) UITableView *waitingRoomTable;
 
 @end

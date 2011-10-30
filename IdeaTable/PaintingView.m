@@ -67,6 +67,7 @@
 
 @synthesize  location;
 @synthesize  previousLocation;
+@synthesize presentationDelegate;
 
 
 // Implement this to override the default layer class (which is [CALayer class]).
@@ -298,7 +299,7 @@
 }
 
 // Drawings a line onscreen based on where the user touches
-- (void) renderLineFromPoint:(CGPoint)start toPoint:(CGPoint)end fromTouch:(BOOL)fromTouch
+- (void) renderLineFromPoint:(CGPoint)start toPoint:(CGPoint)end
 {
 	GLfloat*		vertexBuffer = NULL;
 	static NSUInteger	vertexMax = 64;
@@ -327,16 +328,89 @@
 		vertexCount += 1;
 	}
 	
-	if(fromTouch){
 //		전송하기
 		NSLog(@"전송해댜 ");
-	}
+
+		// currentPenInfo
+		// vertexBuffer
+		// vertexCount
+		[presentationDelegate sendServerDrawInfoPen:currentPenInfo start:start end:end];
+		
+
+	glColor4f(brushRed,
+			  brushGreen,
+			  brushBlue,
+			  1
+			  );
+	if(1>0)glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+	if(1==0)glBlendFunc(1, 0);
+	
+	glPointSize(width/5.0f);
+	
 	
 	// Render the vertex array
 	glVertexPointer(2, GL_FLOAT, 0, vertexBuffer);
 	glDrawArrays(GL_POINTS, 0, vertexCount);
 	[drawingData.countArr addObject:[NSNumber numberWithInt:count]];
 	[drawingData.infoArr addObject:currentPenInfo];
+	
+	drawingData.dataArr=realloc(drawingData.dataArr, [drawingData.countArr count] * sizeof(GLfloat*));
+	drawingData.dataArr[[drawingData.countArr count]-1]=vertexBuffer;
+	
+	
+	// Display the buffer
+	glBindRenderbufferOES(GL_RENDERBUFFER_OES, viewRenderbuffer);
+	[context presentRenderbuffer:GL_RENDERBUFFER_OES];
+}
+
+
+// Drawings a line onscreen based on where the user touches
+- (void) drawFromServerStart:(CGPoint)start toPoint:(CGPoint)end penInfo:(NSMutableData *)penInfo
+{
+	GLfloat*		vertexBuffer = NULL;
+	static NSUInteger	vertexMax = 64;
+	NSUInteger			vertexCount = 0,
+	count,
+	i;
+	
+	[EAGLContext setCurrentContext:context];
+	glBindFramebufferOES(GL_FRAMEBUFFER_OES, viewFramebuffer);
+	
+	// Allocate vertex array buffer
+	if(vertexBuffer == NULL)
+		vertexBuffer = malloc(vertexMax * 2 * sizeof(GLfloat));
+	
+	// Add points to the buffer so there are drawing points every X pixels
+	count = MAX(ceilf(sqrtf((end.x - start.x) * (end.x - start.x) + (end.y - start.y) * (end.y - start.y)) / kBrushPixelStep), 1);
+	for(i = 0; i < count; ++i) {
+		if(vertexCount == vertexMax) {
+			vertexMax = 2 * vertexMax;
+			vertexBuffer = realloc(vertexBuffer, vertexMax * 2 * sizeof(GLfloat));
+		}
+		
+		vertexBuffer[2 * vertexCount + 0] = start.x + (end.x - start.x) * ((GLfloat)i / (GLfloat)count);
+		vertexBuffer[2 * vertexCount + 1] = start.y + (end.y - start.y) * ((GLfloat)i / (GLfloat)count);
+		
+		vertexCount += 1;
+	}
+
+	const CGFloat *infoFloat=[penInfo bytes];
+	
+	glColor4f(infoFloat[0] * infoFloat[4],
+			  infoFloat[1] * infoFloat[4],
+			  infoFloat[2] * infoFloat[4],
+			  infoFloat[4]
+			  );
+	if(infoFloat[4]>0)glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+	if(infoFloat[4]==0)glBlendFunc(1, 0);
+	
+	glPointSize(width/infoFloat[3]);
+
+	// Render the vertex array
+	glVertexPointer(2, GL_FLOAT, 0, vertexBuffer);
+	glDrawArrays(GL_POINTS, 0, vertexCount);
+	[drawingData.countArr addObject:[NSNumber numberWithInt:count]];
+	[drawingData.infoArr addObject:penInfo];
 	
 	drawingData.dataArr=realloc(drawingData.dataArr, [drawingData.countArr count] * sizeof(GLfloat*));
 	drawingData.dataArr[[drawingData.countArr count]-1]=vertexBuffer;
@@ -444,7 +518,7 @@
 	NSLog(@"touch moved");
 	[currentDrawing appendBytes:&location length:sizeof(CGPoint)];
 	// Render the stroke
-	[self renderLineFromPoint:previousLocation toPoint:location fromTouch:YES];
+	[self renderLineFromPoint:previousLocation toPoint:location];
 }
 
 // Handles the end of a touch event when the touch is a tap.
@@ -461,7 +535,7 @@
 		//		previousLocation.y*=imageSize.width/self.frame.size.width;
 		//		previousLocation.y = imageSize.height - previousLocation.y;
 		
-		[self renderLineFromPoint:location toPoint:location fromTouch:YES];
+		[self renderLineFromPoint:location toPoint:location];
 	}
 	
 //	[pageInfo. drawData addObject:currentPenInfo];

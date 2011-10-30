@@ -36,6 +36,7 @@
 //-(void)sendPageMoveMessageFrom:(NSUInteger)fromPage to:(NSUInteger)toPage;
 -(void)sendMessagePageMovedTo:(NSUInteger)toPage;
 -(void)closeSocket;
+-(void)sendDrawingInfoPen:(NSMutableData *)penInfo start:(CGPoint)start end:(CGPoint)end;
 
 @end
 

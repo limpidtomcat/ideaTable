@@ -21,6 +21,8 @@
 	NSMutableArray *drawingDataArray;
 	CGSize pdfSize;
 	
+	NSArray *userList;
+	
 	id waitingViewDelegate;
 }
 
@@ -30,6 +32,7 @@
 @property (nonatomic, retain) PDFViewController *pdfViewController;
 @property (nonatomic, retain) PaintingView *paintView;
 @property (nonatomic, retain) NSMutableArray *drawingDataArray;
+@property (nonatomic, retain) NSArray *userList;
 @property (nonatomic, assign) id waitingViewDelegate;
 
 -(id)initWithPdfUrl:(NSURL *)url;

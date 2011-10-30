@@ -13,12 +13,14 @@
 @implementation JoinViewController
 @synthesize ipField;
 @synthesize  portField;
+@synthesize waitingRoomTable;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
+		waitingRooms=[[NSMutableArray alloc] init];
     }
     return self;
 }
@@ -32,6 +34,8 @@
 }
 
 -(void)dealloc{
+	[waitingRooms release];
+	[waitingRoomTable release];
 	[ipField release];
 	[portField release];
 	[super dealloc];
@@ -43,7 +47,7 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-	[self setTitle:@"Join"];
+	[self setTitle:@"테이블 참여"];
 	
 	UIButton *customBtn=[UIButton buttonWithType:101];
 	[customBtn setTitle:@"Home" forState:UIControlStateNormal];
@@ -57,65 +61,22 @@
 	[self.navigationItem setRightBarButtonItem:doneBtn];
 	[doneBtn release];
 	
-//	NSNetServiceBrowser *browser=[[NSNetServiceBrowser alloc] init];
-//	[browser setDelegate:self];
-//	[browser searchForServicesOfType:@"_idea._tcp." inDomain:@"local."];
-////	[browser searchForServicesOfType:<#(NSString *)#> inDomain:<#(NSString *)#>
-//
-//	NSLog(@"let's search");
-////	[browser	 release];
 
 }
 
-- (void)netServiceBrowserWillSearch:(NSNetServiceBrowser *)netServiceBrowser
-{
-	NSLog(@"start search");
-}
-
-- (void)netServiceBrowser:(NSNetServiceBrowser *)netServiceBrowser didNotSearch:(NSDictionary *)errorInfo
-{
-
-	NSLog(@"error search %@",errorInfo);
-}
-
-- (void)netServiceBrowser:(NSNetServiceBrowser *)netServiceBrowser didFindService:(NSNetService *)netService moreComing:(BOOL)moreServicesComing
-{
-	NSLog(@"found %@",netService);
-	NSLog(@"more ? %d",moreServicesComing);
-	[netService retain];
-	[netService setDelegate:self];
-	[netService resolveWithTimeout:1];
+-(void)viewDidAppear:(BOOL)animated{
+	browser=[[NSNetServiceBrowser alloc] init];
+	[browser setDelegate:self];
+	[browser searchForServicesOfType:@"_idea._tcp." inDomain:@"local."];
+	[waitingRooms removeAllObjects];
+	[waitingRoomTable reloadData];
 
 }
 
-- (void)netServiceDidResolveAddress:(NSNetService *)sender
-{
-	NSLog(@"didresolve %@",sender.hostName);
-	NSNetService *netService=sender;
-	NSLog(@"%@",netService.addresses);
-	for (NSData *data in netService.addresses) {
-		
-		
-//		if (socketAddress && socketAddress->sa_family == AF_INET) {
-		struct sockaddr_in *address=(struct sockaddr_in *)[data bytes];
-		if(address->sin_family != AF_INET)continue;
-		NSLog(@"data/");
-		NSString *ip=[NSString stringWithCString:inet_ntoa(address->sin_addr) encoding:NSUTF8StringEncoding];
-		NSLog(@"%@",ip);
-	}
-	//	netService.addresses 
-	//	netService.addresses
-	//	netService.port
-	[netService stop];
-	NSString *addr;
-//	[self autoJoinToAddr:addr port:netService.port];
-}
-- (void)netService:(NSNetService *)sender didNotResolve:(NSDictionary *)errorDict{
-	NSLog(@"resolve fail %@",errorDict);
-}
-
-- (void)netServiceWillResolve:(NSNetService *)sender{
-	NSLog(@"will resolve");
+-(void)viewDidDisappear:(BOOL)animated{
+	[browser stop];
+	[browser release];
+	
 }
 
 
@@ -125,6 +86,7 @@
 	
 	self.ipField=nil;
 	self.portField=nil;
+	self.waitingRoomTable=nil;
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
 }
@@ -166,5 +128,119 @@
 	WaitingRoomViewController *viewController=[[WaitingRoomViewController alloc] initWithClientObject:clientObject port:0 isMaster:NO];
 	
 }
+
+#pragma mark - NSNetServiceBrowserDelegate methods
+
+- (void)netServiceBrowserWillSearch:(NSNetServiceBrowser *)netServiceBrowser
+{
+	NSLog(@"start search");
+}
+
+- (void)netServiceBrowser:(NSNetServiceBrowser *)netServiceBrowser didNotSearch:(NSDictionary *)errorInfo
+{
+	
+	NSLog(@"error search %@",errorInfo);
+}
+
+- (void)netServiceBrowser:(NSNetServiceBrowser *)netServiceBrowser didFindService:(NSNetService *)netService moreComing:(BOOL)moreServicesComing
+{
+	[netService setDelegate:self];
+	[netService resolveWithTimeout:5];
+	
+	[waitingRooms addObject:netService];
+	
+	if(!moreServicesComing)	[waitingRoomTable reloadData];
+	
+}
+
+- (void)netServiceBrowser:(NSNetServiceBrowser *)netServiceBrowser didRemoveService:(NSNetService *)netService moreComing:(BOOL)moreServicesComing{
+	[waitingRooms removeObject:netService];
+	if(!moreServicesComing)	[waitingRoomTable reloadData];
+	
+}
+
+
+- (void)netServiceDidResolveAddress:(NSNetService *)sender
+{
+	NSLog(@"didresolve %@",sender.hostName);
+	NSNetService *netService=sender;
+	
+	[netService stop];
+	
+	[waitingRoomTable reloadData];
+}
+- (void)netService:(NSNetService *)sender didNotResolve:(NSDictionary *)errorDict{
+	NSLog(@"resolve fail %@",errorDict);
+}
+
+- (void)netServiceWillResolve:(NSNetService *)sender{
+	NSLog(@"will resolve");
+}
+
+
+#pragma mark - Table view data source
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return [waitingRooms count];
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    static NSString *CellIdentifier = @"WaitingRoomTableCell";
+    
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    if (cell == nil) {
+        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+	}
+	
+	NSNetService *netService=[waitingRooms objectAtIndex:indexPath.row];
+	if([[netService addresses] count]==0)[cell.textLabel setTextColor:[UIColor grayColor]];
+	else [cell.textLabel setTextColor:[UIColor blackColor]];
+	cell.textLabel.text=netService.name;
+	
+    return cell;
+}
+
+#pragma mark - Table view delegate
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	[tableView deselectRowAtIndexPath:indexPath animated:YES];
+	
+	NSNetService *netService=[waitingRooms objectAtIndex:indexPath.row];
+
+	NSString *ip;
+	NSLog(@"%d",[netService.addresses count]);
+
+	for (NSData *data in netService.addresses) {
+		
+		struct sockaddr_in *address=(struct sockaddr_in *)[data bytes];
+		if(address->sin_family != AF_INET)continue;	//skip ipv6
+
+		ip=[NSString stringWithCString:inet_ntoa(address->sin_addr) encoding:NSUTF8StringEncoding];
+		break;
+		NSLog(@"%@",ip);
+	}
+//	return;
+
+	NSLog(@"join");
+	TableInfo *tableInfo=[[TableInfo alloc] init];
+	
+	ClientObject *clientObject=[[ClientObject alloc] initWithAddress:ip port:netService.port tableInfo:tableInfo];
+	WaitingRoomViewController *viewController=[[WaitingRoomViewController alloc] initWithClientObject:clientObject port:0 isMaster:NO];
+	[viewController setTableInfo:tableInfo];
+	[self.navigationController pushViewController:viewController animated:YES];
+	[tableInfo release];
+	[viewController release];
+	[clientObject release];
+
+}
+
 
 @end

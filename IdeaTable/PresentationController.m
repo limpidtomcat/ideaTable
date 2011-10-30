@@ -7,7 +7,7 @@
 //
 
 #import "PresentationController.h"
-
+#import "UserInfo.h"
 @implementation PresentationController
 @synthesize drawingDataArray;
 @synthesize paintView;
@@ -16,6 +16,7 @@
 @synthesize isMaster;
 @synthesize clientObject;
 @synthesize waitingViewDelegate;
+@synthesize userList;
 
 
 
@@ -59,11 +60,15 @@
 		//	[paintView setBackgroundColor:[UIColor redColor]];
 		[paintView resetData];
 		[paintView erase];
-		[paintView setBrushColorWithRed:0 green:0 blue:0];
+
+		const float *rgba=CGColorGetComponents([UserInfo me].penColor.CGColor);
+		
+		[paintView setBrushColorWithRed:(rgba[0]*255) green:(rgba[1]*255) blue:(rgba[2]*255)];
 		[paintView setBrushAlpha:1.0f];
 		[paintView setBrushScale:5.0f];
 		[paintView setUserInteractionEnabled:NO];
 		
+		[paintView setPresentationDelegate:self];
 		
 	}
 	return self;
@@ -142,6 +147,23 @@
 
 -(void)setPage:(NSUInteger)page{
 	[pdfViewController setPage:page];
+}
+
+-(void)sendServerDrawInfoPen:(NSMutableData *)penInfo start:(CGPoint )start end:(CGPoint)end{
+
+//	CGFloat *infoFloat=(CGFloat *)[penInfo bytes];
+//	
+//	NSLog(@"rgbas=%f,%f,%f,%f,%f",infoFloat[0],infoFloat[1],infoFloat[2],infoFloat[4],infoFloat[3]);
+//	NSLog(@"start %@",NSStringFromCGPoint(start));
+//	NSLog(@"end %@",NSStringFromCGPoint(end));
+
+
+	[clientObject sendDrawingInfoPen:penInfo start:start end:end];
+
+	
+}
+-(void)receivedDrawInfoPen:(NSMutableData *)penInfo start:(CGPoint)start end:(CGPoint)end{
+	[paintView drawFromServerStart:start toPoint:end penInfo:penInfo];
 }
 
 @end

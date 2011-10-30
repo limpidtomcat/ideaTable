@@ -104,6 +104,22 @@ static void CFSockCallBack(
 	[self sendData:buf];
 }
 
+//-(void)sendServerDrawInfoPen:(NSMutableData *)penInfo start:(CGPoint )start end:(CGPoint)end{
+-(void)sendDrawingInfoPen:(NSMutableData *)penInfo start:(CGPoint)start end:(CGPoint)end{
+	char buf[SendBufferSize];
+	buf[0]=7;
+	
+	char *currentPointer=buf+1;
+
+	memcpy(currentPointer, [penInfo bytes], sizeof(CGFloat)*5);
+	currentPointer+=sizeof(CGFloat)*5;
+
+	memcpy(currentPointer, &start, sizeof(CGPoint));
+	currentPointer+=sizeof(CGPoint);
+	memcpy(currentPointer, &end, sizeof(CGPoint));
+	[self sendData:buf];
+}
+
 -(void)sendMessagePageMovedTo:(NSUInteger)toPage{
 
 	char buf[SendBufferSize];
@@ -150,6 +166,7 @@ static void CFSockCallBack(
 		//나부터 생성
 		UserInfo *userInfo=[[UserInfo alloc] initWithName:[self myName] color:[UIColor colorWithRed:r/255.0f green:g/255.0f blue:b/255.0f alpha:1.0f] clientId:clientId];
 		[waitingRoomDelegate newUserCome:userInfo];
+		[UserInfo setMe:userInfo];
 		[UserInfo release];
 		
 		
@@ -257,6 +274,45 @@ static void CFSockCallBack(
 		NSLog(@"full room");
 		[waitingRoomDelegate goBack];
 	}
+	else if(firstByte==7){		// 누군가 그림
+		// 내화면에도 그리자
+
+		
+
+		CGFloat *penInfo=malloc(sizeof(CGFloat)*5);
+
+		CGPoint start,end;
+
+		memcpy(penInfo, buf+1, sizeof(CGFloat)*5);
+
+		memcpy(&start,buf+1+sizeof(CGFloat)*5,sizeof(CGPoint));
+		memcpy(&end,buf+1+sizeof(CGFloat)*5+sizeof(CGPoint),sizeof(CGPoint));
+
+		NSLog(@"rgbas=%f,%f,%f,%f,%f",penInfo[0],penInfo[1],penInfo[2],penInfo[4],penInfo[3]);
+		NSLog(@"start %@",NSStringFromCGPoint(start));
+		NSLog(@"end %@",NSStringFromCGPoint(end));
+
+//		-(void)receivedDrawInfoPen:(NSMutableData *)penInfo start:(CGPoint)start end:(CGPoint)end{
+
+		NSMutableData *penData=[NSMutableData dataWithBytes:penInfo length:sizeof(CGFloat)*5];
+		[presentationDelegate receivedDrawInfoPen:penData start:start end:end];
+
+		free(penInfo);
+/*		
+		 char buf[SendBufferSize];
+		 buf[0]=7;
+		 
+		 char *currentPointer=buf+1;
+ 
+		memcpy(currentPointer, [penInfo bytes], sizeof(CGFloat)*5);
+		currentPointer+=sizeof(CGFloat)*5;
+		
+		memcpy(currentPointer, &start, sizeof(CGPoint));
+		currentPointer+=sizeof(CGPoint);
+		memcpy(currentPointer, &end, sizeof(CGPoint));
+		[self sendData:buf];
+*/		
+	}
 	else{
 		NSLog(@"str - %s",buf);
 		UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"received" message:[NSString stringWithCString:buf encoding:NSUTF8StringEncoding] delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil];
@@ -283,6 +339,10 @@ static void CFSockCallBack(
         char buf[SendBufferSize] = {0};
         int sock = CFSocketGetNative(s);
 		int cnt=recv(sock, &buf, SendBufferSize, 0);
+		while(cnt!=0 && cnt<SendBufferSize){
+			cnt+=recv(sock,(&buf)+cnt,SendBufferSize-cnt,0);
+		}
+
 		if(cnt==0){	// Server killed
 			NSLog(@"connection lost");
 			[(ClientObject *)info closeSocket];

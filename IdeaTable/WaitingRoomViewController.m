@@ -143,7 +143,7 @@
 	if(port>0){
 		UILabel *labe=[[UILabel alloc] initWithFrame:CGRectMake(0, 0, 300, 30)];
 		[labe setText:[NSString stringWithFormat:@"%d",port]];
-//		[self.view addSubview:labe];
+		[self.view addSubview:labe];
 		[labe release];
 	}
 
@@ -266,7 +266,7 @@
 -(void)startTable:(id)sender{
 
 	PresentationController *presentationController=[[PresentationController alloc] initWithPdfUrl:tableInfo.pptFile];
-	
+	[presentationController setUserList:userList];
 	/** Present the pdf on screen in a modal view */
     [self presentModalViewController:presentationController.pdfViewController animated:YES]; 
     

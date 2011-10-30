@@ -112,10 +112,13 @@
 	
 	
 	DrawingData *drawingData;
+	
+	id presentationDelegate;
 }
 
 @property(nonatomic, readwrite) CGPoint location;
 @property(nonatomic, readwrite) CGPoint previousLocation;
+@property (nonatomic, assign) id presentationDelegate;
 
 
 //-(id)initWithFrame:(CGRect)frame photoSize:(CGSize)size delegate:(id)delegate;
@@ -135,6 +138,8 @@
 -(void)stopDrawing;
 -(void)resetData;
 -(void)setDrawingData:(DrawingData *)_drawingData;
+
+- (void) drawFromServerStart:(CGPoint)start toPoint:(CGPoint)end penInfo:(NSMutableData *)penInfo;
 
 @end
 

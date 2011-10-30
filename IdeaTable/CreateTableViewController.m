@@ -50,7 +50,7 @@
 {
     [super viewDidLoad];
 
-	[self setTitle:@"생성"];
+	[self setTitle:@"테이블 생성"];
 	
 	UIButton *customBtn=[UIButton buttonWithType:101];
 	[customBtn setTitle:@"Home" forState:UIControlStateNormal];

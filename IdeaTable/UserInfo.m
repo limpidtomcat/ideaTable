@@ -13,6 +13,8 @@
 @synthesize name;
 @synthesize penColor;
 
+static UserInfo *me=nil;
+
 -(id) initWithName:(NSString *)_name color:(UIColor *)_col clientId:(NSUInteger)_id
 {
 	self = [super init];
@@ -31,4 +33,10 @@
 	[super dealloc];
 }
 
++(void)setMe:(UserInfo *)userInfo{
+	me=userInfo;
+}
++(UserInfo *)me{
+	return me;
+}
 @end
