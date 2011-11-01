@@ -24,14 +24,13 @@
 	ServerObject *serverObject;
 	ClientObject *clientObject;
 	
-	NSUInteger port;
 }
 
 @property (nonatomic, retain) TableInfo *tableInfo;
 @property (nonatomic, retain) ServerObject *serverObject;
 
 
--(id)initWithClientObject:(ClientObject *)_clientObject port:(NSUInteger)_port isMaster:(BOOL)_master;
+-(id)initWithClientObject:(ClientObject *)_clientObject isMaster:(BOOL)_master;
 -(void)newUserCome:(UserInfo *)userInfo;
 -(void)startTable:(id)sender;
 -(void)reloadTitle;

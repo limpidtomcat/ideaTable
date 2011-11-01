@@ -98,35 +98,6 @@ static void CFSockCallBack(
 }
 
 
--(void)sendPresentationStartMessage{
-	char buf[SendBufferSize];
-	buf[0]=2;
-	[self sendData:buf];
-}
-
-//-(void)sendServerDrawInfoPen:(NSMutableData *)penInfo start:(CGPoint )start end:(CGPoint)end{
--(void)sendDrawingInfoPen:(NSMutableData *)penInfo start:(CGPoint)start end:(CGPoint)end{
-	char buf[SendBufferSize];
-	buf[0]=7;
-	
-	char *currentPointer=buf+1;
-
-	memcpy(currentPointer, [penInfo bytes], sizeof(CGFloat)*5);
-	currentPointer+=sizeof(CGFloat)*5;
-
-	memcpy(currentPointer, &start, sizeof(CGPoint));
-	currentPointer+=sizeof(CGPoint);
-	memcpy(currentPointer, &end, sizeof(CGPoint));
-	[self sendData:buf];
-}
-
--(void)sendMessagePageMovedTo:(NSUInteger)toPage{
-
-	char buf[SendBufferSize];
-	buf[0]=3;
-	memcpy(buf+1, &toPage, sizeof(toPage));
-	[self sendData:buf];
-}
 
 
 -(void)recvData:(char *)buf{
@@ -255,10 +226,10 @@ static void CFSockCallBack(
 		g=buf[len+4];
 		b=buf[len+5];
 
-		NSString *info=[NSString stringWithFormat:@"new user name%d - %s, color %d,%d,%d",len,name,r,g,b];
-		UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"new user" message:info delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil];
-		[alert	 show];
-		[alert release];
+//		NSString *info=[NSString stringWithFormat:@"new user name%d - %s, color %d,%d,%d",len,name,r,g,b];
+//		UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"new user" message:info delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil];
+//		[alert	 show];
+//		[alert release];
 		UserInfo *userInfo=[[UserInfo alloc] initWithName:[NSString stringWithCString:name encoding:NSUTF8StringEncoding] color:[UIColor colorWithRed:r/255.0f green:g/255.0f blue:b/255.0f alpha:1] clientId:userId];
 		[waitingRoomDelegate newUserCome:userInfo];
 		[userInfo release];
@@ -312,6 +283,16 @@ static void CFSockCallBack(
 		memcpy(currentPointer, &end, sizeof(CGPoint));
 		[self sendData:buf];
 */		
+	}
+	else if(firstByte==8){		// 종료
+		[presentationDelegate closeTable];
+	}
+	else if(firstByte==9){
+		[presentationDelegate closeTable];
+	}
+	else if(firstByte==10){
+		BOOL locked=buf[1];
+		[presentationDelegate drawLock:locked];
 	}
 	else{
 		NSLog(@"str - %s",buf);
@@ -378,6 +359,48 @@ static void CFSockCallBack(
 	}
 }
 
+#pragma public methods
+-(void)sendPresentationStartMessage{
+	char buf[SendBufferSize];
+	buf[0]=2;
+	[self sendData:buf];
+}
 
+//-(void)sendServerDrawInfoPen:(NSMutableData *)penInfo start:(CGPoint )start end:(CGPoint)end{
+-(void)sendDrawingInfoPen:(NSMutableData *)penInfo start:(CGPoint)start end:(CGPoint)end{
+	char buf[SendBufferSize];
+	buf[0]=7;
+	
+	char *currentPointer=buf+1;
+	
+	memcpy(currentPointer, [penInfo bytes], sizeof(CGFloat)*5);
+	currentPointer+=sizeof(CGFloat)*5;
+	
+	memcpy(currentPointer, &start, sizeof(CGPoint));
+	currentPointer+=sizeof(CGPoint);
+	memcpy(currentPointer, &end, sizeof(CGPoint));
+	[self sendData:buf];
+}
+
+-(void)sendMessagePageMovedTo:(NSUInteger)toPage{
+	
+	char buf[SendBufferSize];
+	buf[0]=3;
+	memcpy(buf+1, &toPage, sizeof(toPage));
+	[self sendData:buf];
+}
+
+-(void)sendPresentationOverMessage{
+	char buf[SendBufferSize];
+	buf[0]=8;
+	[self sendData:buf];
+}
+
+-(void)sendDrawLock:(BOOL)locked{
+	char buf[SendBufferSize];
+	buf[0]=10;
+	buf[1]=locked;
+	[self sendData:buf];
+}
 
 @end

@@ -15,10 +15,14 @@
 @interface PDFViewController : MFDocumentViewController<MFDocumentOverlayDataSource, MFDocumentViewControllerDelegate, FPKOverlayViewDataSource>
 {
 	BOOL isDrawing;
+	BOOL isToolbarHidden;
+	BOOL isClientDrawLocked;
+	BOOL isLocked;
 	UIButton *closeBtn;
 	UIButton *drawBtn;
 	
-
+	UIToolbar *toolBar;
+	UIScrollView *scrollView;
 	id presentationDelegate;
 }
 
@@ -26,5 +30,10 @@
 
 -(id)initWithDocumentManager:(MFDocumentManager *)aDocumentManager presentationDelegate:(id)_presentationDelegate;
 -(void)setScrollLock:(BOOL)isLocked;
+
+
+-(void)showToolbar;
+-(void)hideToolbar;
+-(void)drawOff;
 
 @end

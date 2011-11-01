@@ -14,20 +14,15 @@
 
 @synthesize  presentationDelegate;
 -(void)setScrollLock:(BOOL)isLocked{
-	UIScrollView *pageView=nil;
 	
-	for(UIView *view in self.view.subviews){
-		if([view isKindOfClass:[UIScrollView class]])
-			pageView=(UIScrollView *)view;
-	}
-
-	if(pageView){
-		[pageView setScrollEnabled:!isLocked];
+	if(scrollView){
+		[scrollView setScrollEnabled:!isLocked];
 	}
 
 }
 
 -(void)dealloc{
+	[toolBar release];
 	[closeBtn release];
 	[drawBtn release];
 
@@ -52,6 +47,24 @@
 }
 */
 
+-(void)viewWillAppear:(BOOL)animated{
+	NSLog(@"view will appear");
+	[super viewWillAppear:animated];
+	for(UIView *view in self.view.subviews){
+		NSLog(@"%@",view);
+		if([view isKindOfClass:[UIImageView class]])[view removeFromSuperview];
+	}
+}
+
+-(void)viewDidAppear:(BOOL)animated{
+	[super viewDidAppear:animated];
+	[[UIApplication sharedApplication] setIdleTimerDisabled:YES];
+}
+-(void)viewDidDisappear:(BOOL)animated{
+	[super viewDidDisappear:animated];
+	[[UIApplication sharedApplication] setIdleTimerDisabled:NO];
+}
+
 
 -(id)initWithDocumentManager:(MFDocumentManager *)aDocumentManager presentationDelegate:(id)_presentationDelegate{
 	self=[super	initWithDocumentManager:aDocumentManager];
@@ -65,6 +78,37 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+	
+	for(UIView *view in self.view.subviews){
+		if([view isKindOfClass:[UIScrollView class]])
+			scrollView=(UIScrollView *)view;
+	}
+	
+	
+	toolBar=[[UIToolbar alloc] initWithFrame:CGRectMake(0, self.view.bounds.size.height-44, self.view.bounds.size.width, 44)];
+	
+	UIBarButtonItem *home,*pen,*lock;
+	UIBarButtonItem *flexible,*fix;
+	flexible=[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+	fix=[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
+	[fix setWidth:10];
+	
+	home=[[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"53-house.png"] style:UIBarButtonItemStylePlain target:presentationDelegate action:@selector(closeTable)];
+	pen=[[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"187-pencil.png"] style:UIBarButtonItemStylePlain target:self action:@selector(toggleDraw)];
+	lock=[[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"54-lock.png"] style:UIBarButtonItemStylePlain target:self action:@selector(clientDrawLock)];
+//	[pen set
+
+	NSArray *items=[NSArray arrayWithObjects:home,flexible,lock,fix,pen, nil];
+	
+	[home release];
+	[pen release];
+	[lock release];
+	[flexible release];
+	[fix release];
+	[toolBar setItems:items];
+	[self.view addSubview:toolBar];
+	
+	
 	closeBtn=[[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
 	[closeBtn setTitle:@"Close" forState:UIControlStateNormal];
 	[closeBtn setFrame:CGRectMake(0, 0, 50, 50)];
@@ -91,26 +135,66 @@
     [self.view addGestureRecognizer:longPressGesture];
     [longPressGesture release];
 	
+	UITapGestureRecognizer *tapGestureRecognizer=[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapProcess:)];
+	[scrollView addGestureRecognizer:tapGestureRecognizer];
+	[tapGestureRecognizer release];
+}
+
+-(void)tapProcess:(UIGestureRecognizer *)recognizer{
+	for(UIView *temp in self.view.subviews){
+		NSLog(@"view - %@",temp);
+	}
+	
+	if(isToolbarHidden)[self showToolbar];
+	else [self hideToolbar];
+}
+
+
+-(void)clientDrawLock{
+	isClientDrawLocked=!isClientDrawLocked;
+	[presentationDelegate sendServerDrawLock:isClientDrawLocked];
+}
+
+-(void)showToolbar{
+	[toolBar setHidden:NO];
+	isToolbarHidden=NO;
+}
+
+-(void)hideToolbar{
+	[toolBar setHidden:YES];
+	isToolbarHidden=YES;
+}
+
+-(void)drawOn{
+	if(isLocked)return;
+	[drawBtn setSelected:YES];
+	[self setScrollLock:YES];
+	[presentationDelegate setDrawing:YES];
+}
+-(void)drawOff{
+	[drawBtn setSelected:NO];
+	[self setScrollLock:NO];
+	[presentationDelegate setDrawing:NO];
+}
+
+-(void)setDrawLock:(BOOL)locked{
+	if(locked)[self drawOff];
+	isLocked=locked;
 }
 
 -(void)toggleDraw{
 	isDrawing=!isDrawing;
-	[drawBtn setSelected:isDrawing];
-
-	
-//	NSStringFromCGRect(<#CGRect rect#>)
-//	NSLog(@"페이지 크기 - %@",nsstring)
-	
-	[self setScrollLock:isDrawing];
-	
-
-	[presentationDelegate setDrawing:isDrawing];
+	if(isDrawing)[self drawOn];
+	else [self drawOff];
 	
 }
 
 
 - (void)viewDidUnload
 {
+	scrollView=nil;
+	[toolBar release];
+	toolBar=nil;
 	[closeBtn release];
 	closeBtn=nil;
 	[drawBtn release];
@@ -168,6 +252,10 @@
 	NSLog(@"received - %d",temp);
 	NSLog(@"current page = %d",[self page]);
 	
+}
+
+-(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event{
+	NSLog(@"touches began!!!!");
 }
 
 @end

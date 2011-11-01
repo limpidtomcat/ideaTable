@@ -57,6 +57,7 @@
 	CFRelease(listeningSocket);
 	CFRunLoopRemoveSource(CFRunLoopGetCurrent(), listeningRunLoopSourceRef, kCFRunLoopCommonModes);
 	CFRelease(listeningRunLoopSourceRef);
+	isListening=NO;
 }
 
 -(void)closeServer{
@@ -131,6 +132,15 @@
 		
 		CFSocketRef s=p->socketRef;
 		if(s==socket)continue;
+		[self sendData:buf toClient:s];
+	}
+}
+
+-(void)sendEveryoneData:(char *)buf{
+	for(NSValue *val in connectedClients){
+		ConnectedClient *p=[val pointerValue];
+		
+		CFSocketRef s=p->socketRef;
 		[self sendData:buf toClient:s];
 	}
 }
@@ -257,6 +267,13 @@
 	else if(firstByte==7){	// Drawing
 		[self sendData:buf exceptClient:s];
 //		[self sendData:buf toClient:s];
+	}
+	else if (firstByte==8){	// Presentation over
+		[self sendData:buf exceptClient:s];
+		[self closeServer];
+	}
+	else if(firstByte==10){	// Drawing Lock
+		[self sendData:buf exceptClient:s];
 	}
 	else{
 		NSLog(@"str - %s",buf);
@@ -481,6 +498,10 @@ static void CFListeningSockCallBack (
 
 -(void)tableTimeOut:(NSTimer *)timer{
 	NSLog(@"table time out");
+	
+	char sendBuf[SendBufferSize]={0};
+	sendBuf[0]=9;
+	[self sendEveryoneData:sendBuf];
 }
 
 @end

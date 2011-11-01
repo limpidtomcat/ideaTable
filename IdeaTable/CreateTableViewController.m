@@ -422,19 +422,16 @@
 	TableInfo *tableInfo=[[TableInfo alloc] init];
 	[tableInfo setTitle:tableTitle];
 	[tableInfo setMaxUser:member];
-	[tableInfo setQuitTime:5];
+	[tableInfo setQuitTime:time*60];
 //	NSTime *quitTimer=[[NSTimer timerWithTimeInterval:<#(NSTimeInterval)#> target:<#(id)#> selector:<#(SEL)#> userInfo:<#(id)#> repeats:<#(BOOL)#>
 	
-//	ServerObject *serverObject=[[ServerObject alloc] initWithTableTitle:tableTitle maxUserCount:member];
 	ServerObject *serverObject=[[ServerObject alloc] initWithTableInfo:tableInfo];
 	[serverObject setPptFile:pptFileURL];
-	NSLog(@"주소 : %@",[ServerObject localIPAddress]);
-	NSLog(@"포트 : %d",[serverObject port]);
 	
 	ClientObject *clientObject=[[ClientObject alloc] initWithAddress:@"127.0.0.1" port:[serverObject port] tableInfo:tableInfo];
 	
 	
-	WaitingRoomViewController *viewController=[[WaitingRoomViewController alloc] initWithClientObject:clientObject port:[serverObject port] isMaster:YES];
+	WaitingRoomViewController *viewController=[[WaitingRoomViewController alloc] initWithClientObject:clientObject isMaster:YES];
 	[viewController setTableInfo:tableInfo];
 	[tableInfo release];
 	

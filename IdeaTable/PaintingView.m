@@ -450,6 +450,7 @@
 // Handles the start of a touch
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
+	NSLog(@"touch!");
 	//	CGRect bounds = [self bounds];
 	if([touches count]==3){
 		[super touchesBegan:touches withEvent:event];

@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		E12187F21434A67300F5156F /* ClientObject.m in Sources */ = {isa = PBXBuildFile; fileRef = E12187F11434A67300F5156F /* ClientObject.m */; };
+		E13B4B6A145D6D4B00975702 /* 53-house.png in Resources */ = {isa = PBXBuildFile; fileRef = E13B4B69145D6D4B00975702 /* 53-house.png */; };
+		E13B4B6C145D6DC000975702 /* 187-pencil.png in Resources */ = {isa = PBXBuildFile; fileRef = E13B4B6B145D6DC000975702 /* 187-pencil.png */; };
+		E13B4B7A145DA38D00975702 /* 54-lock.png in Resources */ = {isa = PBXBuildFile; fileRef = E13B4B79145DA38D00975702 /* 54-lock.png */; };
 		E15150F114502C3600B36295 /* PaintingView.m in Sources */ = {isa = PBXBuildFile; fileRef = E15150F014502C3600B36295 /* PaintingView.m */; };
 		E15150F414502DFA00B36295 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E15150F314502DFA00B36295 /* QuartzCore.framework */; };
 		E15150F614502E1C00B36295 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E15150F514502E1C00B36295 /* OpenGLES.framework */; };
@@ -47,6 +50,9 @@
 /* Begin PBXFileReference section */
 		E12187F01434A67300F5156F /* ClientObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClientObject.h; sourceTree = "<group>"; };
 		E12187F11434A67300F5156F /* ClientObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClientObject.m; sourceTree = "<group>"; };
+		E13B4B69145D6D4B00975702 /* 53-house.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "53-house.png"; sourceTree = "<group>"; };
+		E13B4B6B145D6DC000975702 /* 187-pencil.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "187-pencil.png"; sourceTree = "<group>"; };
+		E13B4B79145DA38D00975702 /* 54-lock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "54-lock.png"; sourceTree = "<group>"; };
 		E15150EF14502C3600B36295 /* PaintingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PaintingView.h; sourceTree = "<group>"; };
 		E15150F014502C3600B36295 /* PaintingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PaintingView.m; sourceTree = "<group>"; };
 		E15150F314502DFA00B36295 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -119,9 +125,55 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E13B4B63145D60BD00975702 /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				E1F4F84E1431A5410032D2A0 /* IdeaTableAppDelegate.h */,
+				E1F4F84F1431A5410032D2A0 /* IdeaTableAppDelegate.m */,
+				E1F4F8511431A5410032D2A0 /* MainWindow.xib */,
+				E1F4F8541431A5410032D2A0 /* IdeaTableViewController.h */,
+				E1F4F8551431A5410032D2A0 /* IdeaTableViewController.m */,
+				E1F4F8571431A5410032D2A0 /* IdeaTableViewController.xib */,
+			);
+			name = Main;
+			sourceTree = "<group>";
+		};
+		E13B4B65145D613F00975702 /* Entering */ = {
+			isa = PBXGroup;
+			children = (
+				E1F4F8631431AB630032D2A0 /* CreateTableViewController.h */,
+				E1F4F8641431AB630032D2A0 /* CreateTableViewController.m */,
+				E1F4F8661431BCE40032D2A0 /* WaitingRoomViewController.h */,
+				E1F4F8671431BCE40032D2A0 /* WaitingRoomViewController.m */,
+				E1E64DFB1434C76000952186 /* JoinViewController.h */,
+				E1E64DFC1434C76000952186 /* JoinViewController.m */,
+				E1E64DFD1434C76000952186 /* JoinViewController.xib */,
+				E169425C143C874C002B5029 /* PptFileSelectController.h */,
+				E169425D143C874C002B5029 /* PptFileSelectController.m */,
+			);
+			name = Entering;
+			sourceTree = "<group>";
+		};
+		E13B4B66145D616C00975702 /* DataStructure */ = {
+			isa = PBXGroup;
+			children = (
+				E1F4F86D1431D8770032D2A0 /* UserInfo.h */,
+				E1F4F86E1431D8770032D2A0 /* UserInfo.m */,
+				E16942981442AAED002B5029 /* TableInfo.h */,
+				E16942991442AAED002B5029 /* TableInfo.m */,
+				E1AF96CC14542083008162AC /* DrawingData.h */,
+				E1AF96CD14542083008162AC /* DrawingData.m */,
+				E16942971442AA45002B5029 /* Network */,
+			);
+			name = DataStructure;
+			sourceTree = "<group>";
+		};
 		E15150FA14505AEA00B36295 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				E13B4B6B145D6DC000975702 /* 187-pencil.png */,
+				E13B4B79145DA38D00975702 /* 54-lock.png */,
+				E13B4B69145D6D4B00975702 /* 53-house.png */,
 				E15150FB14505AF100B36295 /* Particle.png */,
 			);
 			path = Images;
@@ -157,11 +209,20 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
-		E1AF96D014543574008162AC /* New Group */ = {
+		E1AF96D014543574008162AC /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
+				E1E64E1514355FDE00952186 /* PDFViewController.h */,
+				E1E64E1614355FDF00952186 /* PDFViewController.m */,
+				E1AF96D6145439B1008162AC /* PresentationController.h */,
+				E1AF96D7145439B1008162AC /* PresentationController.m */,
+				E15150EF14502C3600B36295 /* PaintingView.h */,
+				E15150F014502C3600B36295 /* PaintingView.m */,
+				E1AF96D114543632008162AC /* CreateMemoController.h */,
+				E1AF96D214543632008162AC /* CreateMemoController.m */,
+				E1AF96D314543632008162AC /* CreateMemoController.xib */,
 			);
-			name = "New Group";
+			name = Presentation;
 			sourceTree = "<group>";
 		};
 		E1F4F8301431A5410032D2A0 = {
@@ -197,45 +258,17 @@
 		E1F4F8451431A5410032D2A0 /* IdeaTable */ = {
 			isa = PBXGroup;
 			children = (
-				E1AF96D014543574008162AC /* New Group */,
+				E13B4B66145D616C00975702 /* DataStructure */,
+				E13B4B63145D60BD00975702 /* Main */,
+				E13B4B65145D613F00975702 /* Entering */,
+				E1AF96D014543574008162AC /* Presentation */,
 				E15150FA14505AEA00B36295 /* Images */,
-				E16942971442AA45002B5029 /* Network */,
 				E1F4F85F1431A56F0032D2A0 /* iPad */,
-				E1F4F84E1431A5410032D2A0 /* IdeaTableAppDelegate.h */,
-				E1F4F84F1431A5410032D2A0 /* IdeaTableAppDelegate.m */,
-				E1F4F8511431A5410032D2A0 /* MainWindow.xib */,
-				E1F4F8541431A5410032D2A0 /* IdeaTableViewController.h */,
-				E1F4F8551431A5410032D2A0 /* IdeaTableViewController.m */,
-				E1F4F8571431A5410032D2A0 /* IdeaTableViewController.xib */,
 				E1F4F8461431A5410032D2A0 /* Supporting Files */,
-				E1F4F8631431AB630032D2A0 /* CreateTableViewController.h */,
-				E1F4F8641431AB630032D2A0 /* CreateTableViewController.m */,
-				E1F4F8661431BCE40032D2A0 /* WaitingRoomViewController.h */,
-				E1F4F8671431BCE40032D2A0 /* WaitingRoomViewController.m */,
-				E1E64DFB1434C76000952186 /* JoinViewController.h */,
-				E1E64DFC1434C76000952186 /* JoinViewController.m */,
-				E1E64DFD1434C76000952186 /* JoinViewController.xib */,
-				E1F4F86D1431D8770032D2A0 /* UserInfo.h */,
-				E1F4F86E1431D8770032D2A0 /* UserInfo.m */,
-				E1E64E1514355FDE00952186 /* PDFViewController.h */,
-				E1E64E1614355FDF00952186 /* PDFViewController.m */,
-				E1AF96D6145439B1008162AC /* PresentationController.h */,
-				E1AF96D7145439B1008162AC /* PresentationController.m */,
-				E169425C143C874C002B5029 /* PptFileSelectController.h */,
-				E169425D143C874C002B5029 /* PptFileSelectController.m */,
 				E1694259143C8739002B5029 /* OptionMenuViewController.h */,
 				E169425A143C8739002B5029 /* OptionMenuViewController.m */,
 				E1694287144190F3002B5029 /* ClearTableViewController.h */,
 				E1694288144190F3002B5029 /* ClearTableViewController.m */,
-				E16942981442AAED002B5029 /* TableInfo.h */,
-				E16942991442AAED002B5029 /* TableInfo.m */,
-				E15150EF14502C3600B36295 /* PaintingView.h */,
-				E15150F014502C3600B36295 /* PaintingView.m */,
-				E1AF96CC14542083008162AC /* DrawingData.h */,
-				E1AF96CD14542083008162AC /* DrawingData.m */,
-				E1AF96D114543632008162AC /* CreateMemoController.h */,
-				E1AF96D214543632008162AC /* CreateMemoController.m */,
-				E1AF96D314543632008162AC /* CreateMemoController.xib */,
 			);
 			path = IdeaTable;
 			sourceTree = "<group>";
@@ -322,6 +355,9 @@
 				E1728D8F145025A000A6FD6C /* Snippets.txt in Resources */,
 				E15150FC14505AF100B36295 /* Particle.png in Resources */,
 				E1AF96D514543632008162AC /* CreateMemoController.xib in Resources */,
+				E13B4B6A145D6D4B00975702 /* 53-house.png in Resources */,
+				E13B4B6C145D6DC000975702 /* 187-pencil.png in Resources */,
+				E13B4B7A145DA38D00975702 /* 54-lock.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

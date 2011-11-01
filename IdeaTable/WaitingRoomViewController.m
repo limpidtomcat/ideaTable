@@ -18,16 +18,13 @@
 
 @synthesize  tableInfo;
 
--(id)initWithClientObject:(ClientObject *)_clientObject port:(NSUInteger)_port isMaster:(BOOL)_master{
+-(id)initWithClientObject:(ClientObject *)_clientObject isMaster:(BOOL)_master{
 	self = [super init];
 	if(self){
 		isMaster=_master;
-		port=_port;
 		clientObject=[_clientObject retain];
 		[clientObject setWaitingRoomDelegate:self];
 		
-		//		clientObject=[[ClientObject alloc] initWithAddress:<#(NSString *)#> port:<#(NSUInteger)#>];
-        // Custom initialization
 		userList=[[NSMutableArray alloc] init];
 		
 	}
@@ -139,13 +136,6 @@
 	userTable.delegate=self;
 	userTable.dataSource=self;
 	[self.view addSubview:userTable];
-	NSLog(@"ppp - %d",port);
-	if(port>0){
-		UILabel *labe=[[UILabel alloc] initWithFrame:CGRectMake(0, 0, 300, 30)];
-		[labe setText:[NSString stringWithFormat:@"%d",port]];
-		[self.view addSubview:labe];
-		[labe release];
-	}
 
 	
 }

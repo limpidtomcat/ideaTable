@@ -106,7 +106,7 @@
 	TableInfo *tableInfo=[[TableInfo alloc] init];
 	
 	ClientObject *clientObject=[[ClientObject alloc] initWithAddress:[ipField text] port:[[portField text] intValue] tableInfo:tableInfo];
-	WaitingRoomViewController *viewController=[[WaitingRoomViewController alloc] initWithClientObject:clientObject port:0 isMaster:NO];
+	WaitingRoomViewController *viewController=[[WaitingRoomViewController alloc] initWithClientObject:clientObject isMaster:NO];
 	[viewController setTableInfo:tableInfo];
 	[self.navigationController pushViewController:viewController animated:YES];
 	[tableInfo release];
@@ -117,7 +117,7 @@
 
 -(void)autoJoinToAddr:(NSString *)addr port:(NSUInteger)port{
 	ClientObject *clientObject=[[ClientObject alloc] initWithAddress:addr port:port];
-	WaitingRoomViewController *viewController=[[WaitingRoomViewController alloc] initWithClientObject:clientObject port:0 isMaster:NO];
+	WaitingRoomViewController *viewController=[[WaitingRoomViewController alloc] initWithClientObject:clientObject isMaster:NO];
 	[self.navigationController pushViewController:viewController animated:YES];
 	[viewController release];
 	[clientObject release];
@@ -125,7 +125,7 @@
 }
 
 -(void)joinComplete:(ClientObject *)clientObject{
-	WaitingRoomViewController *viewController=[[WaitingRoomViewController alloc] initWithClientObject:clientObject port:0 isMaster:NO];
+	WaitingRoomViewController *viewController=[[WaitingRoomViewController alloc] initWithClientObject:clientObject isMaster:NO];
 	
 }
 
@@ -233,7 +233,7 @@
 	TableInfo *tableInfo=[[TableInfo alloc] init];
 	
 	ClientObject *clientObject=[[ClientObject alloc] initWithAddress:ip port:netService.port tableInfo:tableInfo];
-	WaitingRoomViewController *viewController=[[WaitingRoomViewController alloc] initWithClientObject:clientObject port:0 isMaster:NO];
+	WaitingRoomViewController *viewController=[[WaitingRoomViewController alloc] initWithClientObject:clientObject isMaster:NO];
 	[viewController setTableInfo:tableInfo];
 	[self.navigationController pushViewController:viewController animated:YES];
 	[tableInfo release];

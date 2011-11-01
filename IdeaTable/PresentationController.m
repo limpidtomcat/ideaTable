@@ -131,9 +131,14 @@
 }
 
 -(void)closeTable{
+	if(isMaster)[clientObject sendPresentationOverMessage];
 	[waitingViewDelegate endTable:pdfViewController];
 }
 
+-(void)drawLock:(BOOL)locked{
+	NSLog(@"lock! - %d",locked);
+	[pdfViewController setDrawLock:locked];
+}
 
 #pragma MFDocumentViewControllerDelegate methods
 
@@ -162,6 +167,10 @@
 
 	
 }
+-(void)sendServerDrawLock:(BOOL)locked{
+	[clientObject sendDrawLock:locked];
+}
+
 -(void)receivedDrawInfoPen:(NSMutableData *)penInfo start:(CGPoint)start end:(CGPoint)end{
 	[paintView drawFromServerStart:start toPoint:end penInfo:penInfo];
 }

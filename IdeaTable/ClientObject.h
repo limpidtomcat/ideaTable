@@ -32,11 +32,14 @@
 
 - (id)initWithAddress:(NSString *)address port:(NSUInteger)port tableInfo:(TableInfo *)_tableInfo;
 
+-(void)closeSocket;
+
 -(void)sendPresentationStartMessage;
 //-(void)sendPageMoveMessageFrom:(NSUInteger)fromPage to:(NSUInteger)toPage;
 -(void)sendMessagePageMovedTo:(NSUInteger)toPage;
--(void)closeSocket;
 -(void)sendDrawingInfoPen:(NSMutableData *)penInfo start:(CGPoint)start end:(CGPoint)end;
+-(void)sendPresentationOverMessage;
+-(void)sendDrawLock:(BOOL)locked;
 
 @end
 
