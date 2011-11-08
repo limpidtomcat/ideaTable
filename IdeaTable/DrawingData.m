@@ -27,8 +27,8 @@
 		}else{
 			drawData=[[NSMutableArray alloc] init];
 		}
-		
 	 */
+		
 		// 펜 그리기 정보 배열을 생성한다
 		[self parseFromDrawData];
 	
@@ -66,11 +66,11 @@
 		
 		free(dataArr);
 	}
-	
+
 	infoArr=[[NSMutableArray alloc] init];
 	countArr=[[NSMutableArray alloc] init];
 	dataArr=malloc( ([drawData count] / 2) * sizeof(GLfloat*));
-	
+
 	// 선분 개수만큼 반복
 	for(NSUInteger i=0;i<[drawData count];i+=2){
 		// 펜 속성 정보 분리
@@ -91,41 +91,77 @@
 			CGPoint end=*(point+1);
 			
 			NSUInteger			count, i;
-			
+
 			// Allocate vertex array buffer
 			if(vertexBuffer == NULL)
 				vertexBuffer = malloc(vertexMax * 2 * sizeof(GLfloat));
-			
-			
+
 			// Add points to the buffer so there are drawing points every X pixels
 			count = MAX(ceilf(sqrtf((end.x - start.x) * (end.x - start.x) + (end.y - start.y) * (end.y - start.y)) / kBrushPixelStep), 1);
-			
+
 			for(i = 0; i < count; ++i) {
 				if(vertexCount == vertexMax) {
 					vertexMax = 2 * vertexMax;
 					vertexBuffer = realloc(vertexBuffer, vertexMax * 2 * sizeof(GLfloat));
 				}
-				
+
 				vertexBuffer[2 * vertexCount + 0] = start.x + (end.x - start.x) * ((GLfloat)i / (GLfloat)count);
 				vertexBuffer[2 * vertexCount + 1] = start.y + (end.y - start.y) * ((GLfloat)i / (GLfloat)count);
-				
+
 				vertexCount += 1;
 			}
 		}
-		
-		
+
 		dataArr[i/2]=vertexBuffer;
 		[countArr addObject:[NSNumber numberWithInt:vertexCount]];
-		
-		
+
 	}
 }
 
-//-(void)saveDrawing{
-//	NSString *_fileName = [pathStr stringByAppendingPathComponent:[NSString stringWithFormat:DRAW_DATA_PATH,page]];
-//	
-//	[drawData writeToFile:_fileName atomically:YES];
-//	
-//}
+-(void)encodeWithCoder:(NSCoder *)encoder{
+	[encoder encodeObject:infoArr forKey:@"infoArray"];
+	[encoder encodeObject:countArr forKey:@"countArray"];
+
+	NSMutableData *data=[[NSMutableData alloc] init];
+	for(NSUInteger i=0;i<[countArr count];i++){
+		GLfloat *vertexBuffer=dataArr[i];
+
+		[data appendBytes:vertexBuffer length:[[countArr objectAtIndex:i] intValue]*2*sizeof(GLfloat)];
+	}
+	[encoder encodeObject:data forKey:@"dataArray"];
+	[data release];
+
+}
+
+- (id)initWithCoder:(NSCoder *)decoder {
+    self = [super init];
+    if (self != nil) {
+        infoArr=[[decoder decodeObjectForKey:@"infoArray"] retain];
+        countArr=[[decoder decodeObjectForKey:@"countArray"] retain];
+		dataArr=malloc( [countArr count] * sizeof(GLfloat*));
+
+		NSData *data=[decoder decodeObjectForKey:@"dataArray"];
+//		NSLog(@"decoding - %d size - %d", [infoArr count],[data length]);
+		NSUInteger index=0;
+		
+		for(NSUInteger i=0;i<[countArr count];i++){
+			GLfloat *vertexBuffer= malloc([[countArr objectAtIndex:i] intValue] * 2 * sizeof(GLfloat));
+			[data getBytes:vertexBuffer range:NSMakeRange(index, [[countArr objectAtIndex:i] intValue] * 2 * sizeof(GLfloat))];
+			index+=[[countArr objectAtIndex:i] intValue] * 2 * sizeof(GLfloat);
+
+			const CGFloat *infoFloat=[[infoArr objectAtIndex:i] bytes];
+			
+//			NSLog(@"%f %f %f %f %f",infoFloat[0],infoFloat[1],infoFloat[2],infoFloat[3],infoFloat[4]);
+			
+//			for(NSUInteger j=0;j<[[countArr objectAtIndex:i] intValue];j++){
+//				NSLog(@"%f %f",vertexBuffer[j*2],vertexBuffer[j*2+1]);
+//			}
+			dataArr[i]=vertexBuffer;
+		}
+		
+    }
+    return self;
+}   
+
 
 @end

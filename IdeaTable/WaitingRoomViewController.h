@@ -24,6 +24,8 @@
 	ServerObject *serverObject;
 	ClientObject *clientObject;
 	
+	UIBarButtonItem *startBtn;
+	
 }
 
 @property (nonatomic, retain) TableInfo *tableInfo;

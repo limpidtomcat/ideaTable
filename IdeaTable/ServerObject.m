@@ -107,7 +107,7 @@
 }
 
 -(ConnectedClient *)getClientBySocketRef:(CFSocketRef)s{
-	ConnectedClient *client;
+	ConnectedClient *client=-1;
 	for(NSValue *v in connectedClients){
 		ConnectedClient *k=[v pointerValue];
 		if(k->socketRef==s){
@@ -178,6 +178,7 @@
 		strncpy(client->name, buf+2, len);
 		client->name[len]='\0';
 
+		// 다른 사용자들에게 새 사용자 접속을 알린다
 		char sendBuf[SendBufferSize]={0};
 		NSUInteger index=0;
 		
@@ -190,6 +191,7 @@
 		sendBuf[index++]=client->r;
 		sendBuf[index++]=client->g;
 		sendBuf[index++]=client->b;
+		sendBuf[index++]=NO;
 		[self sendData:sendBuf exceptClient:s];
 		
 
@@ -198,6 +200,7 @@
 		NSData *pptData=[NSData dataWithContentsOfURL:pptFile];
 
 
+		// 접속한 사용자에게 방 정보 보내주기
 		index=0;
 		// first Byte
 		sendBuf[index++]=1;
@@ -229,6 +232,9 @@
 		sendBuf[index++]=client->g;
 		sendBuf[index++]=client->b;
 		
+		// audio record
+		sendBuf[index++]=tableInfo.shouldRecord;
+		
 		// user count
 		Byte userCount=[connectedClients count];
 		sendBuf[index++]= userCount-1;
@@ -244,6 +250,7 @@
 			sendBuf[index++]=user->r;
 			sendBuf[index++]=user->g;
 			sendBuf[index++]=user->b;
+			sendBuf[index++]=user->pptFileDownloaded;
 		}
 		[self sendData:sendBuf toClient:s];
 
@@ -273,6 +280,11 @@
 		[self closeServer];
 	}
 	else if(firstByte==10){	// Drawing Lock
+		[self sendData:buf exceptClient:s];
+	}
+	else if(firstByte==11){	// PPT File Download Complte
+		NSLog(@"he said download complete. %d",[self getClientBySocketRef:s]->clientId);
+		[self getClientBySocketRef:s]->pptFileDownloaded=YES;
 		[self sendData:buf exceptClient:s];
 	}
 	else{

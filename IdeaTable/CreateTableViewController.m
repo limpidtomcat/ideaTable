@@ -21,7 +21,7 @@
         tableTitle=[[NSString alloc] initWithString:@"NO TITLE"];
 		member=2;
 		time=10;
-		record=YES;
+
 		members = [[NSArray alloc] initWithObjects:@"2명",@"3명",@"4명",@"5명",@"6명",@"7명",@"8명", nil];
 		times = [[NSArray alloc] initWithObjects:@"10분",@"15분",@"20분",@"25분",@"30분",@"35분",@"40분",@"45분",@"50분", @"55분", nil];
         timeRow=0;
@@ -66,8 +66,8 @@
 	[self.navigationItem setRightBarButtonItem:doneBtn];
 	[doneBtn release];
 	
-	recordSwitch=[[UISwitch alloc] initWithFrame:CGRectMake(202,8, 0, 0)];
-	[recordSwitch setOn:record];
+	recordSwitch=[[UISwitch alloc] init];
+	[recordSwitch setOn:YES];
 	
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -144,6 +144,7 @@
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier] autorelease];
     }
+//	cell.
 	if([indexPath row]==0){
         [cell addSubview:titleTextField];
 		cell.textLabel.text=@"제목";
@@ -161,14 +162,16 @@
 		cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
 	}
 	else if([indexPath row]==3){
-		cell.textLabel.text=@"PPT File";
+		cell.textLabel.text=@"Presentation File";
 		cell.detailTextLabel.text=pptFile;
 		cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
 	}
 	else if([indexPath row]==4){
 		cell.textLabel.text=@"녹음";
 		cell.accessoryType=UITableViewCellAccessoryNone;
-		[cell addSubview:recordSwitch];
+//		[recordSwitch setCenter:CGPointMake(cell.contentView.frame.size.width-50, cell.contentView.frame.size.height/2)];
+//		[cell.contentView addSubview:recordSwitch];
+		cell.accessoryView=recordSwitch;
 		cell.selectionStyle=UITableViewCellSelectionStyleNone;
 	}
     // Configure the cell...
@@ -423,7 +426,7 @@
 	[tableInfo setTitle:tableTitle];
 	[tableInfo setMaxUser:member];
 	[tableInfo setQuitTime:time*60];
-//	NSTime *quitTimer=[[NSTimer timerWithTimeInterval:<#(NSTimeInterval)#> target:<#(id)#> selector:<#(SEL)#> userInfo:<#(id)#> repeats:<#(BOOL)#>
+	[tableInfo setShouldRecord:recordSwitch.isOn];
 	
 	ServerObject *serverObject=[[ServerObject alloc] initWithTableInfo:tableInfo];
 	[serverObject setPptFile:pptFileURL];

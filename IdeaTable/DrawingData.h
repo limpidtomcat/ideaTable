@@ -13,7 +13,7 @@
 
 #define kBrushPixelStep		3
 
-@interface DrawingData : NSObject
+@interface DrawingData : NSObject<NSCoding>
 {
 	NSMutableArray		*drawData;			// 펜 그리기 전체 정보
 	

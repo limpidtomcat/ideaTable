@@ -12,28 +12,22 @@
 #import "ClientObject.h"
 #import "PaintingView.h"
 
-@interface PDFViewController : MFDocumentViewController<MFDocumentOverlayDataSource, MFDocumentViewControllerDelegate, FPKOverlayViewDataSource>
+@interface PDFViewController : MFDocumentViewController
 {
-	BOOL isDrawing;
 	BOOL isToolbarHidden;
-	BOOL isClientDrawLocked;
-	BOOL isLocked;
-	UIButton *closeBtn;
-	UIButton *drawBtn;
 	
 	UIToolbar *toolBar;
 	UIScrollView *scrollView;
-	id presentationDelegate;
+
 }
 
-@property (nonatomic, assign) id presentationDelegate;
+@property (nonatomic, readonly) UIToolbar *toolBar;
 
--(id)initWithDocumentManager:(MFDocumentManager *)aDocumentManager presentationDelegate:(id)_presentationDelegate;
+-(id)initWithDocumentManager:(MFDocumentManager *)aDocumentManager;
 -(void)setScrollLock:(BOOL)isLocked;
 
 
--(void)showToolbar;
--(void)hideToolbar;
--(void)drawOff;
+//-(void)showToolbar;
+//-(void)hideToolbar;
 
 @end

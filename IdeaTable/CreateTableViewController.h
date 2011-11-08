@@ -15,7 +15,7 @@
 	NSString	*tableTitle;
 	NSUInteger	member;
 	NSUInteger	time;
-	BOOL		record;
+
     NSUInteger  memberRow;
     NSUInteger  timeRow;
 	

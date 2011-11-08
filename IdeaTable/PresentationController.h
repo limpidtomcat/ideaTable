@@ -10,23 +10,38 @@
 #import "PDFViewController.h"
 #import "PaintingView.h"
 #import "DrawingData.h"
+#import "AudioRecordController.h"
+#import "TableInfo.h"
 
 @interface PresentationController : NSObject<FPKOverlayViewDataSource, MFDocumentViewControllerDelegate>
 {
 	BOOL isMaster;
+	BOOL drawLock;
+
+	TableInfo *tableInfo;
+
 	ClientObject *clientObject;
 	MFDocumentManager *documentManaber;
 	PDFViewController *pdfViewController;
 	PaintingView *paintView;
+
+	AudioRecordController *audioRecordController;
+
 	NSMutableArray *drawingDataArray;
 	CGSize pdfSize;
-	
+
+//	NSString *dataFileName;
+
 	NSArray *userList;
-	
+
 	id waitingViewDelegate;
+
+	NSArray *mainItems;
+	NSArray *drawingItems;
+
 }
 
-@property (nonatomic, assign) BOOL isMaster;
+@property (nonatomic, retain) TableInfo *tableInfo;
 @property (nonatomic, retain) ClientObject *clientObject;
 @property (nonatomic, retain) MFDocumentManager *documentManager;
 @property (nonatomic, retain) PDFViewController *pdfViewController;
@@ -35,6 +50,6 @@
 @property (nonatomic, retain) NSArray *userList;
 @property (nonatomic, assign) id waitingViewDelegate;
 
--(id)initWithPdfUrl:(NSURL *)url;
+-(id)initWithPdfUrl:(NSURL *)url isMaster:(BOOL)_isMaster tableInfo:(TableInfo *)_tableInfo;
 -(void)setPage:(NSUInteger)page;
 @end

@@ -337,13 +337,13 @@
 		[presentationDelegate sendServerDrawInfoPen:currentPenInfo start:start end:end];
 		
 
-	glColor4f(brushRed,
-			  brushGreen,
-			  brushBlue,
-			  1
+	glColor4f(brushRed*brushAlpha,
+			  brushGreen*brushAlpha,
+			  brushBlue*brushAlpha,
+			  brushAlpha
 			  );
-	if(1>0)glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-	if(1==0)glBlendFunc(1, 0);
+	if(brushAlpha>0)glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+	if(brushAlpha==0)glBlendFunc(1, 0);
 	
 	glPointSize(width/5.0f);
 	
@@ -425,8 +425,6 @@
 // 화면과 그려진 데이터를 지운다
 -(void)resetData{
 	
-//	pageInfo.drawData = [[[NSMutableArray alloc] init] autorelease];
-//	[pageInfo parseFromDrawData];
 	[self erase];
 }
 
@@ -539,11 +537,9 @@
 		[self renderLineFromPoint:location toPoint:location];
 	}
 	
-//	[pageInfo. drawData addObject:currentPenInfo];
 	[currentPenInfo release];
 	currentPenInfo=nil;
 	
-//	[pageInfo.drawData addObject:currentDrawing];
 	[currentDrawing release];
 	currentDrawing=nil;
 }
@@ -553,10 +549,8 @@
 {
 	
 	if (!firstTouch&&currentPenInfo&&currentDrawing) {
-//		[pageInfo. drawData addObject:currentPenInfo];
 		[currentPenInfo release];
 		
-//		[pageInfo. drawData addObject:currentDrawing];
 		[currentDrawing release];
 	}
 	// If appropriate, add code necessary to save the state of the application.
@@ -628,7 +622,7 @@
 	
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glClear(GL_COLOR_BUFFER_BIT);
-	
+	NSLog(@"%d", [drawingData.infoArr count]);
 	for(NSUInteger i=0;i<[drawingData.infoArr count];i++){
 //		if([self isCancelled])break;
 		CGFloat *infoFloat=(CGFloat *)[[drawingData.infoArr objectAtIndex:i] bytes];

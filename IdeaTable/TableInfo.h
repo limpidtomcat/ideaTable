@@ -13,10 +13,13 @@
 	NSString *title;
 	NSUInteger maxUser;
 	NSURL *pptFile;
-//	NSURL *recordFile;
-//	NSURL *
+	BOOL shouldRecord;
+
 	
 	NSUInteger quitTime;
+	
+	NSString *startTimestamp;
+	NSString *overTimestamp;
 	
 
 }
@@ -25,6 +28,8 @@
 @property (nonatomic, assign) NSUInteger maxUser;
 @property (nonatomic, retain) NSURL *pptFile;
 @property (nonatomic, assign) NSUInteger quitTime;
-
+@property (nonatomic, assign) BOOL shouldRecord;
+@property (nonatomic, retain) NSString *startTimestamp;
+@property (nonatomic, retain) NSString *overTimestamp;
 
 @end

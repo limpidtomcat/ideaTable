@@ -20,10 +20,17 @@
 		NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
 		NSString *path = [paths objectAtIndex:0];
 		
+//		[NSFileManager defaultManager] cont
 		NSArray *fileArr=[[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error:nil];
 		
-        // Custom initialization
-        pptFileList=[[NSMutableArray alloc] initWithArray:fileArr];
+
+//        pptFileList=[[NSMutableArray alloc] initWithArray:fileArr];
+		pptFileList=[[NSMutableArray alloc] init];
+		
+		for(NSString *path in fileArr){
+			if([[[path pathExtension] lowercaseString] isEqualToString:@"pdf"])
+				[pptFileList addObject:path];
+		}
     }
     return self;
 }
@@ -42,7 +49,7 @@
 {
     [super viewDidLoad];
     
-    [self setTitle:@"ppt Files List"];
+    [self setTitle:@"Files List"];
     
     pptFileTable = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
     pptFileTable.delegate = self;

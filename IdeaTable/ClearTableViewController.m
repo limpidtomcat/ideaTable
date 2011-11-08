@@ -11,6 +11,8 @@
 
 @implementation ClearTableViewController
 @synthesize tableInfo;
+@synthesize audioRecordController;
+@synthesize drawingDataArray;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -21,13 +23,14 @@
 		[self.navigationItem setRightBarButtonItem:doneBtn];
 		[self setTitle:@"테이블 정리"];
 		[doneBtn release];
-        // Custom initialization
-    }
-    return self;
-}
+		
+		tableSave=NO;
+		drawSave=NO;
+		memoSave=NO;
+		recordSave=NO;
 
--(void)done{
-	[self.navigationController dismissModalViewControllerAnimated:YES];
+	}
+    return self;
 }
 
 - (void)didReceiveMemoryWarning
@@ -66,14 +69,11 @@
 
 #pragma mark - Table view data source
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-    return 1;
-}
-
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 3;
+	if(tableSave==NO)return 1;
+	else 
+		return 4;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -85,53 +85,33 @@
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
     }
 	
-	if(indexPath.row==0)cell.textLabel.text=@"PDF 저장";
-	else if(indexPath.row==1)cell.textLabel.text=@"메모 저장";
-	else if(indexPath.row==2)cell.textLabel.text=@"녹음 내용 저장";
-    
-    // Configure the cell...
+	NSInteger row=indexPath.row;
+	if(row==0){
+		cell.textLabel.text=@"테이블 저장";
+		if(tableSave)cell.accessoryType=UITableViewCellAccessoryCheckmark;
+		else cell.accessoryType=UITableViewCellAccessoryNone;
+	}
+	else if(row==1){
+		cell.textLabel.text=@"메모 저장";
+		if(memoSave)cell.accessoryType=UITableViewCellAccessoryCheckmark;
+		else cell.accessoryType=UITableViewCellAccessoryNone;
+	}
+	else if(row==2){
+		cell.textLabel.text=@"그리기 저장";
+		if(drawSave)cell.accessoryType=UITableViewCellAccessoryCheckmark;
+		else cell.accessoryType=UITableViewCellAccessoryNone;
+	}
+	else if(row==3){
+		cell.textLabel.text=@"녹음 내용 저장";
+		if(recordSave)cell.accessoryType=UITableViewCellAccessoryCheckmark;
+		else cell.accessoryType=UITableViewCellAccessoryNone;
+	}
+
+	
     
     return cell;
 }
 
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    }   
-    else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
 
 #pragma mark - Table view delegate
 
@@ -140,43 +120,143 @@
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 
 	if(indexPath.row==0){
-		
-		NSLog(@"주소 - %@",[tableInfo.pptFile absoluteString]);
-		
-		NSString *docPath=[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+		tableSave=!tableSave;
 
-		NSString *newFilePath=[docPath stringByAppendingPathComponent:tableInfo.title];
-//		[docPath stringByAppendingPathExtension:<#(NSString *)#>
-		
-		NSLog(@"new file path - %@",newFilePath);
-		
-		NSFileManager *fm=[NSFileManager defaultManager];
-		if([fm fileExistsAtPath:[newFilePath stringByAppendingPathExtension:@"pdf"]]){
-			NSUInteger index=1;
-			while([fm fileExistsAtPath:[newFilePath stringByAppendingFormat:@"_%d.pdf",index]]){
-				index++;
-			}
-			newFilePath=[newFilePath stringByAppendingFormat:@"_%d",index];
-		}
-		newFilePath=[newFilePath stringByAppendingPathExtension:@"pdf"];
-		NSLog(@"new file path - %@",newFilePath);
-		NSError *fileMoveError=nil;
-		
-		[[NSFileManager defaultManager] moveItemAtURL:tableInfo.pptFile toURL:[NSURL fileURLWithPath:newFilePath] error:&fileMoveError];
-//		[[NSFileManager defaultManager] moveItemAtPath:[tableInfo.pptFile absoluteString] toPath:newFilePath error:&fileMoveError];
-		if(fileMoveError){
-			NSLog(@"%@",fileMoveError);
-			UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"Idea Table" message:@"파일 복사 실패" delegate:nil cancelButtonTitle:@"Okay" otherButtonTitles:nil];
-			[alert show];
-			[alert release];
+		[tableView beginUpdates];
+		if(tableSave){
+			[[tableView cellForRowAtIndexPath:indexPath] setAccessoryType:UITableViewCellAccessoryCheckmark];
+			NSArray *arr=[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:1 inSection:0],[NSIndexPath indexPathForRow:2 inSection:0],[NSIndexPath indexPathForRow:3 inSection:0], nil];
+			
+			[tableView insertRowsAtIndexPaths:arr withRowAnimation:UITableViewRowAnimationTop];
 		}else{
-			UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"Idea Table" message:@"파일이 저장되었습니다" delegate:nil cancelButtonTitle:@"Okay" otherButtonTitles:nil];
-			[alert show];
-			[alert release];
+			[[tableView cellForRowAtIndexPath:indexPath] setAccessoryType:UITableViewCellAccessoryNone];
+			NSArray *arr=[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:1 inSection:0],[NSIndexPath indexPathForRow:2 inSection:0],[NSIndexPath indexPathForRow:3 inSection:0], nil];
+			[tableView deleteRowsAtIndexPaths:arr withRowAnimation:UITableViewRowAnimationTop];
+			
 		}
-//		[fileMoveError release];
-		
+		[tableView endUpdates];
+
+	}
+	else if(indexPath.row==1){
+		memoSave=!memoSave;
+		if(memoSave)[[tableView cellForRowAtIndexPath:indexPath] setAccessoryType:UITableViewCellAccessoryCheckmark];
+		else [[tableView cellForRowAtIndexPath:indexPath] setAccessoryType:UITableViewCellAccessoryNone];
+	}
+	else if(indexPath.row==2){
+		drawSave=!drawSave;
+		if(drawSave)[[tableView cellForRowAtIndexPath:indexPath] setAccessoryType:UITableViewCellAccessoryCheckmark];
+		else [[tableView cellForRowAtIndexPath:indexPath] setAccessoryType:UITableViewCellAccessoryNone];
+	}
+	else if(indexPath.row==3){
+		recordSave=!recordSave;
+		if(recordSave)[[tableView cellForRowAtIndexPath:indexPath] setAccessoryType:UITableViewCellAccessoryCheckmark];
+		else [[tableView cellForRowAtIndexPath:indexPath] setAccessoryType:UITableViewCellAccessoryNone];
 	}
 }
 
+-(void)saveDrawFile{
+	NSString *docPath=[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+	NSString *savePath=[docPath stringByAppendingPathComponent:@"SavedTable"];
+	NSString *newFilePath=[savePath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.pen",tableInfo.startTimestamp]];
+	
+	[NSKeyedArchiver archiveRootObject:drawingDataArray toFile:newFilePath];
+}
+
+-(void)saveRecordFile{
+	BOOL saveComplete=[audioRecordController saveAudioFile];
+//	UIAlertView *alert=nil;
+//	if(saveComplete)
+//		alert=[[UIAlertView alloc] initWithTitle:@"Idea Table" message:@"파일이 저장되었습니다" delegate:nil cancelButtonTitle:@"Okay" otherButtonTitles:nil];
+//	else
+//		alert=[[UIAlertView alloc] initWithTitle:@"Idea Table" message:@"파일 저장 실패" delegate:nil cancelButtonTitle:@"Okay" otherButtonTitles:nil];
+//	[alert show];
+//	[alert release];
+	return saveComplete;
+}
+
+-(BOOL)savePDFFile{
+	
+	NSString *docPath=[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+//	NSString *newFilePath=[docPath stringByAppendingPathComponent:tableInfo.title];
+	
+//	NSFileManager *fm=[NSFileManager defaultManager];
+//	if([fm fileExistsAtPath:[newFilePath stringByAppendingPathExtension:@"pdf"]]){
+//		NSUInteger index=1;
+//		while([fm fileExistsAtPath:[newFilePath stringByAppendingFormat:@"_%d.pdf",index]]){
+//			index++;
+//		}
+//		newFilePath=[newFilePath stringByAppendingFormat:@"_%d",index];
+//	}
+//	newFilePath=[newFilePath stringByAppendingPathExtension:@"pdf"];
+	NSString *savePath=[docPath stringByAppendingPathComponent:@"SavedTable"];
+	NSString *newFilePath=[savePath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.pdf",tableInfo.startTimestamp]];
+	
+	NSLog(@"new file path - %@",newFilePath);
+	NSError *fileMoveError=nil;
+	
+	[[NSFileManager defaultManager] moveItemAtURL:tableInfo.pptFile toURL:[NSURL fileURLWithPath:newFilePath] error:&fileMoveError];
+	
+	return fileMoveError==nil;
+
+//	UIAlertView *alert=nil;
+//	if(fileMoveError)
+//		alert=[[UIAlertView alloc] initWithTitle:@"Idea Table" message:@"PDF 파일 저장 실패" delegate:nil cancelButtonTitle:@"Okay" otherButtonTitles:nil];
+//	else
+//		alert=[[UIAlertView alloc] initWithTitle:@"Idea Table" message:@"파일이 저장되었습니다" delegate:nil cancelButtonTitle:@"Okay" otherButtonTitles:nil];
+//
+//	[alert show];
+//	[alert release];
+
+}
+
+-(void)done{
+	if(tableSave){
+		NSString *savePath=[[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingPathComponent:@"SavedTable"];
+		NSString *dataFile=[savePath stringByAppendingPathComponent:@"data.dat"];
+		NSMutableDictionary *fileData=[
+									   NSMutableDictionary dictionaryWithContentsOfFile:dataFile];
+		if (fileData==nil)fileData=[NSMutableDictionary dictionary];
+		
+		NSDictionary *tableData=[NSDictionary dictionaryWithObjectsAndKeys:
+								 tableInfo.title,@"title",
+								 tableInfo.overTimestamp,@"overTimestamp",
+								 [NSNumber numberWithBool:memoSave],@"memoSave",
+								 [NSNumber numberWithBool:drawSave],@"drawSave",
+								 [NSNumber numberWithBool:recordSave],@"recordSave",
+								 nil];
+		
+		[fileData setObject:tableData forKey:tableInfo.startTimestamp];
+		[fileData writeToFile:dataFile atomically:YES];
+
+		[self savePDFFile];
+		if(memoSave){
+//			[self saveMemoFile];
+		}
+		if(drawSave){
+			[self saveDrawFile];
+		}
+		if(recordSave){
+			[self saveRecordFile];
+		}
+		UIAlertView *alert=[[UIAlertView alloc ] initWithTitle:@"Idea Table" message:@"테이블이 저장되었습니다" delegate:self cancelButtonTitle:@"Okay" otherButtonTitles:nil];
+		[alert show];
+		[alert release];
+
+	}else{
+		[self.navigationController dismissModalViewControllerAnimated:YES];
+	}
+}
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex{
+	[self.navigationController dismissModalViewControllerAnimated:YES];
+}
+
+
+
+-(void)dealloc{
+	[audioRecordController release];
+	[tableInfo release];
+	[drawingDataArray release];
+	[super dealloc];
+}
 @end

@@ -13,5 +13,15 @@
 @synthesize title;
 @synthesize pptFile;
 @synthesize quitTime;
+@synthesize shouldRecord;
+@synthesize startTimestamp;
+@synthesize overTimestamp;
 
+-(void)dealloc{
+	[title release];
+	[pptFile release];
+	[startTimestamp release];
+	[overTimestamp release];
+	[super dealloc];
+}
 @end

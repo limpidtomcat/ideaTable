@@ -21,6 +21,15 @@
 	 
 	self.window.rootViewController = self.viewController;
 	[self.window makeKeyAndVisible];
+	
+	NSString *documentPath=[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+	NSString *savedPath=[documentPath stringByAppendingPathComponent:@"SavedTable"];
+	BOOL isDir;
+	if(![[NSFileManager defaultManager] fileExistsAtPath:savedPath isDirectory:&isDir]){
+		[[NSFileManager defaultManager] createDirectoryAtPath:savedPath withIntermediateDirectories:NO attributes:nil error:nil];
+	}
+	
+	
     return YES;
 }
 

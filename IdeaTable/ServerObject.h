@@ -28,6 +28,7 @@ typedef struct {
 	Byte clientId;
 	char name[100];
 	Byte r,g,b;
+	BOOL pptFileDownloaded;
 } ConnectedClient;
 
 @interface ServerObject : NSObject

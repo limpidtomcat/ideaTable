@@ -12,13 +12,14 @@
 @synthesize clientId;
 @synthesize name;
 @synthesize penColor;
-
+@synthesize pptFileDownloaded;
 static UserInfo *me=nil;
 
 -(id) initWithName:(NSString *)_name color:(UIColor *)_col clientId:(NSUInteger)_id
 {
 	self = [super init];
 	if(self){
+		pptFileDownloaded=NO;
 		clientId=_id;
 		NSLog(@"userinfo creating name - %@",_name);
 		name=[_name retain];

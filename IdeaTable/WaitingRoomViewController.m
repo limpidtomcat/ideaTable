@@ -65,7 +65,28 @@
 
 -(void)newUserCome:(UserInfo *)userInfo{
 	[userList addObject:userInfo];
+
+	[startBtn setEnabled:NO];
 	[userTable reloadData];
+}
+
+-(void)userPPTDownloadComplete:(NSUInteger)clientID{
+	NSLog(@"%d 번 사용자 다운 완료",clientID);
+	UserInfo *user=[self getUserById:clientID];
+	NSLog(@"검색 %@",user);
+	[user setPptFileDownloaded:YES];
+	[userTable reloadData];
+
+	if(isMaster){
+		BOOL ready=YES;
+		for(UserInfo *i in userList){
+			if(![i pptFileDownloaded])ready=NO;
+		}
+		
+		if(ready)[startBtn setEnabled:YES];
+		else [startBtn setEnabled:NO];
+		
+	}
 }
 
 -(void)serverKilled{
@@ -121,10 +142,10 @@
 	
 	
 	if(isMaster){
-		UIBarButtonItem *startBtn=[[UIBarButtonItem alloc] initWithTitle:@"Start" style:UIBarButtonItemStyleDone target:self action:@selector(startTable:)];
+		startBtn=[[UIBarButtonItem alloc] initWithTitle:@"Start" style:UIBarButtonItemStyleDone target:self action:@selector(startTable:)];
 		[self.navigationItem setRightBarButtonItem:startBtn];
-		//	[startBtn setEnabled:NO];
-		[startBtn release];
+		[startBtn setEnabled:NO];
+
 	}
 	
 //	CGRect frame=self.view.bounds;
@@ -149,6 +170,7 @@
 }
 
 -(void)dealloc{
+	[startBtn release];
 	[userList release];
 	[userTable release];
 	[serverObject release];
@@ -184,6 +206,17 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier] autorelease];
+		UIActivityIndicatorView *indicator=[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+	
+		[indicator setTag:1];
+		[indicator setCenter:CGPointMake(15, 22)];
+//		[indicator setBounds:CGRectMake(0, 0, 40, 40)];
+		[indicator startAnimating];
+		[cell.contentView addSubview:indicator];
+		[indicator release];
+		
+		cell.indentationWidth=20;
+		cell.indentationLevel=1;
 	}
 	
 	UserInfo *userInfo=[userList objectAtIndex:[indexPath row]];
@@ -194,6 +227,20 @@
 //	cell.detailTextLabel.backgroundColor=[UIColor redColor];
 	cell.detailTextLabel.textColor=userInfo.penColor;
 	
+//	NSLog(@"%@",[cell.contentView viewWithTag:1]);
+	NSLog(@"%@ 받음 ? %d",userInfo,userInfo.pptFileDownloaded);
+	UIActivityIndicatorView *indicator=(UIActivityIndicatorView *)[cell.contentView viewWithTag:1];
+	if(userInfo.pptFileDownloaded){
+
+		[indicator stopAnimating];
+		 
+		[indicator setHidden:YES];
+	}
+	else {
+		[indicator startAnimating];
+		[indicator setHidden:NO];
+	}
+		
 	//	[userList objectAtIndex:[indexPath row]];
     
     return cell;
@@ -254,9 +301,12 @@
 }
 
 -(void)startTable:(id)sender{
-
-	PresentationController *presentationController=[[PresentationController alloc] initWithPdfUrl:tableInfo.pptFile];
+	PresentationController *presentationController=[[PresentationController alloc] initWithPdfUrl:tableInfo.pptFile isMaster:isMaster tableInfo:tableInfo];
+	
+	
+	
 	[presentationController setUserList:userList];
+	
 	/** Present the pdf on screen in a modal view */
     [self presentModalViewController:presentationController.pdfViewController animated:YES]; 
     
@@ -265,11 +315,8 @@
 	[presentationController setClientObject:clientObject];
 	[presentationController setWaitingViewDelegate:self];
 
-	if(sender!=clientObject){
-		NSLog(@"it's master");
-		[presentationController setIsMaster:YES];
+	if(isMaster)
 		[clientObject sendPresentationStartMessage];
-	}
 	
 //	[clientObject setPdfViewDelegate:pdfViewController];
 //	[pdfViewController setClientObject:clientObject];
@@ -287,14 +334,12 @@
 }
 
 -(void)endTable:(PDFViewController *)pdfViewController{
-	NSLog(@"closing table");
-	ClearTableViewController *viewController=[[ClearTableViewController alloc] initWithStyle:UITableViewStyleGrouped];
-	[viewController setTableInfo:tableInfo];
-	[self.navigationController pushViewController:viewController animated:NO];
-
-	[pdfViewController dismissModalViewControllerAnimated:YES];
-	[pdfViewController cleanUp];
-	[viewController release];
+//	NSLog(@"closing table");
+//	ClearTableViewController *viewController=[[ClearTableViewController alloc] initWithStyle:UITableViewStyleGrouped];
+//	[viewController setTableInfo:tableInfo];
+//	[self.navigationController pushViewController:viewController animated:NO];
+//
+//	[viewController release];
 //	[];
 }
 

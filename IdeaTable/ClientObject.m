@@ -134,11 +134,14 @@ static void CFSockCallBack(
 		r=buf[index++];
 		g=buf[index++];
 		b=buf[index++];
+		
+		tableInfo.shouldRecord=buf[index++];
+		
 		//나부터 생성
-		UserInfo *userInfo=[[UserInfo alloc] initWithName:[self myName] color:[UIColor colorWithRed:r/255.0f green:g/255.0f blue:b/255.0f alpha:1.0f] clientId:clientId];
-		[waitingRoomDelegate newUserCome:userInfo];
-		[UserInfo setMe:userInfo];
-		[UserInfo release];
+		UserInfo *me=[[UserInfo alloc] initWithName:[self myName] color:[UIColor colorWithRed:r/255.0f green:g/255.0f blue:b/255.0f alpha:1.0f] clientId:clientId];
+		[waitingRoomDelegate newUserCome:me];
+		[UserInfo setMe:me];
+		[me release];
 		
 		
 		Byte userCount=buf[index++];
@@ -147,6 +150,7 @@ static void CFSockCallBack(
 			Byte userId=buf[index++];
 			Byte len=buf[index++];
 			char name[100];
+			BOOL ppt;
 			strncpy(name,buf+index,len);
 			name[len]='\0';
 			index+=len;
@@ -154,9 +158,13 @@ static void CFSockCallBack(
 			r=buf[index++];
 			g=buf[index++];
 			b=buf[index++];
+			ppt=buf[index++];
 			NSLog(@"접속한 사용자 - %d, %s, %d %d %d",userId,name,r,g,b);
 			
 			UserInfo *userInfo=[[UserInfo alloc] initWithName:[NSString stringWithCString:name encoding:NSUTF8StringEncoding] color:[UIColor colorWithRed:r/255.0f green:g/255.0f blue:b/255.0f alpha:1.0f] clientId:userId];
+			// 다운로드 받았나??
+			[userInfo setPptFileDownloaded:ppt];
+			
 			[waitingRoomDelegate newUserCome:userInfo];
 			[UserInfo release];
 		}
@@ -191,6 +199,10 @@ static void CFSockCallBack(
 			NSLog(@"file path - %@",file);
 			[fileData writeToFile:file atomically:YES];
 			NSURL *url=[NSURL fileURLWithPath:file];
+			
+//			[[UserInfo me] setPptFileDownloaded:YES];
+			[waitingRoomDelegate userPPTDownloadComplete:[[UserInfo me] clientId]];
+			[self sendDownloadComplete];
 
 //			[waitingRoomDelegate setPptFileURL:url];
 			[tableInfo setPptFile:url];
@@ -222,15 +234,15 @@ static void CFSockCallBack(
 		strncpy(name, buf+3, len);
 		name[len]='\0';
 		Byte r,g,b;
+		BOOL ppt;
 		r=buf[len+3];
 		g=buf[len+4];
 		b=buf[len+5];
+		ppt=buf[len+6];
+		
 
-//		NSString *info=[NSString stringWithFormat:@"new user name%d - %s, color %d,%d,%d",len,name,r,g,b];
-//		UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"new user" message:info delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil];
-//		[alert	 show];
-//		[alert release];
 		UserInfo *userInfo=[[UserInfo alloc] initWithName:[NSString stringWithCString:name encoding:NSUTF8StringEncoding] color:[UIColor colorWithRed:r/255.0f green:g/255.0f blue:b/255.0f alpha:1] clientId:userId];
+		[userInfo setPptFileDownloaded:ppt];
 		[waitingRoomDelegate newUserCome:userInfo];
 		[userInfo release];
 		
@@ -292,7 +304,13 @@ static void CFSockCallBack(
 	}
 	else if(firstByte==10){
 		BOOL locked=buf[1];
-		[presentationDelegate drawLock:locked];
+		[presentationDelegate setDrawLock:locked];
+	}
+	else if (firstByte==11){
+		Byte clientID=buf[1];
+		[waitingRoomDelegate userPPTDownloadComplete:clientID];
+//		tableInfo user
+//		[waitingRoomDelegate
 	}
 	else{
 		NSLog(@"str - %s",buf);
@@ -400,6 +418,13 @@ static void CFSockCallBack(
 	char buf[SendBufferSize];
 	buf[0]=10;
 	buf[1]=locked;
+	[self sendData:buf];
+}
+
+-(void)sendDownloadComplete{
+	char buf[SendBufferSize];
+	buf[0]=11;
+	buf[1]=[[UserInfo me] clientId];
 	[self sendData:buf];
 }
 

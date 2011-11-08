@@ -7,6 +7,7 @@
 //
 
 #import "OptionMenuViewController.h"
+#import "SavedTableListViewController.h"
 
 
 @implementation OptionMenuViewController
@@ -101,7 +102,7 @@
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     // Return the number of sections.
-    return 4;
+    return 3;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -114,12 +115,14 @@
         case 1:
             return 2;
             break;
+//        case 2:
+//            return 2;
+//            break;
         case 2:
             return 1;
             break;
         case 3:
             return 1;
-            break;
         default:
             break;
     }
@@ -134,7 +137,10 @@
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier] autorelease];
     }
-	if([indexPath section]==0){
+	
+	NSInteger section=indexPath.section;
+	NSInteger row=indexPath.row;
+	if(section==0){
         [cell addSubview:nameTextField];
 		cell.textLabel.text=@"내 이름";
 
@@ -144,22 +150,35 @@
         cell.detailTextLabel.text = myName;
 		cell.accessoryType=UITableViewCellAccessoryNone;
 	}
-	else if([indexPath section]==1 && [indexPath row]==0){
-		cell.textLabel.text=@"메모 초기화";
-        //확인 팝업 구현
-		cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
+	else if (section==1){
+		if(row==0){
+			
+			cell.textLabel.text=@"저장된 회의";
+			
+			cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
+		}
+		else if(row==1){
+			cell.textLabel.text=@"데이터 초기화";
+		}
 	}
-	else if([indexPath section]==1 && [indexPath row]==1){
-		cell.textLabel.text=@"슬라이드파일 초기화";
-		//확인 팝업 구현
-		cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
-	}
-	else if([indexPath section]==2){
+//	else if(section==2){
+//		if(row==0){
+//			cell.textLabel.text=@"메모 초기화";
+//			//확인 팝업 구현
+//			cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
+//		}
+//		else if(row==1){
+//			cell.textLabel.text=@"슬라이드파일 초기화";
+//			//확인 팝업 구현
+//			cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
+//		}			
+//	}
+	else if(section==2){
 		cell.textLabel.text=@"버전정보";
         cell.detailTextLabel.text = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey];
 //		cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
 	}
-	else if([indexPath section]==3){
+	else if(section	==3){
 		cell.textLabel.text=@"dropbox 연결";
 		cell.accessoryType=UITableViewCellAccessoryNone;
     }
@@ -224,14 +243,58 @@
 		[nameTextField setHidden:YES];
 		[[((UITableViewCell *)[nameTextField superview]) detailTextLabel] setHidden:NO];
 	}
-    // Navigation logic may go here. Create and push another view controller.
-    /*
-     <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
-     // ...
-     // Pass the selected object to the new view controller.
-     [self.navigationController pushViewController:detailViewController animated:YES];
-     [detailViewController release];
-     */
+	
+	// 저장된 테이블 보기
+	if(indexPath.section==1){
+		if(indexPath.row==0){
+			//		SavedTableListTableView 
+			SavedTableListViewController *savedTableViewController=[[SavedTableListViewController alloc] initWithStyle:UITableViewStylePlain];
+			[self.navigationController pushViewController:savedTableViewController animated:YES];
+			[savedTableViewController release];
+			
+		}
+		else if(indexPath.row==1){
+			UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"Idea Table" message:@"저장된 모든 데이터를 초기화하겠습니까?" delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes",nil];
+			[alert show];
+			[alert release];
+		}
+	}
+}
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex{
+	if(buttonIndex==alertView.firstOtherButtonIndex){
+		NSString *documentPath=[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+		NSString *savePath=[documentPath stringByAppendingPathComponent:@"SavedTable"];
+		
+		NSFileManager* fm = [[[NSFileManager alloc] init] autorelease];
+		NSDirectoryEnumerator* en;
+
+		NSError* err = nil;
+		BOOL res;
+
+		en = [fm enumeratorAtPath:savePath];
+		
+		NSString* file;
+		while (file = [en nextObject]) {
+			res = [fm removeItemAtPath:[savePath stringByAppendingPathComponent:file] error:&err];
+			if (!res && err) {
+				NSLog(@"oops: %@", err);
+			}
+		}	
+		
+		en = [fm enumeratorAtPath:documentPath];
+		
+		while (file = [en nextObject]) {
+			res = [fm removeItemAtPath:[documentPath stringByAppendingPathComponent:file] error:&err];
+			if (!res && err) {
+				NSLog(@"oops: %@", err);
+			}
+		}
+		
+		[[NSFileManager defaultManager] createDirectoryAtPath:savePath withIntermediateDirectories:NO attributes:nil error:nil];
+
+
+	}
 }
 
 -(void)closeOptMenu{

@@ -8,34 +8,32 @@
 
 #import "PresentationController.h"
 #import "UserInfo.h"
+#import "ClearTableViewController.h"
 @implementation PresentationController
 @synthesize drawingDataArray;
 @synthesize paintView;
 @synthesize pdfViewController;
 @synthesize documentManager;
-@synthesize isMaster;
 @synthesize clientObject;
 @synthesize waitingViewDelegate;
 @synthesize userList;
+@synthesize tableInfo;
 
 
-
--(id)initWithPdfUrl:(NSURL *)url{
+-(id)initWithPdfUrl:(NSURL *)url isMaster:(BOOL)_isMaster tableInfo:(TableInfo *)_tableInfo{
 	self=[super init];
 	if(self){
+		tableInfo=[_tableInfo retain];
+		isMaster=_isMaster;
 		/** Instancing the documentManager */
 		documentManager = [[MFDocumentManager alloc]initWithFileUrl:url];
 		
 		/** Instancing the readerViewController */
-		pdfViewController = [[PDFViewController alloc]initWithDocumentManager:documentManager presentationDelegate:self];
-		//	[pdfViewController setOverlayEnabled:NO];
-
-//		[pdfViewController setWaitingViewDelegate:waitingViewDelegate];
+		pdfViewController = [[PDFViewController alloc]initWithDocumentManager:documentManager];
+		[pdfViewController addOverlayViewDataSource:self];
 
 		[pdfViewController setDocumentDelegate:self];
-		
-//		[documentManager.docu
-//		 CG
+		if(!isMaster)[pdfViewController setScrollLock:YES];
 		
 
 		CGPDFDocumentRef pdf=CGPDFDocumentCreateWithURL((CFURLRef)url);
@@ -53,11 +51,12 @@
 			[drawingDataArray addObject:data];
 			[data release];
 		}
-		NSLog(@"array - %@",drawingDataArray);
-
 		
-		paintView=[[PaintingView alloc] initWithFrame:CGRectMake(0, 0, 320, 460) photoSize:pdfSize delegate:self drawQueue:nil];
-		//	[paintView setBackgroundColor:[UIColor redColor]];
+//		NSArray *data=[NSKeyedUnarchiver unarchiveObjectWithFile:[[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingPathComponent:@"data.pen"]];
+//		drawingDataArray=[[NSMutableArray alloc] initWithArray:data];
+
+		// Painting View Initialize.
+		paintView=[[PaintingView alloc] initWithFrame:CGRectMake(0, 0, 768, 1024) photoSize:pdfSize delegate:self drawQueue:nil];
 		[paintView resetData];
 		[paintView erase];
 
@@ -69,17 +68,69 @@
 		[paintView setUserInteractionEnabled:NO];
 		
 		[paintView setPresentationDelegate:self];
+
 		
+		[tableInfo setStartTimestamp:[NSString stringWithFormat:@"%d",(int)[[NSDate date] timeIntervalSince1970]]];
+
+		
+		if(tableInfo.shouldRecord){
+			audioRecordController=[[AudioRecordController alloc] init];
+			[audioRecordController setRecordFile:[tableInfo.startTimestamp stringByAppendingPathExtension:@"caf"]];
+			[audioRecordController startRecording];
+			
+		}
+
+	
+		UIBarButtonItem *home,*lock,*draw;
+		UIBarButtonItem *back,*pen, *eraser;
+		UIBarButtonItem *flexible,*fix;
+		flexible=[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+		fix=[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
+		[fix setWidth:10];
+		
+		home=[[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"53-house.png"] style:UIBarButtonItemStylePlain target:self action:@selector(closeTable)];
+		draw=[[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"98-palette.png"] style:UIBarButtonItemStylePlain target:self action:@selector(drawOn)];
+		lock=[[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"54-lock.png"] style:UIBarButtonItemStylePlain target:self action:@selector(clientDrawLock:)];
+		
+		back =[[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"01-refresh.png"] style:UIBarButtonItemStylePlain target:self action:@selector(drawOff)];
+		pen=[[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"187-pencil.png"] style:UIBarButtonItemStylePlain target:self action:@selector(setPen)];
+		eraser=[[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"eraser_alpha.png"] style:UIBarButtonItemStylePlain target:self action:@selector(setEraser)];
+		
+		
+		if(isMaster)
+			mainItems=[[NSArray alloc] initWithObjects:home,flexible,lock,fix,draw, nil];
+		else
+			mainItems=[[NSArray alloc] initWithObjects:home,flexible,draw, nil];
+		drawingItems=[[NSArray alloc] initWithObjects:back,flexible,pen,fix,eraser, nil];
+		
+		[home	release];
+		[lock	release];
+		[draw	release];
+		
+		[back	release];
+		[pen	release];
+		[eraser	release];
+		
+		[flexible release];
+		[fix release];
+
+		// Force PDFViewController to load view
+		[pdfViewController view];
+		[pdfViewController.toolBar setItems:mainItems];
 	}
 	return self;
 }
 
 -(void)dealloc{
+	[tableInfo release];
+	[audioRecordController release];
 	[drawingDataArray release];
 	[documentManaber release];
 	[pdfViewController release];
 	[paintView release];
 	[clientObject release];
+	[mainItems release];
+	[drawingItems release];
 	[super dealloc];
 }
 
@@ -94,6 +145,7 @@
 		[paintView resetData];
 		
 		NSLog(@"drawing data array - %@",drawingDataArray);
+		NSLog(@"selected - %@",[drawingDataArray objectAtIndex:page]);
 		[paintView setDrawingData:[drawingDataArray objectAtIndex:page]];
 	}
 	
@@ -118,27 +170,76 @@
 
 
 -(void)setDrawing:(BOOL)flag{
+	[paintView setUserInteractionEnabled:flag];
 	if(flag){
-		[paintView setUserInteractionEnabled:YES];
+		[pdfViewController setScrollLock:YES];
 		[paintView startDrawing];
 		
 	}else{
-		[paintView setUserInteractionEnabled:NO];
+		if(isMaster)[pdfViewController setScrollLock:NO];
 		[paintView stopDrawing];
 	}
 	
 	
 }
 
--(void)closeTable{
-	if(isMaster)[clientObject sendPresentationOverMessage];
-	[waitingViewDelegate endTable:pdfViewController];
+-(void)drawOn{
+	if(drawLock && !isMaster)return;
+	
+	[self setDrawing:YES];
+	[pdfViewController.toolBar setItems:drawingItems];
+}
+-(void)drawOff{
+	[self setDrawing:NO];
+	[pdfViewController.toolBar setItems:mainItems];
 }
 
--(void)drawLock:(BOOL)locked{
-	NSLog(@"lock! - %d",locked);
-	[pdfViewController setDrawLock:locked];
+
+
+-(void)closeTable{
+	
+	[tableInfo setOverTimestamp:[NSString stringWithFormat:@"%d",(int)[[NSDate date] timeIntervalSince1970]]];
+
+	if(tableInfo.shouldRecord)
+		[audioRecordController stopRecording];
+	if(isMaster)[clientObject sendPresentationOverMessage];
+	
+	ClearTableViewController *viewController=[[ClearTableViewController alloc] initWithStyle:UITableViewStyleGrouped];
+	[viewController setTableInfo:tableInfo];
+	[viewController setAudioRecordController:audioRecordController];
+	[viewController setDrawingDataArray:drawingDataArray];
+	[pdfViewController.parentViewController pushViewController:viewController animated:NO];
+	
+	[viewController release];
+
+	[pdfViewController dismissModalViewControllerAnimated:YES];
+	[pdfViewController cleanUp];
 }
+
+-(void)clientDrawLock:(id)sender{
+	UIBarButtonItem *sendBtn=(UIBarButtonItem *)sender;
+	
+	drawLock=!drawLock;
+
+	if(drawLock)
+		[sendBtn setImage:[UIImage imageNamed:@"unlock.png"]];
+	else 
+		[sendBtn setImage:[UIImage imageNamed:@"54-lock.png"]];
+	
+	[self sendServerDrawLock:drawLock];
+}
+
+
+-(void)setDrawLock:(BOOL)locked{
+	NSLog(@"lock! - %d",locked);
+	drawLock=locked;
+	if(drawLock&&!isMaster){
+		[self setDrawing:NO];
+	}
+}
+
+
+
 
 #pragma MFDocumentViewControllerDelegate methods
 
@@ -173,6 +274,16 @@
 
 -(void)receivedDrawInfoPen:(NSMutableData *)penInfo start:(CGPoint)start end:(CGPoint)end{
 	[paintView drawFromServerStart:start toPoint:end penInfo:penInfo];
+}
+
+
+-(void)setPen{
+	NSLog(@"pen set");
+	[paintView setBrushAlpha:1];
+}
+-(void)setEraser{
+	NSLog(@"eraser set");
+	[paintView setBrushAlpha:0];
 }
 
 @end

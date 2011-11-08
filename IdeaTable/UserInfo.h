@@ -10,11 +10,13 @@
 
 @interface UserInfo : NSObject
 {
+	BOOL pptFileDownloaded;
 	Byte clientId;
 	NSString *name;
 	UIColor *penColor;
 }
 
+@property (nonatomic, assign) BOOL pptFileDownloaded;
 @property (nonatomic, readonly) Byte clientId;
 @property (nonatomic, readonly) NSString *name;
 @property (nonatomic, readonly) UIColor *penColor;
