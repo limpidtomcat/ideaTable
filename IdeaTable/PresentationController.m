@@ -8,6 +8,9 @@
 
 #import "PresentationController.h"
 #import "UserInfo.h"
+#import "MemoData.h"
+#import "CreateMemoController.h"
+
 #import "ClearTableViewController.h"
 @implementation PresentationController
 @synthesize drawingDataArray;
@@ -17,6 +20,8 @@
 @synthesize clientObject;
 @synthesize waitingViewDelegate;
 @synthesize userList;
+@synthesize totalpdfpages;
+@synthesize memoDataSet;
 @synthesize tableInfo;
 
 
@@ -35,6 +40,9 @@
 		[pdfViewController setDocumentDelegate:self];
 		if(!isMaster)[pdfViewController setScrollLock:YES];
 		
+        totalpdfpages = [documentManager numberOfPages];
+        memoDataSet = [[NSMutableArray alloc] initWithCapacity:totalpdfpages];
+        
 
 		CGPDFDocumentRef pdf=CGPDFDocumentCreateWithURL((CFURLRef)url);
 		
@@ -114,12 +122,53 @@
 		[flexible release];
 		[fix release];
 
+		UILongPressGestureRecognizer *longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(showMemoView:)];
+		[pdfViewController.view addGestureRecognizer:longPressGesture];
+		[longPressGesture release];
+
 		// Force PDFViewController to load view
 		[pdfViewController view];
 		[pdfViewController.toolBar setItems:mainItems];
 	}
 	return self;
 }
+
+
+
+
+- (void)showMemoView:(UILongPressGestureRecognizer *)gestureRecognizer
+{
+	
+	if(gestureRecognizer.state==UIGestureRecognizerStateBegan){
+		
+		CGPoint pl = [gestureRecognizer locationInView:pdfViewController.view];
+
+		
+		CreateMemoController *createMemoController=[[CreateMemoController alloc] initWithNibName:@"CreateMemoController" bundle:nil];
+		[createMemoController setDelegate:self];
+		[createMemoController setXy:pl];
+		UINavigationController *memoNavigationController=[[UINavigationController alloc] initWithRootViewController:createMemoController];
+		//[memoNavigationController.navigationBar setTintColor:[UIColor colorWithRed:20/255.0f green:190/255.0f blue:130/255.0f alpha:1.0f]];
+		[createMemoController release];
+		
+		[pdfViewController presentModalViewController:memoNavigationController animated:YES];
+		[memoNavigationController release];
+		
+	}
+    
+}
+
+-(void)addMemoData:(NSString *)content point:(CGPoint)xy{
+	MemoData *memoData=[[MemoData alloc] init];
+	[memoData setUserName:[[UserInfo me] name]];
+	[memoData setXy:xy];
+	[memoData setSlideNum:pdfViewController.page];
+	[memoData setContents:content];
+    [memoDataSet addObject:memoData];
+	[pdfViewController reloadOverlay];
+	[memoData release];
+}
+
 
 -(void)dealloc{
 	[tableInfo release];
@@ -138,14 +187,20 @@
 
 - (NSSet *)documentViewController:(MFDocumentViewController *)dvc overlayViewsForPage:(NSUInteger)page
 {
-	NSLog(@"finding drawables - %d",page);
+//	NSLog(@"finding drawables - %d",page);
 	
-	NSSet *arr=[NSSet setWithObjects:paintView, nil];
+	UIView *memoView=[[UIView alloc]	 init];
+//	[memoView
+	NSMutableSet *arr=[NSMutableSet setWithObjects:paintView,memoView, nil];
+	for(MemoData *memo in memoDataSet){
+		if(memo.slideNum==page){
+			[memoView addSubview:[memo memoButton]];
+		}
+	}
+	[memoView release];
 	if(page<[drawingDataArray count]){
 		[paintView resetData];
 		
-		NSLog(@"drawing data array - %@",drawingDataArray);
-		NSLog(@"selected - %@",[drawingDataArray objectAtIndex:page]);
 		[paintView setDrawingData:[drawingDataArray objectAtIndex:page]];
 	}
 	
@@ -154,12 +209,12 @@
 }
 - (CGRect)documentViewController:(MFDocumentViewController *)dvc rectForOverlayView:(UIView *)view
 {
-	NSLog(@"rect for overlay view %@",view);
+//	NSLog(@"rect for overlay view %@",view);
 	
 	CGRect rect;
 	rect.origin=CGPointMake(0, 0);
 	rect.size=pdfSize;
-	NSLog(@"converted rect - %@",NSStringFromCGRect([pdfViewController convertRect:rect fromViewToPage:0]));
+//	NSLog(@"converted rect - %@",NSStringFromCGRect([pdfViewController convertRect:rect fromViewToPage:0]));
 	return [pdfViewController convertRect:rect fromViewToPage:0];
 	
 }
@@ -275,7 +330,6 @@
 -(void)receivedDrawInfoPen:(NSMutableData *)penInfo start:(CGPoint)start end:(CGPoint)end{
 	[paintView drawFromServerStart:start toPoint:end penInfo:penInfo];
 }
-
 
 -(void)setPen{
 	NSLog(@"pen set");

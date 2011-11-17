@@ -7,10 +7,16 @@
 //
 
 #import "CreateMemoController.h"
+#import "PDFViewController.h"
+#import "MemoData.h"
+#import "PresentationController.h"
 
 @implementation CreateMemoController
 @synthesize memoField;
+@synthesize totalMemoData;
 @synthesize delegate;
+@synthesize xy;
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -47,7 +53,6 @@
 	[backBtn release];
 	
 	UIBarButtonItem *doneBtn=[[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(doneBtn)];
-//	[doneBtn add
 	[self.navigationItem setRightBarButtonItem:doneBtn];
 	[doneBtn release];
 }
@@ -79,8 +84,11 @@
 
 - (void)doneBtn
 {
-    //배열에 저장..StoredContentsMemo로
-	[delegate closeMemoView:33];
+
+	[delegate addMemoData:self.memoField point:xy];
+
+    [self.navigationController dismissModalViewControllerAnimated:YES];
+    
 }
 
 @end

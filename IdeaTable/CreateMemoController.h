@@ -11,9 +11,12 @@
 @interface CreateMemoController : UIViewController
 {
     IBOutlet UITextView *memoField;
+    NSMutableArray *totalMemoData;
+	CGPoint xy;
 	id delegate;
 }
 @property (nonatomic, retain) UITextView *memoField;
+@property (nonatomic, retain) NSMutableArray *totalMemoData;
 @property (nonatomic, assign) id delegate;
-
+@property (nonatomic, assign) CGPoint xy;
 @end

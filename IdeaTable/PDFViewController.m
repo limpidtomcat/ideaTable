@@ -9,9 +9,11 @@
 #import "PDFViewController.h"
 #import "FastPdfKit/MFDocumentViewController.h"
 #import "CreateMemoController.h"
+#import "MemoData.h"
 
 @implementation PDFViewController
 @synthesize  toolBar;
+//@synthesize longPressXY;
 
 -(void)setScrollLock:(BOOL)flag{
 	
@@ -80,10 +82,10 @@
 	
 	toolBar=[[UIToolbar alloc] initWithFrame:CGRectMake(0, self.view.bounds.size.height-44, self.view.bounds.size.width, 44)];
 	[self.view addSubview:toolBar];
-	
-    UILongPressGestureRecognizer *longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(showMemoView:)];
-    [self.view addGestureRecognizer:longPressGesture];
-    [longPressGesture release];
+//	
+//    UILongPressGestureRecognizer *longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(showMemoView:)];
+//    [self.view addGestureRecognizer:longPressGesture];
+//    [longPressGesture release];
 	
 	UITapGestureRecognizer *tapGestureRecognizer=[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapProcess:)];
 	[scrollView addGestureRecognizer:tapGestureRecognizer];
@@ -133,31 +135,5 @@
 }
 
 
-- (void)showMemoView:(UILongPressGestureRecognizer *)gestureRecognizer
-{
-
-	if(gestureRecognizer.state==UIGestureRecognizerStateBegan){
-		NSLog(@"memo success! - %@",gestureRecognizer.view);
-		CGPoint pl = [gestureRecognizer locationInView:self.view];
-		NSLog(NSStringFromCGPoint(pl));
-		
-		CreateMemoController *createMemoController=[[CreateMemoController alloc] initWithNibName:@"CreateMemoController" bundle:nil];
-		[createMemoController setDelegate:self];
-		UINavigationController *memoNavigationController=[[UINavigationController alloc] initWithRootViewController:createMemoController];
-		//[memoNavigationController.navigationBar setTintColor:[UIColor colorWithRed:20/255.0f green:190/255.0f blue:130/255.0f alpha:1.0f]];
-		[createMemoController release];
-		
-		[self presentModalViewController:memoNavigationController animated:YES];
-		[memoNavigationController release];
-
-	}
-    
-}
-
-- (void)closeMemoView:(NSInteger) temp{
-	NSLog(@"received - %d",temp);
-	NSLog(@"current page = %d",[self page]);
-	
-}
 
 @end

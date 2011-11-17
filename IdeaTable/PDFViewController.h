@@ -19,9 +19,11 @@
 	UIToolbar *toolBar;
 	UIScrollView *scrollView;
 
+//    CGPoint longPressXY;
 }
 
 @property (nonatomic, readonly) UIToolbar *toolBar;
+//@property (nonatomic, assign) CGPoint longPressXY;
 
 -(id)initWithDocumentManager:(MFDocumentManager *)aDocumentManager;
 -(void)setScrollLock:(BOOL)isLocked;

@@ -12,6 +12,7 @@
 #import "DrawingData.h"
 #import "AudioRecordController.h"
 #import "TableInfo.h"
+#import "MemoData.h"
 
 @interface PresentationController : NSObject<FPKOverlayViewDataSource, MFDocumentViewControllerDelegate>
 {
@@ -29,9 +30,9 @@
 
 	NSMutableArray *drawingDataArray;
 	CGSize pdfSize;
-
-//	NSString *dataFileName;
-
+    NSInteger totalpdfpages;
+    NSMutableArray *memoDataSet;
+	
 	NSArray *userList;
 
 	id waitingViewDelegate;
@@ -49,7 +50,11 @@
 @property (nonatomic, retain) NSMutableArray *drawingDataArray;
 @property (nonatomic, retain) NSArray *userList;
 @property (nonatomic, assign) id waitingViewDelegate;
+@property (nonatomic, assign) NSInteger totalpdfpages;
+@property (nonatomic, retain) NSMutableArray *memoDataSet;
 
 -(id)initWithPdfUrl:(NSURL *)url isMaster:(BOOL)_isMaster tableInfo:(TableInfo *)_tableInfo;
 -(void)setPage:(NSUInteger)page;
+
+-(void)addMemoData:(NSString *)content point:(CGPoint)xy;
 @end
