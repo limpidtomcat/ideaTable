@@ -12,6 +12,7 @@
 #import "CreateMemoController.h"
 
 #import "ClearTableViewController.h"
+
 @implementation PresentationController
 @synthesize drawingDataArray;
 @synthesize paintView;
@@ -28,6 +29,7 @@
 -(id)initWithPdfUrl:(NSURL *)url isMaster:(BOOL)_isMaster tableInfo:(TableInfo *)_tableInfo{
 	self=[super init];
 	if(self){
+		
 		tableInfo=[_tableInfo retain];
 		isMaster=_isMaster;
 		/** Instancing the documentManager */
@@ -72,11 +74,12 @@
 		
 		[paintView setBrushColorWithRed:(rgba[0]*255) green:(rgba[1]*255) blue:(rgba[2]*255)];
 		[paintView setBrushAlpha:1.0f];
-		[paintView setBrushScale:5.0f];
+		[paintView setBrushScale:10.0f];
 		[paintView setUserInteractionEnabled:NO];
 		
 		[paintView setPresentationDelegate:self];
 
+		memoOverlayView=[[MemoOverlayView alloc] initWithFrame:pdfViewController.view.frame];
 		
 		[tableInfo setStartTimestamp:[NSString stringWithFormat:@"%d",(int)[[NSDate date] timeIntervalSince1970]]];
 
@@ -160,17 +163,26 @@
 
 -(void)addMemoData:(NSString *)content point:(CGPoint)xy{
 	MemoData *memoData=[[MemoData alloc] init];
+	[memoData setTargetViewController:pdfViewController];
 	[memoData setUserName:[[UserInfo me] name]];
 	[memoData setXy:xy];
 	[memoData setSlideNum:pdfViewController.page];
 	[memoData setContents:content];
     [memoDataSet addObject:memoData];
 	[pdfViewController reloadOverlay];
+	[clientObject sendNewMemo:memoData];
 	[memoData release];
+}
+
+-(void)receiveMemoData:(MemoData *)_memoData{
+	[_memoData setTargetViewController:pdfViewController];
+	[memoDataSet addObject:_memoData];
+	[pdfViewController reloadOverlay];
 }
 
 
 -(void)dealloc{
+	[memoOverlayView release];
 	[tableInfo release];
 	[audioRecordController release];
 	[drawingDataArray release];
@@ -187,21 +199,23 @@
 
 - (NSSet *)documentViewController:(MFDocumentViewController *)dvc overlayViewsForPage:(NSUInteger)page
 {
-//	NSLog(@"finding drawables - %d",page);
+	NSMutableSet *arr=[NSMutableSet setWithObjects:paintView,memoOverlayView, nil];
+//	[memoOverlayView 
+	for (UIView *memo in memoOverlayView.subviews){
+		[memo removeFromSuperview];
+	}
 	
-	UIView *memoView=[[UIView alloc]	 init];
-//	[memoView
-	NSMutableSet *arr=[NSMutableSet setWithObjects:paintView,memoView, nil];
 	for(MemoData *memo in memoDataSet){
 		if(memo.slideNum==page){
-			[memoView addSubview:[memo memoButton]];
+			[memoOverlayView addSubview:[memo memoButton]];
 		}
 	}
-	[memoView release];
-	if(page<[drawingDataArray count]){
+
+	NSLog(@"ㅎㄴ재 페이지 %d / 전체 페이지 %d",page,[drawingDataArray count]);
+	if(page-1<[drawingDataArray count]){
 		[paintView resetData];
 		
-		[paintView setDrawingData:[drawingDataArray objectAtIndex:page]];
+		[paintView setDrawingData:[drawingDataArray objectAtIndex:page-1]];
 	}
 	
 	
@@ -243,10 +257,12 @@
 	
 	[self setDrawing:YES];
 	[pdfViewController.toolBar setItems:drawingItems];
+	[memoOverlayView setUserInteractionEnabled:NO];
 }
 -(void)drawOff{
 	[self setDrawing:NO];
 	[pdfViewController.toolBar setItems:mainItems];
+	[memoOverlayView setUserInteractionEnabled:YES];
 }
 
 
@@ -263,7 +279,16 @@
 	[viewController setTableInfo:tableInfo];
 	[viewController setAudioRecordController:audioRecordController];
 	[viewController setDrawingDataArray:drawingDataArray];
-	[pdfViewController.parentViewController pushViewController:viewController animated:NO];
+//	NSLog(@"closing - %@",pdfViewController.presentingViewController);
+
+	UINavigationController *dismissingViewController;
+	if (pdfViewController.parentViewController) dismissingViewController = (UINavigationController *)pdfViewController.parentViewController;
+	else dismissingViewController = [pdfViewController valueForKey:@"presentingViewController"];
+	
+	[dismissingViewController pushViewController:viewController animated:NO];
+	
+	
+	
 	
 	[viewController release];
 
@@ -334,10 +359,12 @@
 -(void)setPen{
 	NSLog(@"pen set");
 	[paintView setBrushAlpha:1];
+	[paintView setBrushScale:10.0f];
 }
 -(void)setEraser{
 	NSLog(@"eraser set");
 	[paintView setBrushAlpha:0];
+	[paintView setBrushScale:1.0f];
 }
 
 @end

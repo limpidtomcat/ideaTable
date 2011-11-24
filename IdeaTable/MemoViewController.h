@@ -7,7 +7,16 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "MemoData.h"
 @interface MemoViewController : UIViewController
+{
+	MemoData *memoData;
+	
+	IBOutlet UINavigationItem *navigationItem;
 
+}
+@property (nonatomic, retain) UINavigationItem *navigationItem;
+
+-(id)initWithMemoData:(MemoData *)_memoData;
+-(IBAction)back:(id)sender;
 @end

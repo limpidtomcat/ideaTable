@@ -8,6 +8,7 @@
 
 #import "ClientObject.h"
 #import "UserInfo.h"
+#import "MemoData.h"
 #define SendBufferSize 100
 
 @implementation ClientObject
@@ -312,6 +313,41 @@ static void CFSockCallBack(
 //		tableInfo user
 //		[waitingRoomDelegate
 	}
+	else if(firstByte==12){
+		MemoData *_memo=[[MemoData alloc] init];
+		NSUInteger slideNum;
+		CGPoint xy;
+		NSUInteger index=1;
+		memcpy(&slideNum, buf+index, sizeof(NSUInteger));
+		index+=sizeof(NSUInteger);
+		memcpy(&xy, buf+index, sizeof(CGPoint));
+		index+=sizeof(CGPoint);
+		
+		Byte nameLen, contentLen;
+//		memcpy(&nameLen,buf+index, sizeof(
+		nameLen=buf[index++];
+		char *name=malloc(nameLen+1);
+		memcpy(name, buf+index, nameLen);
+		name[nameLen]='\0';
+		
+		index+=nameLen;
+		
+		
+		contentLen=buf[index++];
+		char *content=malloc(contentLen+1);
+		memcpy(content, buf+index, contentLen);
+		content[contentLen]='\0';
+		
+		
+		[_memo setXy:xy];
+		[_memo setContents:[NSString stringWithCString:content encoding:NSUTF8StringEncoding]];
+		[_memo setUserName:[NSString stringWithCString:name encoding:NSUTF8StringEncoding]];
+		free(content);
+		free(name);
+		[_memo setSlideNum:slideNum];
+		[presentationDelegate receiveMemoData:_memo];
+		[_memo release];
+	}
 	else{
 		NSLog(@"str - %s",buf);
 		UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"received" message:[NSString stringWithCString:buf encoding:NSUTF8StringEncoding] delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil];
@@ -425,6 +461,28 @@ static void CFSockCallBack(
 	char buf[SendBufferSize];
 	buf[0]=11;
 	buf[1]=[[UserInfo me] clientId];
+	[self sendData:buf];
+}
+
+-(void)sendNewMemo:(MemoData *)_memoData{
+	char buf[SendBufferSize];
+	const char *userName=[_memoData.userName cStringUsingEncoding:NSUTF8StringEncoding];
+	const char *content =[_memoData.contents cStringUsingEncoding:NSUTF8StringEncoding];
+	NSUInteger slideNum=[_memoData slideNum];
+	CGPoint xy=[_memoData xy];
+	NSUInteger index=0;
+	buf[index++]=12;
+	memcpy(buf+index, &slideNum, sizeof(NSUInteger));
+	index+=sizeof(NSUInteger);
+	memcpy(buf+index, &xy, sizeof(CGPoint));
+	index+=sizeof(CGPoint);
+
+	buf[index++]=strlen(userName);
+	memcpy(buf+index, userName, strlen(userName));
+	index+=strlen(userName);
+	
+	buf[index++]=strlen(content);
+	memcpy(buf+index, content, strlen(content));
 	[self sendData:buf];
 }
 

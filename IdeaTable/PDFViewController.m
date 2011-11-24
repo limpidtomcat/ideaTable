@@ -8,7 +8,6 @@
 
 #import "PDFViewController.h"
 #import "FastPdfKit/MFDocumentViewController.h"
-#import "CreateMemoController.h"
 #import "MemoData.h"
 
 @implementation PDFViewController
@@ -81,6 +80,7 @@
 	}
 	
 	toolBar=[[UIToolbar alloc] initWithFrame:CGRectMake(0, self.view.bounds.size.height-44, self.view.bounds.size.width, 44)];
+	[toolBar setAutoresizingMask:UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleWidth];
 	[self.view addSubview:toolBar];
 //	
 //    UILongPressGestureRecognizer *longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(showMemoView:)];
@@ -88,6 +88,7 @@
 //    [longPressGesture release];
 	
 	UITapGestureRecognizer *tapGestureRecognizer=[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapProcess:)];
+	[tapGestureRecognizer setDelegate:self];
 	[scrollView addGestureRecognizer:tapGestureRecognizer];
 	[tapGestureRecognizer release];
 	
@@ -124,7 +125,7 @@
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+    return YES;
 }
 
 // 방장이 페이지를 넘겼을 때
@@ -135,5 +136,7 @@
 }
 
 
-
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+	return ([[touch.view class] isSubclassOfClass:[UIButton class]]) ? NO : YES;
+}
 @end

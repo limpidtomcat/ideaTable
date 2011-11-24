@@ -85,7 +85,7 @@
 - (void)doneBtn
 {
 
-	[delegate addMemoData:self.memoField point:xy];
+	[delegate addMemoData:self.memoField.text point:xy];
 
     [self.navigationController dismissModalViewControllerAnimated:YES];
     

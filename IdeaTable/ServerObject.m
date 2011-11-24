@@ -287,6 +287,9 @@
 		[self getClientBySocketRef:s]->pptFileDownloaded=YES;
 		[self sendData:buf exceptClient:s];
 	}
+	else if(firstByte==12){
+		[self sendData:buf exceptClient:s];
+	}
 	else{
 		NSLog(@"str - %s",buf);
 		UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"received" message:[NSString stringWithCString:buf encoding:NSUTF8StringEncoding] delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil];

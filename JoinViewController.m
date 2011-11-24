@@ -58,7 +58,7 @@
 	[backBtn release];
 	
 	UIBarButtonItem *doneBtn=[[UIBarButtonItem alloc] initWithTitle:@"Join" style:UIBarButtonItemStyleDone target:self action:@selector(onJoinBtn)];
-	[self.navigationItem setRightBarButtonItem:doneBtn];
+//	[self.navigationItem setRightBarButtonItem:doneBtn];
 	[doneBtn release];
 	
 

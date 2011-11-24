@@ -12,7 +12,7 @@
 #import "ClientObject.h"
 #import "PaintingView.h"
 
-@interface PDFViewController : MFDocumentViewController
+@interface PDFViewController : MFDocumentViewController<UIGestureRecognizerDelegate>
 {
 	BOOL isToolbarHidden;
 	

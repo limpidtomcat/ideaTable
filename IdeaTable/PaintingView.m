@@ -345,7 +345,7 @@
 	if(brushAlpha>0)glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 	if(brushAlpha==0)glBlendFunc(1, 0);
 	
-	glPointSize(width/5.0f);
+	glPointSize(width/brushScale);
 	
 	
 	// Render the vertex array
@@ -674,97 +674,3 @@
 
 @end
 
-
-/*
- 페이지에 저장된 펜 그리기 기록을 다시 그려주는 작업 Class
- 그리기 기록은 시작할때 모두 파일로부터 읽어와 배열화 되어있으므로
- 그려주기만 한다.
- */
-/*
-@implementation DrawingSavedDataOperation
-@synthesize delegate;
-
--(id)initWithContext:(EAGLContext *)_context Framebuffer:(GLuint)_viewFramebuffer Renderbuffer:(GLuint)_viewRenderbuffer pageInfo:(FCPageInfo *)_pageInfo width:(CGFloat)_width{
-	self=[super init];
-	
-	context=[_context retain];
-	viewRenderbuffer=_viewRenderbuffer;
-	viewFramebuffer=_viewFramebuffer;
-	pageInfo=[_pageInfo retain];
-	
-	width=_width;
-	return self;
-}
-
--(void)main{
-	
-	NSAutoreleasePool *pool=[[NSAutoreleasePool alloc] init];
-	
-	[EAGLContext setCurrentContext:context];
-	glBindFramebufferOES(GL_FRAMEBUFFER_OES, viewFramebuffer);
-	
-	glClearColor(0.0, 0.0, 0.0, 0.0);
-	glClear(GL_COLOR_BUFFER_BIT);
-	
-	for(NSUInteger i=0;i<[pageInfo.infoArr	count];i++){
-		if([self isCancelled])break;
-		CGFloat *infoFloat=(CGFloat *)[[pageInfo.infoArr objectAtIndex:i] bytes];
-		
-		
-		if(i==0||r!=infoFloat[0]||g!=infoFloat[1]||b!=infoFloat[2]||alpha!=infoFloat[4]){
-			
-			glColor4f(infoFloat[0] * infoFloat[4],
-					  infoFloat[1] * infoFloat[4],
-					  infoFloat[2] * infoFloat[4],
-					  infoFloat[4]
-					  );
-			if((i==0||alpha==0)&&infoFloat[4]>0)glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-			if((i==0||alpha>0)&&infoFloat[4]==0)glBlendFunc(1, 0);
-			
-			r=infoFloat[0];
-			g=infoFloat[1];
-			b=infoFloat[2];
-			alpha=infoFloat[4];
-			
-		}
-		if(i==0||scale!=infoFloat[3]){
-			glPointSize(width/infoFloat[3]);
-			scale=infoFloat[3];
-		}
-		
-		// Render the vertex array
-		glVertexPointer(2, GL_FLOAT, 0, pageInfo.dataArr[i]);
-		glDrawArrays(GL_POINTS, 0, [[pageInfo.countArr objectAtIndex:i] intValue]);
-		
-		
-		
-	}
-	
-	//	메인 쓰레드에서 진행되므로 뒤로 밀려있는 사이에 cancel이 되느것 같아서
-	//	printContex 안에서 isCancelled를 체크
-	//	if([self isCancelled]==NO){
-	// 화면에 뿌릴땐 메인 쓰레드에서 해준다
-	[self performSelectorOnMainThread:@selector(printContext) withObject:nil waitUntilDone:NO];
-	//	}
-	[pool release];
-	
-}
-
--(void)printContext{
-	if([self isCancelled])return;
-	// Display the buffer
-	glBindRenderbufferOES(GL_RENDERBUFFER_OES, viewRenderbuffer);
-	[context presentRenderbuffer:GL_RENDERBUFFER_OES];
-	NSLog(@"is mainthread ? %d",[NSThread isMainThread]);
-	NSLog(@"delegate has gone?? %@",delegate);
-	NSLog(@"is cancelled? %d",[self isCancelled]);
-	[delegate performSelector:@selector(loadComplete)];
-}
-
--(void)dealloc{
-	[context release];
-	[pageInfo release];
-	[super dealloc];
-}
-
-@end*/

@@ -13,6 +13,7 @@
 #import "AudioRecordController.h"
 #import "TableInfo.h"
 #import "MemoData.h"
+#import "MemoOverlayView.h"
 
 @interface PresentationController : NSObject<FPKOverlayViewDataSource, MFDocumentViewControllerDelegate>
 {
@@ -39,6 +40,8 @@
 
 	NSArray *mainItems;
 	NSArray *drawingItems;
+	
+	MemoOverlayView *memoOverlayView;
 
 }
 
@@ -57,4 +60,5 @@
 -(void)setPage:(NSUInteger)page;
 
 -(void)addMemoData:(NSString *)content point:(CGPoint)xy;
+-(void)receiveMemoData:(MemoData *)_memoData;
 @end

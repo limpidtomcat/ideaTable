@@ -8,17 +8,24 @@
 
 #import <Foundation/Foundation.h>
 
+@interface CustomButton : UIButton {
+@private
+}
+@end
+
 @interface MemoData : NSObject
 {
-    NSInteger slideNum;
-    CGPoint xy;
-    NSString *contents;
-	NSString *userName;
+    NSInteger slideNum;		// 슬라이드 번호
+    CGPoint xy;				// 좌표
+    NSString *contents;		// 내용
+	NSString *userName;		// 글쓴이
+	
+	UIViewController *targetViewController;
 }
 @property (nonatomic, assign) NSInteger slideNum;
 @property (nonatomic, assign) CGPoint xy;
 @property (nonatomic, retain) NSString *contents;
 @property (nonatomic, retain) NSString *userName;
-
+@property (nonatomic, retain) UIViewController *targetViewController;
 -(UIButton *)memoButton;
 @end

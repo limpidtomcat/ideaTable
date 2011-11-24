@@ -11,6 +11,11 @@
 		E106E5C51465105500DA825B /* SavedTableInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E106E5C41465105500DA825B /* SavedTableInfoViewController.m */; };
 		E106E5C81465319D00DA825B /* redBtn.png in Resources */ = {isa = PBXBuildFile; fileRef = E106E5C61465319D00DA825B /* redBtn.png */; };
 		E106E5C91465319D00DA825B /* redBtn@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E106E5C71465319D00DA825B /* redBtn@2x.png */; };
+		E10822B8147DCA34004AFF99 /* IdeaTableViewController-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = E10822B7147DCA34004AFF99 /* IdeaTableViewController-iPad.xib */; };
+		E10822BD147DCABA004AFF99 /* join_table_ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = E10822B9147DCABA004AFF99 /* join_table_ipad.png */; };
+		E10822BE147DCABA004AFF99 /* left_title_ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = E10822BA147DCABA004AFF99 /* left_title_ipad.png */; };
+		E10822BF147DCABA004AFF99 /* new_ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = E10822BB147DCABA004AFF99 /* new_ipad.png */; };
+		E10822C0147DCABA004AFF99 /* option_ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = E10822BC147DCABA004AFF99 /* option_ipad.png */; };
 		E12187F21434A67300F5156F /* ClientObject.m in Sources */ = {isa = PBXBuildFile; fileRef = E12187F11434A67300F5156F /* ClientObject.m */; };
 		E121CD1B1469373D0053CEAC /* MemoData.m in Sources */ = {isa = PBXBuildFile; fileRef = E121CD1A1469373D0053CEAC /* MemoData.m */; };
 		E121CD24146952710053CEAC /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = E121CD1E146952710053CEAC /* Icon-72.png */; };
@@ -42,6 +47,7 @@
 		E1AF96D514543632008162AC /* CreateMemoController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E1AF96D314543632008162AC /* CreateMemoController.xib */; };
 		E1AF96D8145439B1008162AC /* PresentationController.m in Sources */ = {isa = PBXBuildFile; fileRef = E1AF96D7145439B1008162AC /* PresentationController.m */; };
 		E1D25AEA146B99BF0044033F /* MemoOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = E1D25AE9146B99BF0044033F /* MemoOverlayView.m */; };
+		E1D7281A147E28E400A77DFA /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1D72819147E28E400A77DFA /* UIKit.framework */; };
 		E1E4FEF9146911E800680778 /* MemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E1E4FEF7146911E700680778 /* MemoViewController.m */; };
 		E1E4FEFA146911E800680778 /* MemoViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E1E4FEF8146911E700680778 /* MemoViewController.xib */; };
 		E1E4FF0C1469175D00680778 /* unlock.png in Resources */ = {isa = PBXBuildFile; fileRef = E1E4FF0B1469175D00680778 /* unlock.png */; };
@@ -53,7 +59,6 @@
 		E1EA3D6C1462C2010041A9A1 /* AudioRecordController.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EA3D6B1462C2010041A9A1 /* AudioRecordController.m */; };
 		E1EA3D6E1462C3B00041A9A1 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1EA3D6D1462C3B00041A9A1 /* AVFoundation.framework */; };
 		E1EA3D701462D3D60041A9A1 /* eraser_alpha.png in Resources */ = {isa = PBXBuildFile; fileRef = E1EA3D6F1462D3D60041A9A1 /* eraser_alpha.png */; };
-		E1F4F8401431A5410032D2A0 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1F4F83F1431A5410032D2A0 /* UIKit.framework */; };
 		E1F4F8421431A5410032D2A0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1F4F8411431A5410032D2A0 /* Foundation.framework */; };
 		E1F4F8441431A5410032D2A0 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1F4F8431431A5410032D2A0 /* CoreGraphics.framework */; };
 		E1F4F84A1431A5410032D2A0 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = E1F4F8481431A5410032D2A0 /* InfoPlist.strings */; };
@@ -67,6 +72,7 @@
 		E1F4F8681431BCE40032D2A0 /* WaitingRoomViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E1F4F8671431BCE40032D2A0 /* WaitingRoomViewController.m */; };
 		E1F4F86F1431D8770032D2A0 /* UserInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = E1F4F86E1431D8770032D2A0 /* UserInfo.m */; };
 		E1F4F8721431E9D40032D2A0 /* ServerObject.m in Sources */ = {isa = PBXBuildFile; fileRef = E1F4F8711431E9D40032D2A0 /* ServerObject.m */; };
+		E1F866DB147B2111009C6A73 /* Astral.Memo_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = E1F866DA147B2111009C6A73 /* Astral.Memo_icon.png */; };
 		E1FD55071475548500DF1EE7 /* join_table.png in Resources */ = {isa = PBXBuildFile; fileRef = E1FD54FF1475547800DF1EE7 /* join_table.png */; };
 		E1FD55081475548500DF1EE7 /* join_table@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E1FD55001475547900DF1EE7 /* join_table@2x.png */; };
 		E1FD55091475548500DF1EE7 /* left_title.png in Resources */ = {isa = PBXBuildFile; fileRef = E1FD55011475547B00DF1EE7 /* left_title.png */; };
@@ -84,6 +90,11 @@
 		E106E5C41465105500DA825B /* SavedTableInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SavedTableInfoViewController.m; sourceTree = "<group>"; };
 		E106E5C61465319D00DA825B /* redBtn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = redBtn.png; sourceTree = "<group>"; };
 		E106E5C71465319D00DA825B /* redBtn@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "redBtn@2x.png"; sourceTree = "<group>"; };
+		E10822B7147DCA34004AFF99 /* IdeaTableViewController-iPad.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "IdeaTableViewController-iPad.xib"; sourceTree = "<group>"; };
+		E10822B9147DCABA004AFF99 /* join_table_ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = join_table_ipad.png; sourceTree = "<group>"; };
+		E10822BA147DCABA004AFF99 /* left_title_ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = left_title_ipad.png; sourceTree = "<group>"; };
+		E10822BB147DCABA004AFF99 /* new_ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = new_ipad.png; sourceTree = "<group>"; };
+		E10822BC147DCABA004AFF99 /* option_ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = option_ipad.png; sourceTree = "<group>"; };
 		E12187F01434A67300F5156F /* ClientObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClientObject.h; sourceTree = "<group>"; };
 		E12187F11434A67300F5156F /* ClientObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClientObject.m; sourceTree = "<group>"; };
 		E121CD191469373D0053CEAC /* MemoData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MemoData.h; sourceTree = "<group>"; };
@@ -127,6 +138,7 @@
 		E1AF96D7145439B1008162AC /* PresentationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PresentationController.m; sourceTree = "<group>"; };
 		E1D25AE8146B99BF0044033F /* MemoOverlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MemoOverlayView.h; sourceTree = "<group>"; };
 		E1D25AE9146B99BF0044033F /* MemoOverlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MemoOverlayView.m; sourceTree = "<group>"; };
+		E1D72819147E28E400A77DFA /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		E1E4FEF6146911E700680778 /* MemoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MemoViewController.h; sourceTree = "<group>"; };
 		E1E4FEF7146911E700680778 /* MemoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MemoViewController.m; sourceTree = "<group>"; };
 		E1E4FEF8146911E700680778 /* MemoViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MemoViewController.xib; sourceTree = "<group>"; };
@@ -143,7 +155,6 @@
 		E1EA3D6D1462C3B00041A9A1 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		E1EA3D6F1462D3D60041A9A1 /* eraser_alpha.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = eraser_alpha.png; sourceTree = "<group>"; };
 		E1F4F83B1431A5410032D2A0 /* IdeaTable.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IdeaTable.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		E1F4F83F1431A5410032D2A0 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		E1F4F8411431A5410032D2A0 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		E1F4F8431431A5410032D2A0 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		E1F4F8471431A5410032D2A0 /* IdeaTable-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "IdeaTable-Info.plist"; sourceTree = "<group>"; };
@@ -165,6 +176,7 @@
 		E1F4F86E1431D8770032D2A0 /* UserInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserInfo.m; sourceTree = "<group>"; };
 		E1F4F8701431E9D40032D2A0 /* ServerObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServerObject.h; sourceTree = "<group>"; };
 		E1F4F8711431E9D40032D2A0 /* ServerObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServerObject.m; sourceTree = "<group>"; };
+		E1F866DA147B2111009C6A73 /* Astral.Memo_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Astral.Memo_icon.png; sourceTree = "<group>"; };
 		E1FD54FF1475547800DF1EE7 /* join_table.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = join_table.png; path = "무제 폴더/join_table.png"; sourceTree = "<group>"; };
 		E1FD55001475547900DF1EE7 /* join_table@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "join_table@2x.png"; path = "무제 폴더/join_table@2x.png"; sourceTree = "<group>"; };
 		E1FD55011475547B00DF1EE7 /* left_title.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = left_title.png; path = "무제 폴더/left_title.png"; sourceTree = "<group>"; };
@@ -180,10 +192,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E1D7281A147E28E400A77DFA /* UIKit.framework in Frameworks */,
 				E1EA3D6E1462C3B00041A9A1 /* AVFoundation.framework in Frameworks */,
 				E15150F614502E1C00B36295 /* OpenGLES.framework in Frameworks */,
 				E15150F414502DFA00B36295 /* QuartzCore.framework in Frameworks */,
-				E1F4F8401431A5410032D2A0 /* UIKit.framework in Frameworks */,
 				E1F4F8421431A5410032D2A0 /* Foundation.framework in Frameworks */,
 				E1F4F8441431A5410032D2A0 /* CoreGraphics.framework in Frameworks */,
 				E1728D8C145025A000A6FD6C /* FastPdfKit.framework in Frameworks */,
@@ -212,9 +224,12 @@
 				E1F4F84E1431A5410032D2A0 /* IdeaTableAppDelegate.h */,
 				E1F4F84F1431A5410032D2A0 /* IdeaTableAppDelegate.m */,
 				E1F4F8511431A5410032D2A0 /* MainWindow.xib */,
+				E1F4F8601431A5700032D2A0 /* MainWindow-iPad.xib */,
 				E1F4F8541431A5410032D2A0 /* IdeaTableViewController.h */,
 				E1F4F8551431A5410032D2A0 /* IdeaTableViewController.m */,
 				E1F4F8571431A5410032D2A0 /* IdeaTableViewController.xib */,
+				E10822B7147DCA34004AFF99 /* IdeaTableViewController-iPad.xib */,
+				E1F4F85F1431A56F0032D2A0 /* iPad */,
 			);
 			name = Main;
 			sourceTree = "<group>";
@@ -252,6 +267,7 @@
 		E15150FA14505AEA00B36295 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				E1F866DA147B2111009C6A73 /* Astral.Memo_icon.png */,
 				E1FD54FF1475547800DF1EE7 /* join_table.png */,
 				E1FD55001475547900DF1EE7 /* join_table@2x.png */,
 				E1FD55011475547B00DF1EE7 /* left_title.png */,
@@ -260,6 +276,10 @@
 				E1FD55041475547E00DF1EE7 /* new@2x.png */,
 				E1FD55051475548000DF1EE7 /* Option.png */,
 				E1FD55061475548100DF1EE7 /* Option@2x.png */,
+				E10822B9147DCABA004AFF99 /* join_table_ipad.png */,
+				E10822BA147DCABA004AFF99 /* left_title_ipad.png */,
+				E10822BB147DCABA004AFF99 /* new_ipad.png */,
+				E10822BC147DCABA004AFF99 /* option_ipad.png */,
 				E121CD1D1469525E0053CEAC /* icon */,
 				E1E4FF0B1469175D00680778 /* unlock.png */,
 				E106E5C61465319D00DA825B /* redBtn.png */,
@@ -367,8 +387,6 @@
 		E1F4F8301431A5410032D2A0 = {
 			isa = PBXGroup;
 			children = (
-				E1EA3D6D1462C3B00041A9A1 /* AVFoundation.framework */,
-				E15150F514502E1C00B36295 /* OpenGLES.framework */,
 				E1F4F8451431A5410032D2A0 /* IdeaTable */,
 				E1F4F83E1431A5410032D2A0 /* Frameworks */,
 				E1F4F83C1431A5410032D2A0 /* Products */,
@@ -386,9 +404,11 @@
 		E1F4F83E1431A5410032D2A0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E1D72819147E28E400A77DFA /* UIKit.framework */,
+				E1EA3D6D1462C3B00041A9A1 /* AVFoundation.framework */,
+				E15150F514502E1C00B36295 /* OpenGLES.framework */,
 				E15150F314502DFA00B36295 /* QuartzCore.framework */,
 				E1728D86145025A000A6FD6C /* FastPdfKit.embeddedframework */,
-				E1F4F83F1431A5410032D2A0 /* UIKit.framework */,
 				E1F4F8411431A5410032D2A0 /* Foundation.framework */,
 				E1F4F8431431A5410032D2A0 /* CoreGraphics.framework */,
 			);
@@ -403,7 +423,6 @@
 				E13B4B65145D613F00975702 /* Entering */,
 				E1AF96D014543574008162AC /* Presentation */,
 				E162CA7A14658E2500DAA75B /* Option */,
-				E1F4F85F1431A56F0032D2A0 /* iPad */,
 				E1F4F8461431A5410032D2A0 /* Supporting Files */,
 				E15150FA14505AEA00B36295 /* Images */,
 			);
@@ -425,7 +444,6 @@
 		E1F4F85F1431A56F0032D2A0 /* iPad */ = {
 			isa = PBXGroup;
 			children = (
-				E1F4F8601431A5700032D2A0 /* MainWindow-iPad.xib */,
 			);
 			name = iPad;
 			sourceTree = "<group>";
@@ -517,6 +535,12 @@
 				E1FD550C1475548500DF1EE7 /* new@2x.png in Resources */,
 				E1FD550D1475548500DF1EE7 /* Option.png in Resources */,
 				E1FD550E1475548500DF1EE7 /* Option@2x.png in Resources */,
+				E1F866DB147B2111009C6A73 /* Astral.Memo_icon.png in Resources */,
+				E10822B8147DCA34004AFF99 /* IdeaTableViewController-iPad.xib in Resources */,
+				E10822BD147DCABA004AFF99 /* join_table_ipad.png in Resources */,
+				E10822BE147DCABA004AFF99 /* left_title_ipad.png in Resources */,
+				E10822BF147DCABA004AFF99 /* new_ipad.png in Resources */,
+				E10822C0147DCABA004AFF99 /* option_ipad.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -656,10 +680,11 @@
 				GCC_PREFIX_HEADER = "IdeaTable/IdeaTable-Prefix.pch";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "IdeaTable/IdeaTable-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "FA5DB032-3966-4A59-829F-48341253DDB4";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "FA5DB032-3966-4A59-829F-48341253DDB4";
+				PROVISIONING_PROFILE = "775678CF-2CDA-4485-B04D-560AB05649A0";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "775678CF-2CDA-4485-B04D-560AB05649A0";
+				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "i386 armv7 armv6";
 				WRAPPER_EXTENSION = app;
@@ -679,8 +704,9 @@
 				GCC_PREFIX_HEADER = "IdeaTable/IdeaTable-Prefix.pch";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "IdeaTable/IdeaTable-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "i386 armv7 armv6";
 				WRAPPER_EXTENSION = app;
